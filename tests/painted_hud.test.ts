@@ -78,3 +78,25 @@ describe('painted cluster', () => {
     }
   });
 });
+
+describe('painted target frame', () => {
+  it('picks the plate by grade and sizes from that grade', () => {
+    for (const g of ['plain', 'elite', 'boss']) {
+      expect(css).toContain(`body.hud-painted #target-frame[data-grade="${g}"] {`);
+      expect(css).toContain(`url("/ui/painted/target_${g}.webp")`);
+      expect(css).toContain(`--pt-tf-w: var(--pt-tf-${g}-w);`);
+      expect(css).toContain(`--pt-tf-seat-l: var(--pt-tf-${g}-seat-l);`);
+    }
+    expect(css).toContain('left: calc(50% - var(--pt-tf-w) / 2);');
+    expect(css).toContain('top: var(--pt-safe);');
+  });
+  it('seats the hp fill flush to the field and hangs the cast bar under the rail', () => {
+    expect(css).toContain('left: calc(var(--pt-tf-field-x) - var(--pt-tf-seat-l));');
+    expect(css).toContain('top: calc(var(--pt-tf-rail) + var(--pt-gap));');
+    expect(css).toContain('width: var(--pt-cast-w);');
+    expect(css).toContain('width: var(--pt-chip);');
+  });
+  it('places the level after the measured name', () => {
+    expect(css).toContain('var(--pt-tf-name-w)');
+  });
+});

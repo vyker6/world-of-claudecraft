@@ -57,6 +57,15 @@
     --pt-size-body: 18px;
     --pt-size-display: 24px;
     --pt-size-wordmark: 42px;
+    /* The mock's `outline=DARK`: a hard edge, not a soft drop shadow. Every label it sets
+       over a fill whose colour moves under it takes this - the cluster's keycaps, the two
+       cast troughs, the target plate's name, rank and figures, an aura chip's indicators. */
+    --pt-outline:
+      0 0 3px var(--pt-dark),
+      1px 1px 0 var(--pt-dark),
+      -1px -1px 0 var(--pt-dark),
+      1px -1px 0 var(--pt-dark),
+      -1px 1px 0 var(--pt-dark);
   }
 
   /* ---- The cluster: one painting hosts the orbs, the wells and the medallion ---- */
@@ -248,12 +257,7 @@
     /* The row under the wells is where the painting's foot thins out, so on two of the eight
        the cap lands on the world. The mock sets the same label with a hard dark outline
        (build_hud_painted.cluster, role="indicator", outline=DARK); this is that outline. */
-    text-shadow:
-      0 0 3px var(--pt-dark),
-      1px 1px 0 var(--pt-dark),
-      -1px -1px 0 var(--pt-dark),
-      1px -1px 0 var(--pt-dark),
-      -1px 1px 0 var(--pt-dark);
+    text-shadow: var(--pt-outline);
     background: none;
     padding: 0;
   }
@@ -470,5 +474,417 @@
   }
   body.hud-painted #player-frame #pf-level::before {
     content: attr(data-pt-word) "\00a0";
+  }
+
+  /* ---- The target: the hybrid bar on its grade plate, top centre ---- */
+  /* The plate IS the frame, so WoC's portrait ring, name plaque and bar bezels come off and
+     every piece below seats against #target-frame itself. The plates are exported FITTED
+     (1210 wide by the grade's own height), so `100% 100%` maps the painting 1:1 onto the box
+     the metrics describe and every rect below is the painting's own pixels. The theme never
+     sets `display` here: hud.ts toggles the frame with the target. */
+  body.hud-painted #target-frame {
+    position: absolute;
+    left: calc(50% - var(--pt-tf-w) / 2);
+    top: var(--pt-safe);
+    width: var(--pt-tf-w);
+    height: var(--pt-tf-h);
+    background: var(--pt-tf-plate) center / 100% 100% no-repeat;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  /* One alias block per grade: hud.ts writes data-grade (plain/elite/boss) and every rule
+     below reads the unsuffixed --pt-tf-* names, so the whole region re-seats on one
+     attribute. #totarget-frame is a CHILD of the frame and inherits these aliases with it. */
+  body.hud-painted #target-frame[data-grade="plain"] {
+    --pt-tf-plate: url("/ui/painted/target_plain.webp");
+    --pt-tf-w: var(--pt-tf-plain-w);
+    --pt-tf-h: var(--pt-tf-plain-h);
+    --pt-tf-field-x: var(--pt-tf-plain-field-x);
+    --pt-tf-field-y: var(--pt-tf-plain-field-y);
+    --pt-tf-field-w: var(--pt-tf-plain-field-w);
+    --pt-tf-field-h: var(--pt-tf-plain-field-h);
+    --pt-tf-seat-l: var(--pt-tf-plain-seat-l);
+    --pt-tf-seat-t: var(--pt-tf-plain-seat-t);
+    --pt-tf-seat-r: var(--pt-tf-plain-seat-r);
+    --pt-tf-seat-b: var(--pt-tf-plain-seat-b);
+    --pt-tf-rail: var(--pt-tf-plain-rail);
+  }
+  body.hud-painted #target-frame[data-grade="elite"] {
+    --pt-tf-plate: url("/ui/painted/target_elite.webp");
+    --pt-tf-w: var(--pt-tf-elite-w);
+    --pt-tf-h: var(--pt-tf-elite-h);
+    --pt-tf-field-x: var(--pt-tf-elite-field-x);
+    --pt-tf-field-y: var(--pt-tf-elite-field-y);
+    --pt-tf-field-w: var(--pt-tf-elite-field-w);
+    --pt-tf-field-h: var(--pt-tf-elite-field-h);
+    --pt-tf-seat-l: var(--pt-tf-elite-seat-l);
+    --pt-tf-seat-t: var(--pt-tf-elite-seat-t);
+    --pt-tf-seat-r: var(--pt-tf-elite-seat-r);
+    --pt-tf-seat-b: var(--pt-tf-elite-seat-b);
+    --pt-tf-rail: var(--pt-tf-elite-rail);
+  }
+  body.hud-painted #target-frame[data-grade="boss"] {
+    --pt-tf-plate: url("/ui/painted/target_boss.webp");
+    --pt-tf-w: var(--pt-tf-boss-w);
+    --pt-tf-h: var(--pt-tf-boss-h);
+    --pt-tf-field-x: var(--pt-tf-boss-field-x);
+    --pt-tf-field-y: var(--pt-tf-boss-field-y);
+    --pt-tf-field-w: var(--pt-tf-boss-field-w);
+    --pt-tf-field-h: var(--pt-tf-boss-field-h);
+    --pt-tf-seat-l: var(--pt-tf-boss-seat-l);
+    --pt-tf-seat-t: var(--pt-tf-boss-seat-t);
+    --pt-tf-seat-r: var(--pt-tf-boss-seat-r);
+    --pt-tf-seat-b: var(--pt-tf-boss-seat-b);
+    --pt-tf-rail: var(--pt-tf-boss-rail);
+  }
+  /* Both wrappers stay in the box tree and drop only their own boxes: #tf-level lives inside
+     the portrait wrap and the name header and bars inside .uf-bars, and each is seated below
+     against the plate rather than against its wrapper. Addressed by id and by child
+     combinator so the nested #totarget-frame's own wrappers are not caught by them. */
+  body.hud-painted #tf-portrait-wrap,
+  body.hud-painted #target-frame > .uf-bars {
+    display: contents;
+  }
+  /* The chrome the painting replaces: the portrait, the heraldry seal, the name plaque's
+     watermark, the ELITE caption, the resource rail and the Discord line. .portrait-wrap's
+     pseudo-elements go with them - a `display: contents` element generates no box but its
+     ::before still paints, and the boss rank hangs its dragon emblem there. */
+  body.hud-painted #target-frame .portrait,
+  body.hud-painted #target-frame .deed-heraldry-seal,
+  body.hud-painted #target-frame .deed-heraldry-pattern,
+  body.hud-painted #target-frame .portrait-wrap::before,
+  body.hud-painted #target-frame .portrait-wrap::after,
+  body.hud-painted #target-frame #tf-elite-tag,
+  body.hud-painted #target-frame #tf-resource,
+  body.hud-painted #target-frame #tf-discord {
+    display: none;
+  }
+  /* The shield overlay scales to (hp + absorb) / maxHp (absorb_bar.ts, absorbFrac), so at
+     full health with no shield at all it lays its 0.42-alpha hatch over the entire field.
+     The painted plate has no shield lane, so it stands down until one is drawn - the same
+     decision the player frame's orbs took for #pf-absorb. */
+  body.hud-painted #target-frame #tf-absorb {
+    display: none;
+  }
+  /* MovableFrame's furniture, hidden the way the cluster hides the player frame's: the
+     painted plate is seated by measured coordinates, not dragged. */
+  body.hud-painted #target-frame .tf-move-btn,
+  body.hud-painted #target-frame .mf-resize-grip,
+  body.hud-painted #target-frame .tf-frame-label,
+  body.hud-painted #target-frame .tf-edge-glow {
+    display: none;
+  }
+  /* The four swing bars have no seat in the mock's composition, which carries one cast
+     trough per caster under the rail and nothing else. */
+  body.hud-painted #swingbar,
+  body.hud-painted #swingbar-offhand,
+  body.hud-painted #target-frame #swingbar-target,
+  body.hud-painted #target-frame #swingbar-tot {
+    display: none;
+  }
+  /* The hp fill grows to the seat so the field's lit lip is covered, not left as a moat.
+     .uf-bars is `display: contents`, so the child combinator picks only the target's own
+     health bar and never the nested target-of-target's. */
+  body.hud-painted #target-frame > .uf-bars > .bar.hp {
+    position: absolute;
+    left: calc(var(--pt-tf-field-x) - var(--pt-tf-seat-l));
+    top: calc(var(--pt-tf-field-y) - var(--pt-tf-seat-t));
+    width: calc(var(--pt-tf-field-w) + var(--pt-tf-seat-l) + var(--pt-tf-seat-r));
+    height: calc(var(--pt-tf-field-h) + var(--pt-tf-seat-t) + var(--pt-tf-seat-b));
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    overflow: hidden;
+  }
+  body.hud-painted #target-frame #tf-hp {
+    border-radius: 0;
+    background: linear-gradient(rgb(178 42 36), rgb(96 14 18));
+  }
+  /* The figures end a `tight` inside the field's right edge (painted_combat.hybrid). The
+     flex box does the vertical centring: .bar-text's line height is WoC's 15px bar rail,
+     which would strand the readout at the top of a field four times that deep. */
+  body.hud-painted #target-frame #tf-hp-text {
+    left: auto;
+    right: calc(var(--pt-gap) * 2);
+    display: flex;
+    align-items: center;
+    font: 700 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  /* The name a `tight` inside the field's left edge, centred on the field's height.
+     #tf-name-header carries WoC's heraldry plaque: a tinted, clipped bar whose rivet
+     courses paint as ::before/::after (components.css .deed-heraldry-plaque[data-border]),
+     so the plaque is stripped here, pseudo-elements and clip included. */
+  body.hud-painted #target-frame #tf-name-header {
+    position: absolute;
+    left: calc(var(--pt-tf-field-x) + var(--pt-gap) * 2);
+    top: var(--pt-tf-field-y);
+    width: auto;
+    min-width: 0;
+    height: var(--pt-tf-field-h);
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    clip-path: none;
+    z-index: 2;
+  }
+  body.hud-painted #target-frame #tf-name-header::before,
+  body.hud-painted #target-frame #tf-name-header::after {
+    display: none;
+  }
+  /* The ink is !important because hud.ts writes --color-hostile / --color-friendly INLINE on
+     this node every frame, and an author-important declaration is the only thing in the
+     cascade that outranks a normal inline style. The mock sets every grade's name in INK
+     (painted_combat.NAME_STYLES) and lets the field's fill carry the affiliation, and the
+     measurement agrees: the plate the name lands on IS the hostile red fill, so the hostile
+     red reads as red on red and only the drop shadow holds it apart. */
+  body.hud-painted #target-frame #tf-name {
+    font: 700 var(--pt-size-display) / var(--pt-tf-field-h) var(--pt-face-display);
+    color: var(--pt-ink) !important;
+    text-shadow: var(--pt-outline);
+    white-space: nowrap;
+  }
+  /* The rank in gold a `tight` past the measured name: painted_combat.hybrid sets the name
+     one SP.tight in from the field and the rank another SP.tight past the name's ink, and
+     --pt-tf-name-w is the rendered name's own width (a ResizeObserver in metrics.ts).
+     .level-chip is a 24px round disc pinned to the portrait's corner, so all four of its
+     anchors and its whole disc treatment reset, the boss rank's centred restyle included. */
+  body.hud-painted #target-frame #tf-level {
+    position: absolute;
+    left: calc(var(--pt-tf-field-x) + var(--pt-gap) * 4 + var(--pt-tf-name-w));
+    right: auto;
+    top: var(--pt-tf-field-y);
+    bottom: auto;
+    width: auto;
+    height: var(--pt-tf-field-h);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    transform: none;
+    font: 700 var(--pt-size-dense) / var(--pt-tf-field-h) var(--pt-face-body);
+    letter-spacing: 1px;
+    color: var(--pt-gold);
+    text-shadow: var(--pt-outline);
+    z-index: 2;
+  }
+  /* Under the plate's rail: the enemy cast bar at the field's left end, the debuff chips a
+     gap below it. --pt-tf-rail is the first row under the rail's foot, measured off the
+     painting, so the trough hangs from the art and not from the box. */
+  body.hud-painted #target-frame #tf-castbar {
+    position: absolute;
+    left: var(--pt-tf-field-x);
+    top: calc(var(--pt-tf-rail) + var(--pt-gap));
+    width: var(--pt-cast-w);
+    height: var(--pt-cast-h);
+    margin: 0;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    outline: 0;
+    border-radius: 0;
+  }
+  /* The caster's own colour ramped, the way the plate's health fill is: WoC's stock trough
+     is a glossy salmon that reads as a different design system a gap under the painted
+     plate. HOSTILE (painted_combat) is the top stop, its deep end the bottom. */
+  body.hud-painted #target-frame #tf-castbar .fill {
+    background: linear-gradient(rgb(217 69 63), rgb(122 22 20));
+    box-shadow: none;
+    border-radius: 0;
+  }
+  body.hud-painted #target-frame #tf-debuffs {
+    position: absolute;
+    left: var(--pt-tf-field-x);
+    top: calc(var(--pt-tf-rail) + var(--pt-gap) + var(--pt-cast-h) + var(--pt-gap));
+    margin: 0;
+    gap: var(--pt-gap);
+  }
+  /* Target of target: a chip at the field's right end, level with the cast trough.
+     #totarget-frame is a CHILD of #target-frame, so its offsets resolve against the plate
+     and its right edge lands on the field's own right edge. hud.css zooms it to 0.74 (a
+     mini twin of the frame); that zoom goes, or it would scale every --pt-* length inside.
+     The theme never sets `display` here: the unit-frame painter toggles it. */
+  body.hud-painted #totarget-frame {
+    position: absolute;
+    left: auto;
+    right: calc(var(--pt-tf-w) - var(--pt-tf-field-x) - var(--pt-tf-field-w));
+    top: calc(var(--pt-tf-rail) + var(--pt-gap));
+    width: var(--pt-cast-w);
+    height: var(--pt-cast-h);
+    zoom: 1;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    padding: 0;
+  }
+  /* The mini's own wrappers: the portrait side goes entirely, and its .uf-bars drops its box
+     (WoC gives it a 132px bordered panel that would otherwise paint inside the chip). */
+  body.hud-painted #totarget-frame .uf-bars {
+    display: contents;
+  }
+  body.hud-painted #totarget-frame .portrait-wrap,
+  body.hud-painted #totarget-frame #totf-level {
+    display: none;
+  }
+  /* One gap in from each end, the same inset the cast trough beside it gives its own label:
+     the mock seats this name a `tight` in because a 4 px affiliation strip precedes it
+     (painted_combat.tot_chip), and without that strip a tight leaves the chip lopsided
+     against the figures at the other end. */
+  body.hud-painted #totarget-frame #totf-name {
+    position: absolute;
+    left: var(--pt-gap);
+    top: 0;
+    font: 400 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-body);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+    z-index: 1;
+  }
+  body.hud-painted #totarget-frame .bar.hp {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  body.hud-painted #totarget-frame #totf-hp {
+    border-radius: 0;
+    background: rgb(178 42 36 / 0.55);
+  }
+  body.hud-painted #totarget-frame #totf-hp-text {
+    left: auto;
+    right: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+    z-index: 1;
+  }
+
+  /* ---- Aura chips: one measured well per aura, gilt-edged ---- */
+  /* Scoped to the three strips the mock composes, never to `.buff` at large: the party
+     frames overlay their own 16px minis (.pfm-auras .buff) that the chip size would blow up.
+     background-COLOR, not the shorthand: the icon is a background-image the aura painter
+     writes inline over hud.css's `background-size: cover`, and the shorthand would reset that
+     sizing and tile the art at its natural size. */
+  body.hud-painted #buff-bar .buff,
+  body.hud-painted #debuff-bar .buff,
+  body.hud-painted #tf-debuffs .buff {
+    width: var(--pt-chip);
+    height: var(--pt-chip);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    background-color: var(--pt-plate);
+    box-shadow: none;
+  }
+  /* Both indicators read INSIDE the well, the way the mock sets a chip's count
+     (painted_combat.aura_chip). WoC hangs the countdown 13 px BELOW the icon and overhangs
+     the corner with the stack pill, which puts two labels on the bare world beside a chip
+     that is its own plate. The hard dark outline is the one the cluster's keycaps take: an
+     indicator that lands on painted art needs an edge, not a soft shadow. */
+  body.hud-painted #buff-bar .buff .dur,
+  body.hud-painted #debuff-bar .buff .dur,
+  body.hud-painted #tf-debuffs .buff .dur,
+  body.hud-painted #buff-bar .buff .stacks,
+  body.hud-painted #debuff-bar .buff .stacks,
+  body.hud-painted #tf-debuffs .buff .stacks {
+    font: 700 var(--pt-size-dense) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #buff-bar .buff .dur,
+  body.hud-painted #debuff-bar .buff .dur,
+  body.hud-painted #tf-debuffs .buff .dur {
+    bottom: 0;
+  }
+  body.hud-painted #buff-bar .buff .stacks,
+  body.hud-painted #debuff-bar .buff .stacks,
+  body.hud-painted #tf-debuffs .buff .stacks {
+    top: 0;
+    right: 0;
+    min-width: 0;
+    height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  /* ---- The player's cast column, rising from the cluster's crest room ---- */
+  /* The crest stands proud of the rail, so the column starts a gap above the room the
+     painting reserves for it: cast trough, then buffs, then debuffs, nothing else.
+     hud.css centres the trough with a translate that would double the calc, so it goes. */
+  body.hud-painted #castbar {
+    position: absolute;
+    left: calc(50% - var(--pt-cast-w) / 2);
+    bottom: calc(var(--pt-rail-bottom) + var(--pt-crest-room) + var(--pt-gap));
+    width: var(--pt-cast-w);
+    height: var(--pt-cast-h);
+    transform: none;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    outline: 0;
+    border-radius: 0;
+  }
+  body.hud-painted #castbar .fill {
+    background: linear-gradient(rgb(226 190 110), rgb(160 124 58));
+    border-radius: 0;
+  }
+  /* The mock sets the spell at the trough's left and the time remaining at its right
+     (painted_combat.cast_bar), not one centred over the other. Both troughs are exactly
+     --pt-cast-h deep, so the line box is the box and no flex centring is needed. */
+  body.hud-painted #castbar .label,
+  body.hud-painted #target-frame #tf-castbar .label {
+    text-align: left;
+    padding-left: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-body);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #castbar .timer,
+  body.hud-painted #target-frame #tf-castbar .timer {
+    right: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  /* Both aura rows centre on the cluster's own width. WoC anchors them beside the minimap
+     under a 320px cap, which would shrink the centred row to a third of the bar. */
+  body.hud-painted #buff-bar,
+  body.hud-painted #debuff-bar {
+    left: calc(50% - var(--pt-bar-w) / 2);
+    right: auto;
+    top: auto;
+    width: var(--pt-bar-w);
+    max-width: none;
+    justify-content: center;
+    gap: var(--pt-gap);
+  }
+  body.hud-painted #buff-bar {
+    bottom: calc(
+      var(--pt-rail-bottom) +
+      var(--pt-crest-room) +
+      var(--pt-gap) *
+      2 +
+      var(--pt-cast-h)
+    );
+  }
+  body.hud-painted #debuff-bar {
+    bottom: calc(
+      var(--pt-rail-bottom) +
+      var(--pt-crest-room) +
+      var(--pt-gap) *
+      3 +
+      var(--pt-cast-h) +
+      var(--pt-chip)
+    );
   }
 }
