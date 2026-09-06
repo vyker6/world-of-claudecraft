@@ -13905,6 +13905,9 @@ export const ja_JP: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "消えた火花のワンド"
       },
+      "reaver_axe": {
+        "name": "リーヴァーの髭斧"
+      },
       "conjured_water4": {
         "name": "魔法の湧き水"
       },
@@ -15304,6 +15307,9 @@ export const ja_JP: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "盆地の声ズルガー"
+      },
+      "river_drowned": {
+        "name": "川の溺死者"
       },
       "ironvein_foreman": {
         "name": "鉄脈の現場監督"

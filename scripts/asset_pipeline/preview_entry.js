@@ -1,7 +1,8 @@
 // Browser-side entry for the asset-pipeline preview renderer. Bundled by
-// esbuild into a self-contained IIFE and injected into a blank page by
+// esbuild into a self-contained IIFE and served on a virtual origin by
 // lib/preview.mjs. Parses GLB bytes directly (no fetch) so it runs offline
-// under headless swiftshader.
+// under headless swiftshader; the only fetch is the KTX2 transcoder, which
+// the same interceptor serves from public/basis/.
 //
 //   window.renderViews(b64, {views, size}) -> [{name, dataUrl}]
 //     4 yaw turntable views plus a hero three-quarter; for rigged models one
@@ -10,13 +11,18 @@
 import * as THREE from 'three';
 import { MeshoptDecoder } from 'three/examples/jsm/libs/meshopt_decoder.module.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { KTX2Loader } from 'three/examples/jsm/loaders/KTX2Loader.js';
 
 const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
 renderer.setPixelRatio(1);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 document.body.appendChild(renderer.domElement);
 
-const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+// Shipped GLBs carry KTX2 textures (KHR_texture_basisu). The transcoder is
+// fetched from the page's virtual origin, served by lib/preview.mjs from
+// public/basis/; detectSupport picks the transcode target for this GPU path.
+const ktx2 = new KTX2Loader().setTranscoderPath('/basis/').detectSupport(renderer);
+const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).setKTX2Loader(ktx2);
 
 function makeLights() {
   const g = new THREE.Group();

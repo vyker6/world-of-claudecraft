@@ -11279,6 +11279,7 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.wildheart_hexcaller.name': '陽骨の呪術師',
   'entities.mobs.wildheart_beastmaster.name': '牙王の獣使い',
   'entities.mobs.wildheart_high_priest.name': '盆地の声ズルガー',
+  'entities.mobs.river_drowned.name': '川の溺死者',
   'entities.mobs.apprentice_wren.name': '見習いレン',
   'entities.mobs.barrow_wight.name': '塚のワイト',
   'entities.mobs.castaway_navigator.name': '航海士スリ',
@@ -14631,5 +14632,6 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
   'entities.items.forgefire_spire.name': 'フォージファイアのスパイア',
   'entities.items.springtouched_crozier.name': '泉触れの司教杖',
   'entities.items.wand_of_quenched_sparks.name': '消えた火花のワンド',
+  'entities.items.reaver_axe.name': 'リーヴァーの髭斧',
   'crucibleShop.balanceEntry': '{name} x{count}',
 };

@@ -13905,6 +13905,9 @@ export const tr_TR: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Sönmüş Kıvılcımların Asası"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Sihirle Yaratılmış Kaynak Suyu"
       },
@@ -15304,6 +15307,9 @@ export const tr_TR: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Çukurun Sesi"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Demirdamar Ustabaşı"

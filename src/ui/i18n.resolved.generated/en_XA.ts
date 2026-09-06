@@ -13905,6 +13905,9 @@ export const en_XA: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "[Ŵáñð óƒ Ɋúéñçĥéð Šþáŕķš]"
       },
+      "reaver_axe": {
+        "name": "[Ŕéáʋéŕ'š Ɓéáŕðéð Áẋé]"
+      },
       "conjured_water4": {
         "name": "[Çóñĵúŕéð Šþŕíñĝŵáţéŕ]"
       },
@@ -15304,6 +15307,9 @@ export const en_XA: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "[Žúļĝáŕ, Ʋóíçé óƒ ţĥé Ɓášíñ]"
+      },
+      "river_drowned": {
+        "name": "[Ŕíʋéŕ Ðŕóŵñéð]"
       },
       "ironvein_foreman": {
         "name": "[Íŕóñʋéíñ Ƒóŕéɱáñ]"

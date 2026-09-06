@@ -13905,6 +13905,9 @@ export const it_IT: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Bacchetta delle Scintille Estinte"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Acqua sorgiva evocata"
       },
@@ -15304,6 +15307,9 @@ export const it_IT: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Voce del Bacino"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Caposquadra Venaferrata"

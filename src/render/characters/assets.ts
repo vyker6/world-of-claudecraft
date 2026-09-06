@@ -210,6 +210,7 @@ const KAYKIT_WEAPON_ACCESSORY: Record<string, string> = {
   encore_the_second_falling_star: 'VAR_CROSSBOW',
   hammer_varkhul: 'VAR_HAMMER', // Ignivar raid legendary (Varkhul drop)
   ...KAYKIT_SHIELD_ACCESSORIES,
+  axe_reaver: 'VAR_AXE',
 };
 
 // Per-family grip for the variant pack. The model origin IS the grip, so we attach

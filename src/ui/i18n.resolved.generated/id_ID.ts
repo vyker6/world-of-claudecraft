@@ -13905,6 +13905,9 @@ export const id_ID: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Tongkat Percik Padam"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Air Mata Air Sihir"
       },
@@ -15304,6 +15307,9 @@ export const id_ID: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Suara Cekungan"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Mandor Ironvein"

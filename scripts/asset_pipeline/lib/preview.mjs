@@ -12,6 +12,21 @@ import { findBrowserPath } from '../../browser_path_resolve.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Virtual origin the headless page is served from (never resolved on the
+// network: every request is answered by the interceptor in launchPage).
+const PREVIEW_ORIGIN = 'https://asset-pipeline-preview.local';
+const BASIS_DIR = resolve(__dirname, '../../../public/basis');
+const BASIS_FILES = {
+  '/basis/basis_transcoder.js': {
+    path: join(BASIS_DIR, 'basis_transcoder.js'),
+    type: 'application/javascript',
+  },
+  '/basis/basis_transcoder.wasm': {
+    path: join(BASIS_DIR, 'basis_transcoder.wasm'),
+    type: 'application/wasm',
+  },
+};
+
 let pagePromise = null;
 
 export function moduleImportUrl(path) {
@@ -38,6 +53,11 @@ async function launchPage() {
     format: 'iife',
     outfile: bundlePath,
     logLevel: 'silent',
+    // KTX2Loader resolves its default transcoder URLs against import.meta.url
+    // at module scope; an IIFE has none and `new URL(x, undefined)` throws
+    // before the entry runs. Pin it to the virtual origin (the loader never
+    // fetches these defaults: preview_entry.js sets its own transcoder path).
+    define: { 'import.meta.url': JSON.stringify(`${PREVIEW_ORIGIN}/preview_entry.js`) },
   });
 
   const browser = await puppeteer.launch({
@@ -56,9 +76,28 @@ async function launchPage() {
   page.on('console', (msg) => {
     if (msg.type() === 'error') console.error('[preview console]', msg.text());
   });
-  await page.setContent(
-    `<!doctype html><html><body><script>${readFileSync(bundlePath, 'utf8')}</script></body></html>`,
-  );
+  // Shipped GLBs carry KTX2 textures, and the entry's KTX2Loader fetches its
+  // transcoder (js + wasm) from a same-origin path. A setContent page has no
+  // origin to fetch from, so the page is served from a virtual origin through
+  // request interception: the bundle at "/", the transcoder from public/basis/
+  // (the same files the game client and the library viewer serve). Nothing
+  // else is reachable; GLB bytes still travel as base64.
+  const html = `<!doctype html><html><body><script>${readFileSync(bundlePath, 'utf8')}</script></body></html>`;
+  await page.setRequestInterception(true);
+  page.on('request', (req) => {
+    const url = new URL(req.url());
+    if (url.origin !== PREVIEW_ORIGIN) return void req.abort();
+    if (url.pathname === '/') {
+      return void req.respond({ status: 200, contentType: 'text/html', body: html });
+    }
+    // Chrome asks for a favicon on every navigation; an abort logs a console
+    // error, an empty 204 is silent.
+    if (url.pathname === '/favicon.ico') return void req.respond({ status: 204 });
+    const basis = BASIS_FILES[url.pathname];
+    if (!basis) return void req.abort();
+    req.respond({ status: 200, contentType: basis.type, body: readFileSync(basis.path) });
+  });
+  await page.goto(`${PREVIEW_ORIGIN}/`);
   await page.waitForFunction('window.__ready === true', { timeout: 30000 });
   return { browser, page };
 }

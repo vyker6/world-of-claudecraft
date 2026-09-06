@@ -13905,6 +13905,9 @@ export const zh_CN: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "熄火花魔杖"
       },
+      "reaver_axe": {
+        "name": "掠夺者的胡须斧"
+      },
       "conjured_water4": {
         "name": "魔法泉水"
       },
@@ -15304,6 +15307,9 @@ export const zh_CN: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "盆地之声祖尔加"
+      },
+      "river_drowned": {
+        "name": "河溺亡者"
       },
       "ironvein_foreman": {
         "name": "铁脉工头"

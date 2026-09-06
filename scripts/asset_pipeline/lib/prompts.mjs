@@ -6,27 +6,30 @@
 //
 // The layout constraints follow the OpenAI image guide's isolation recipe for
 // 3D-reconstruction reference art: one centered object, full object in frame,
-// plain background, crisp silhouette, no text or extra elements.
+// transparent background (the request also sets background:'transparent', see
+// lib/openai_image.mjs), crisp silhouette, no text or extra elements.
 
 const STYLE_CORE =
   'stylized low-poly fantasy game asset, flat shaded, clean hand-crafted topology look, ' +
   'muted classic-MMO medieval palette, subtle hand-painted color blocks, no photorealism';
 
 const LAYOUT_OBJECT =
-  'single object, centered, full object in frame, three-quarter view, plain white opaque ' +
+  'single object, centered, full object in frame, three-quarter view, transparent ' +
   'background, even diffuse studio lighting, crisp silhouette, no halos or fringing, no drop ' +
   'shadow, no extra objects, no text, no watermark, no logo';
 
-const LAYOUT_CHARACTER =
+// Exported: the biped framing block is the proven reconstruction recipe and is
+// reused by concept tooling that supplies its own art direction.
+export const LAYOUT_CHARACTER =
   'single character, full body, standing T-pose with arms out horizontally, facing the camera, ' +
-  'centered, full figure in frame, plain white opaque background, even diffuse studio lighting, ' +
+  'centered, full figure in frame, transparent background, even diffuse studio lighting, ' +
   'crisp silhouette, no halos, no drop shadow, no extra objects, no text, no watermark';
 
 // Non-biped creatures must NOT get the T-pose language (it makes a boar stand
 // on its hind legs like a person, verified): natural stance, side profile.
 const LAYOUT_QUADRUPED =
   'single creature, full body, standing naturally on all of its legs on the ground, side ' +
-  'profile view, centered, full figure in frame, plain white opaque background, even diffuse ' +
+  'profile view, centered, full figure in frame, transparent background, even diffuse ' +
   'studio lighting, crisp silhouette, no halos, no drop shadow, no extra objects, no text, ' +
   'no watermark';
 
@@ -86,7 +89,7 @@ export function skinModelPrompt({ theme, className }) {
     'fit the theme, while KEEPING the same character identity, the same chibi proportions, ' +
     'the same overall silhouette, and the same low-poly flat-shaded art style. ' +
     'Render the redesigned character as: full body, standing T-pose with arms out ' +
-    'horizontally, facing the camera, centered, full figure in frame, plain white opaque ' +
+    'horizontally, facing the camera, centered, full figure in frame, transparent ' +
     'background, even diffuse studio lighting, crisp silhouette, no halos, no drop shadow, ' +
     'no extra objects, no text, no watermark.'
   );

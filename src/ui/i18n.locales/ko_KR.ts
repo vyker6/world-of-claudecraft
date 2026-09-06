@@ -11260,6 +11260,7 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.wildheart_hexcaller.name': '태양뼈 사술사',
   'entities.mobs.wildheart_beastmaster.name': '송곳니 군주 야수조련사',
   'entities.mobs.wildheart_high_priest.name': '분지의 목소리 줄가르',
+  'entities.mobs.river_drowned.name': '강의 익사자',
   'entities.mobs.apprentice_wren.name': '견습생 렌',
   'entities.mobs.barrow_wight.name': '봉분 망자',
   'entities.mobs.castaway_navigator.name': '항해사 술리',
@@ -14636,5 +14637,6 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
   'entities.items.forgefire_spire.name': '화로불꽃 첨탑지팡이',
   'entities.items.springtouched_crozier.name': '샘닿은 홀장',
   'entities.items.wand_of_quenched_sparks.name': '꺼진 불꽃의 마법봉',
+  'entities.items.reaver_axe.name': '약탈자의 수염 도끼',
   'crucibleShop.balanceEntry': '{name} x{count}',
 };

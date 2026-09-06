@@ -13905,6 +13905,9 @@ export const ru_RU: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Жезл угасших искр"
       },
+      "reaver_axe": {
+        "name": "Бородатый топор разорителя"
+      },
       "conjured_water4": {
         "name": "Сотворённая родниковая вода"
       },
@@ -15304,6 +15307,9 @@ export const ru_RU: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Зулгар, Голос Котловины"
+      },
+      "river_drowned": {
+        "name": "Речной утопленник"
       },
       "ironvein_foreman": {
         "name": "Прораб Железной жилы"

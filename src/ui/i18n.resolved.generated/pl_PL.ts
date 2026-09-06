@@ -13905,6 +13905,9 @@ export const pl_PL: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Różdżka Wygaszonych Iskier"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Wyczarowana woda źródlana"
       },
@@ -15304,6 +15307,9 @@ export const pl_PL: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Głos Kotliny"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Sztygar z Żelaznej Żyły"

@@ -405,16 +405,27 @@ export function formatCreditsRow({ assets, source }) {
   return `| ${assets} | World of ClaudeCraft | ${source} | Project asset | With the project only |\n`;
 }
 
-export function appendCreditsRow({ assets, source }) {
-  let credits = read(FILES.credits);
-  if (credits.includes(assets)) return [`CREDITS.md already lists "${assets}" (skipped)`];
+/** Splice a formatted row after the last table row, on the document's own line
+ *  terminator. An autocrlf checkout is CRLF, where multiline `$` matches before
+ *  the CR: a fixed "+1" splice then lands between CR and LF, which joins the new
+ *  row onto the previous line behind a lone CR and makes git treat the whole
+ *  file as binary (a full-file diff on the next commit). */
+export function insertCreditsRow(credits, row) {
   const rows = [...credits.matchAll(/^\|.*\|$/gm)];
   if (!rows.length) throw new Error('CREDITS.md table not found');
+  const eol = credits.includes('\r\n') ? '\r\n' : '\n';
   const last = rows[rows.length - 1];
-  const insertAt = last.index + last[0].length + 1;
-  const row = formatCreditsRow({ assets, source });
-  credits = credits.slice(0, insertAt) + row + credits.slice(insertAt);
-  write(FILES.credits, credits);
+  const rowEnd = last.index + last[0].length;
+  const terminated = credits.startsWith(eol, rowEnd);
+  const insertAt = terminated ? rowEnd + eol.length : rowEnd;
+  const spliced = (terminated ? '' : eol) + row.replace(/\n$/, eol);
+  return credits.slice(0, insertAt) + spliced + credits.slice(insertAt);
+}
+
+export function appendCreditsRow({ assets, source }) {
+  const credits = read(FILES.credits);
+  if (credits.includes(assets)) return [`CREDITS.md already lists "${assets}" (skipped)`];
+  write(FILES.credits, insertCreditsRow(credits, formatCreditsRow({ assets, source })));
   return ['appended CREDITS.md row'];
 }
 
@@ -439,6 +450,7 @@ export function visualDefSnippet({ name, kind, height, clips, hasCast, hasJump }
     `  mob_${name}: {`,
     `    url: \`${url}\`,`,
     `    height: ${height ?? 2.0}, // world-unit pivot-to-crown height; tune against similar mobs`,
+    '    yaw: -Math.PI / 2, // Tripo rigs are authored facing +X; visuals face +Z at facing 0',
     '    clips: {',
     clipLines,
     '    },',

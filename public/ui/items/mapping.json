@@ -6342,6 +6342,18 @@
         "resonant_weave_bag",
         "wayfarers_backpack"
       ]
+    },
+    {
+      "batchId": "simplemmo-slice-weapons-2026-09-05",
+      "source": "OpenAI gpt-image-2 (scripts/asset_pipeline/lib/openai_image.mjs concept stage, transparent background), composited onto an opaque painted vignette with sharp",
+      "owner": "simpleMMO",
+      "license": "simpleMMO project-generated art, project asset, rights reserved",
+      "styleReference": "The locked simpleMMO art direction: the osrs_genshin fusion recipe in scripts/asset_pipeline/lib/concept_matrix.mjs (STYLES id osrs_genshin: Old School RuneScape low-poly design language rendered with Genshin Impact cel shading). The icon is the weapon lane concept plate for the axe_reaver held model (generated in job tmp/asset_pipeline/weapon_reaver_axe_v1, re-imported zero-credit as weapon_axe_reaver_v1 so the render key carries the family prefix), turned to the inventory diagonal, so the bag art and the held model share one source drawing.",
+      "commonPrompt": "a one-handed bearded war axe, the starter weapon of a grim warrior: a single heavy blackened iron axe head with a deep hooked beard and a chipped, notched edge, a short blunt hammer poll on the back, a riveted bronze cheek plate where the head meets the haft, a straight dark hardwood haft about the length of a forearm and a half, the grip wrapped in worn dark leather cord, a small iron cap on the butt end. Total proportions: the head takes about the top quarter of the length",
+      "provenanceRecord": "tmp/asset_pipeline/weapon_reaver_axe_v1/job.json",
+      "itemIds": [
+        "reaver_axe"
+      ]
     }
   ]
 }

@@ -9,25 +9,70 @@
 // Reproducibility is checked by tests/i18n_resolved_equivalence.test.ts.
 
 export const pending: Record<string, readonly string[]> = {
-  "es": [],
-  "es_ES": [],
-  "fr_FR": [],
-  "fr_CA": [],
+  "es": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "es_ES": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "fr_FR": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "fr_CA": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
   "en_CA": [],
-  "it_IT": [],
-  "de_DE": [],
+  "it_IT": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "de_DE": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
   "zh_CN": [],
   "zh_TW": [],
   "ko_KR": [],
   "ja_JP": [],
-  "pt_BR": [],
+  "pt_BR": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
   "ru_RU": [],
-  "cs_CZ": [],
-  "nl_NL": [],
-  "pl_PL": [],
-  "id_ID": [],
-  "tr_TR": [],
-  "sv_SE": [],
-  "vi_VN": [],
-  "da_DK": []
+  "cs_CZ": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "nl_NL": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "pl_PL": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "id_ID": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "tr_TR": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "sv_SE": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "vi_VN": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ],
+  "da_DK": [
+    "entities.items.reaver_axe.name",
+    "entities.mobs.river_drowned.name"
+  ]
 };

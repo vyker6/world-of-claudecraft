@@ -160,4 +160,5 @@ export const ITEM_WEAPON_VARIANTS: Record<string, string> = {
   staff_of_the_last_spring: 'adv_staff',
   forgefire_spire: 'adv_staff',
   wand_of_quenched_sparks: 'adv_wand',
+  reaver_axe: 'axe_reaver',
 };
