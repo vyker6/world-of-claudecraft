@@ -14,7 +14,8 @@
 //   node scripts/asset_pipeline/pipeline.mjs prop --name market_fountain --height 2.4 \
 //     [--prompt "..."] [--image ...] [--rotate-y 90] [--max-texture 256] [--apply] [--job id]
 //   node scripts/asset_pipeline/pipeline.mjs creature --name bog_lurker \
-//     [--prompt "..."] [--image ...] [--rig-type biped] [--height 2.0] [--job id]
+//     [--prompt "..."] [--image ...] [--rig-type biped] [--height 2.0] [--max-texture 1024] \
+//     [--job id]
 //   node scripts/asset_pipeline/pipeline.mjs skin --class warrior --suffix lava \
 //     --tripo --prompt "molten obsidian armor, glowing lava cracks" [--apply]  (real gen)
 //     (or --recolor hue=..[,sat=..][,light=..] fallback, or --prompt with OPENAI_API_KEY)
@@ -37,6 +38,7 @@
 // See scripts/asset_pipeline/CLAUDE.md for the full agent workflow.
 import { copyFileSync, existsSync, readdirSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
+import { checkConceptFraming, describeFraming } from './lib/concept_frame.mjs';
 import { hasOpenAi, REPO_ROOT } from './lib/env.mjs';
 import { BIPED_CLIP_PLAN, CATEGORY_SPECS, quadClipPlan, weaponFamilyFor } from './lib/families.mjs';
 import {
@@ -190,6 +192,21 @@ function applyRedo(job, lane) {
   job.log(`redo: cleared steps ${cleared.join(', ')} (downstream steps cascade)`);
 }
 
+/** Refuse a concept whose subject touches the frame. Tripo rebuilds the crop as
+ *  geometry (a head on the top edge comes back flat, verified), and the prompt's
+ *  "full figure in frame" does not stop gpt-image from cropping, so the file is
+ *  measured. Failing here marks the concept step failed: the fix is a re-framed
+ *  --image or a --redo concept, never a paid generate on a bad input. */
+async function gateConceptFraming(job, path) {
+  const { ok, problems, measure } = await checkConceptFraming(path);
+  job.log(`concept framing: ${describeFraming(measure)}`);
+  if (ok) return;
+  throw new Error(
+    `concept ${path} is badly framed: ${problems.join('; ')}. Re-frame the subject ` +
+      '(full figure, clear margin on every side) and rerun with --redo concept.',
+  );
+}
+
 /** Stage 1: resolve the model-generation input. Returns {input, conceptPath}.
  *  Priority: explicit --image; gpt-image-2 (OPENAI_API_KEY set); Tripo
  *  text-to-image (concept stays reviewable); the t2i task id feeds
@@ -218,6 +235,7 @@ async function conceptStage(job, { kind, description, family, image, rigType }) 
       }
       const dest = job.path('concept_input.png');
       copyFileSync(resolve(image), dest);
+      await gateConceptFraming(job, dest);
       return { input: dest, conceptPath: dest, source: 'provided-file' };
     });
   }
@@ -246,6 +264,7 @@ async function conceptStage(job, { kind, description, family, image, rigType }) 
               images: [board],
               dest,
               size: '1024x1024',
+              background: 'transparent',
             });
             usage = r.usage;
           } catch (err) {
@@ -261,6 +280,7 @@ async function conceptStage(job, { kind, description, family, image, rigType }) 
           const r = await generateConceptImage({ prompt, dest });
           usage = r.usage;
         }
+        await gateConceptFraming(job, dest);
         return { input: dest, conceptPath: dest, source: 'gpt-image-2', usage };
       });
     } catch (err) {
@@ -277,6 +297,7 @@ async function conceptStage(job, { kind, description, family, image, rigType }) 
     });
     const dest = job.path('concept.png');
     await tripo.download(url, dest);
+    await gateConceptFraming(job, dest);
     // Return the downloaded file, not the task id: task output URLs expire in
     // ~5 minutes, so a resumed job referencing the task id would 400. The
     // generate stage re-uploads the local file, which never goes stale.
@@ -631,6 +652,13 @@ async function cmdCreature() {
   applyRedo(job, 'creature');
   job.set('kind', 'creature');
   job.set('name', name);
+  // Texture side for the assembled atlas: 512 is the category norm; hero-grade
+  // mobs may take 1024 (the validator's hard cap, reported as a warning).
+  const maxTex = Number(opt('max-texture', 512));
+  if (!Number.isInteger(maxTex) || maxTex < 4) {
+    throw new Error('--max-texture must be an integer of at least 4 pixels');
+  }
+  job.set('creatureConfig', { maxTex });
 
   const concept = await conceptStage(job, {
     kind: 'creature',
@@ -700,7 +728,10 @@ async function cmdCreature() {
   });
 
   const built = job.path(`${name}.glb`);
-  const assembled = await job.step('assemble', async () => {
+  // The texture size is part of the step name (the prop lane's normalize
+  // variant pattern) so a rerun with a new --max-texture rebuilds the free
+  // local assembly instead of short-circuiting on the old one.
+  const assembled = await job.step(`assemble_t${maxTex}`, async () => {
     const byPreset = new Map(anims.downloaded.map((d) => [d.preset, d.path]));
     const clips = [];
     for (const c of plan) {
@@ -715,7 +746,7 @@ async function cmdCreature() {
       }
       job.log('WARN: non-biped rig, walk preset reused for Idle/Run/Attack/Death; review previews');
     }
-    return assembleRiggedModel(clips[0].path, clips, built);
+    return assembleRiggedModel(clips[0].path, clips, built, { maxTex });
   });
   for (const a of assembled.added) {
     job.log(
@@ -952,6 +983,7 @@ async function cmdSkinmodel() {
       images: views.files,
       dest,
       size: '1024x1536',
+      background: 'transparent',
     });
     return { dest, usage: r.usage };
   });

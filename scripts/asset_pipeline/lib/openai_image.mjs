@@ -3,9 +3,10 @@
 // - POST https://api.openai.com/v1/images/generations, model must be explicit
 //   (the endpoint default is a legacy model), GPT image models return ONLY
 //   b64_json (no hosted URL) and reject `response_format`.
-// - gpt-image-2 does NOT support background:"transparent"; we generate on a
-//   plain white opaque background (the prompts in lib/prompts.mjs bake that in)
-//   and let Tripo's image-to-model handle foreground segmentation.
+// - Concept generations ask for background:"transparent" (PNG with alpha) so the
+//   same image serves image-to-model AND the UI (portraits, ability cut-ins)
+//   without a matting pass; `background` is a parameter so a caller that needs
+//   an opaque scene (an environment plate) can say so.
 // - /v1/images/edits (multipart) accepts image[] reference inputs; used for the
 //   atlas-repaint skin lane and for style-reference generation.
 import { readFile, writeFile } from 'node:fs/promises';
@@ -58,8 +59,26 @@ function firstImageB64(json) {
   return Buffer.from(b64, 'base64');
 }
 
-/** Generate a concept image to `dest` (png). Returns {dest, usage}. */
-export async function generateConceptImage({ prompt, dest, size = '1024x1024', quality = 'high' }) {
+export const IMAGE_BACKGROUNDS = Object.freeze(['transparent', 'opaque', 'auto']);
+
+function checkBackground(background) {
+  if (!IMAGE_BACKGROUNDS.includes(background)) {
+    throw new Error(
+      `background must be one of ${IMAGE_BACKGROUNDS.join(', ')}, got ${JSON.stringify(background)}`,
+    );
+  }
+  return background;
+}
+
+/** Generate a concept image to `dest` (png, alpha channel when `background` is
+ *  'transparent', the default). Returns {dest, usage}. */
+export async function generateConceptImage({
+  prompt,
+  dest,
+  size = '1024x1024',
+  quality = 'high',
+  background = 'transparent',
+}) {
   const json = await openaiFetch('/images/generations', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -68,6 +87,7 @@ export async function generateConceptImage({ prompt, dest, size = '1024x1024', q
       prompt,
       size,
       quality,
+      background: checkBackground(background),
       n: 1,
       output_format: 'png',
     }),
@@ -77,13 +97,16 @@ export async function generateConceptImage({ prompt, dest, size = '1024x1024', q
 }
 
 /** Edit one or more reference images with a prompt (multipart image[]). Used for
- *  the atlas-repaint skin lane and style-referenced concepts. */
-export async function editImages({ prompt, images, dest, size, quality = 'high' }) {
+ *  the atlas-repaint skin lane and style-referenced concepts. `background` is
+ *  only sent when given: an atlas repaint must keep the atlas opaque, a
+ *  style-referenced concept asks for 'transparent'. */
+export async function editImages({ prompt, images, dest, size, quality = 'high', background }) {
   const form = new FormData();
   form.append('model', IMAGE_MODEL);
   form.append('prompt', prompt);
   if (size) form.append('size', size);
   form.append('quality', quality);
+  if (background !== undefined) form.append('background', checkBackground(background));
   for (const path of images) {
     const buf = await readFile(path);
     const name = path.split('/').pop();

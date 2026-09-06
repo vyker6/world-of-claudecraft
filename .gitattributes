@@ -11,3 +11,8 @@ src/ui/i18n.catalog/translation_keys.generated.ts linguist-generated
 # Windows batch scripts keep their CRLF endings: exempt from text conversion so an
 # LF-normalized checkout (core.autocrlf=input) neither flags nor rewrites them.
 *.bat -text
+
+# Radiance HDR environment maps are binary, but two of them carry no NUL byte early
+# enough for git's heuristic, so an autocrlf checkout rewrote their RLE payload and the
+# media manifest hashed corrupt bytes. Pin every .hdr as binary.
+*.hdr binary

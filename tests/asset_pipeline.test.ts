@@ -15,18 +15,23 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { afterAll, describe, expect, it, vi } from 'vitest';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
+import * as conceptFrame from '../scripts/asset_pipeline/lib/concept_frame.mjs';
+// @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
 import * as cost from '../scripts/asset_pipeline/lib/cost.mjs';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
 import * as families from '../scripts/asset_pipeline/lib/families.mjs';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
 import * as glb from '../scripts/asset_pipeline/lib/glb.mjs';
 import { transformMesh } from '@gltf-transform/functions';
+import sharp from 'sharp';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
 import * as integrate from '../scripts/asset_pipeline/lib/integrate.mjs';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
 import * as jobs from '../scripts/asset_pipeline/lib/job.mjs';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
 import * as library from '../scripts/asset_pipeline/lib/library.mjs';
+// @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
+import * as openaiImage from '../scripts/asset_pipeline/lib/openai_image.mjs';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
 import * as preview from '../scripts/asset_pipeline/lib/preview.mjs';
 // @ts-expect-error untyped zero-dep pipeline tool (scripts/*.mjs convention)
@@ -430,6 +435,30 @@ describe('anchored registry edits', () => {
     );
   });
 
+  it('insertCreditsRow lands after the last table row on an LF document', () => {
+    const doc = '| a | b |\n| c | d |\n\nAfter the table.\n';
+    expect(integrate.insertCreditsRow(doc, '| e | f |\n')).toBe(
+      '| a | b |\n| c | d |\n| e | f |\n\nAfter the table.\n',
+    );
+  });
+
+  it('insertCreditsRow keeps a CRLF document (an autocrlf checkout) on CRLF', () => {
+    // Multiline `$` matches before the CR, so a fixed "+1" splice landed between
+    // CR and LF: the new row joined the previous line behind a lone CR, and git
+    // then diffed the whole file as binary.
+    const doc = '| a | b |\r\n| c | d |\r\n\r\nAfter the table.\r\n';
+    const out = integrate.insertCreditsRow(doc, '| e | f |\n');
+    expect(out).toBe('| a | b |\r\n| c | d |\r\n| e | f |\r\n\r\nAfter the table.\r\n');
+    expect(out).not.toMatch(/\r(?!\n)/);
+  });
+
+  it('insertCreditsRow terminates an unterminated last row before appending', () => {
+    expect(integrate.insertCreditsRow('| a | b |', '| c | d |\n')).toBe('| a | b |\n| c | d |\n');
+    expect(() => integrate.insertCreditsRow('no table here\n', '| c | d |\n')).toThrow(
+      'CREDITS.md table not found',
+    );
+  });
+
   it('findBlockEnd matches the closing bracket and skips nested blocks', () => {
     const src = '{ a: { b: [1, 2] } }';
     expect(integrate.findBlockEnd(src, 0)).toBe(src.length - 1);
@@ -810,6 +839,98 @@ describe('removeWeaponFromSources', () => {
 });
 
 // ---------------------------------------------------------------------------
+// 2b. gpt-image-2 client: request shaping (fetch is stubbed; no network)
+// ---------------------------------------------------------------------------
+
+describe('openai image client', () => {
+  const ONE_PX_PNG =
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+  const DIR = join(TMP, 'openai_image');
+
+  function stubFetch() {
+    const calls: { url: string; init: RequestInit }[] = [];
+    vi.stubGlobal('fetch', async (url: string, init: RequestInit) => {
+      calls.push({ url, init });
+      return new Response(JSON.stringify({ data: [{ b64_json: ONE_PX_PNG }], usage: null }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    });
+    return calls;
+  }
+
+  function withKey<T>(fn: () => Promise<T>): Promise<T> {
+    const prior = process.env.OPENAI_API_KEY;
+    process.env.OPENAI_API_KEY = 'test-key';
+    return fn().finally(() => {
+      if (prior === undefined) delete process.env.OPENAI_API_KEY;
+      else process.env.OPENAI_API_KEY = prior;
+      vi.unstubAllGlobals();
+    });
+  }
+
+  it('generates on a transparent background by default and passes an override through', async () => {
+    mkdirSync(DIR, { recursive: true });
+    await withKey(async () => {
+      const calls = stubFetch();
+      await openaiImage.generateConceptImage({ prompt: 'a sword', dest: join(DIR, 'a.png') });
+      await openaiImage.generateConceptImage({
+        prompt: 'a valley',
+        dest: join(DIR, 'b.png'),
+        size: '1536x1024',
+        background: 'opaque',
+      });
+      const bodies = calls.map((c) => JSON.parse(String(c.init.body)));
+      expect(calls.every((c) => c.url.endsWith('/images/generations'))).toBe(true);
+      expect(bodies[0]).toMatchObject({
+        model: openaiImage.IMAGE_MODEL,
+        quality: 'high',
+        background: 'transparent',
+        size: '1024x1024',
+        output_format: 'png',
+      });
+      expect(bodies[1]).toMatchObject({ background: 'opaque', size: '1536x1024' });
+      expect(existsSync(join(DIR, 'a.png'))).toBe(true);
+    });
+  });
+
+  it('rejects an unknown background before any request is sent', async () => {
+    await withKey(async () => {
+      const calls = stubFetch();
+      await expect(
+        openaiImage.generateConceptImage({
+          prompt: 'a sword',
+          dest: join(DIR, 'never.png'),
+          background: 'white',
+        }),
+      ).rejects.toThrow(/background must be one of transparent, opaque, auto/);
+      expect(calls).toHaveLength(0);
+    });
+  });
+
+  it('edits send background only when the caller asks for one', async () => {
+    mkdirSync(DIR, { recursive: true });
+    const ref = join(DIR, 'ref.png');
+    writeFileSync(ref, Buffer.from(ONE_PX_PNG, 'base64'));
+    await withKey(async () => {
+      const calls = stubFetch();
+      await openaiImage.editImages({ prompt: 'repaint', images: [ref], dest: join(DIR, 'e1.png') });
+      await openaiImage.editImages({
+        prompt: 'concept',
+        images: [ref],
+        dest: join(DIR, 'e2.png'),
+        background: 'transparent',
+      });
+      const forms = calls.map((c) => c.init.body as FormData);
+      expect(calls.every((c) => c.url.endsWith('/images/edits'))).toBe(true);
+      expect(forms[0]?.has('background')).toBe(false);
+      expect(forms[1]?.get('background')).toBe('transparent');
+      expect(forms[1]?.getAll('image[]')).toHaveLength(1);
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
 // 3. Prompt builders
 // ---------------------------------------------------------------------------
 
@@ -817,13 +938,13 @@ describe('prompt builders', () => {
   const sword = families.weaponFamilyFor('sword');
   const hammer = families.weaponFamilyFor('war_hammer');
 
-  it('weapon concept prompts isolate the object on a plain background with no text', () => {
+  it('weapon concept prompts isolate the object on a transparent background with no text', () => {
     const p = prompts.conceptPrompt({
       kind: 'weapon',
       description: 'a fiery sword',
       family: sword,
     });
-    expect(p).toContain('plain white opaque background');
+    expect(p).toContain('transparent background');
     expect(p).toContain('no text');
   });
 
@@ -843,7 +964,7 @@ describe('prompt builders', () => {
 
   it('model prompts strip the 2D layout constraints and fit the Tripo 1024 cap', () => {
     const p = prompts.modelPrompt({ kind: 'weapon', description: 'a fiery sword', family: sword });
-    expect(p).not.toContain('plain white opaque background');
+    expect(p).not.toContain('transparent background');
     expect(p.length).toBeLessThanOrEqual(1024);
   });
 
@@ -1117,6 +1238,134 @@ describe('job ledger', () => {
     const reread = new jobs.Job(job.id);
     expect(reread.state.steps.boom.status).toBe('failed');
     expect(reread.state.steps.boom.error).toContain('kaboom');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// 7b. Concept framing gate (synthetic PNGs; nothing touches the network)
+// ---------------------------------------------------------------------------
+
+describe('concept framing gate', () => {
+  const DIR = join(TMP, 'concept_frame');
+  afterAll(() => {
+    rmSync(DIR, { recursive: true, force: true });
+  });
+
+  /** A 200x200 background with one solid subject rectangle at the given
+   *  pixel box (inclusive edges), written as a PNG. */
+  async function synth(
+    name: string,
+    box: { left: number; top: number; right: number; bottom: number },
+    opts: {
+      background?: 'white' | 'grey' | 'transparent';
+      subject?: [number, number, number];
+    } = {},
+  ): Promise<string> {
+    mkdirSync(DIR, { recursive: true });
+    const size = 200;
+    const bgRgb = opts.background === 'grey' ? [214, 214, 214] : [255, 255, 255];
+    const bgAlpha = opts.background === 'transparent' ? 0 : 255;
+    const subject = opts.subject ?? [40, 30, 28];
+    const px = Buffer.alloc(size * size * 4);
+    for (let y = 0; y < size; y++) {
+      for (let x = 0; x < size; x++) {
+        const i = (y * size + x) * 4;
+        const inside = x >= box.left && x <= box.right && y >= box.top && y <= box.bottom;
+        const rgb = inside ? subject : bgRgb;
+        px[i] = rgb[0];
+        px[i + 1] = rgb[1];
+        px[i + 2] = rgb[2];
+        px[i + 3] = inside ? 255 : bgAlpha;
+      }
+    }
+    const path = join(DIR, `${name}.png`);
+    await sharp(px, { raw: { width: size, height: size, channels: 4 } })
+      .png()
+      .toFile(path);
+    return path;
+  }
+
+  it('passes a centered figure with clear margins on every side', async () => {
+    const path = await synth('ok', { left: 60, top: 20, right: 139, bottom: 179 });
+    const { ok, problems, measure } = await conceptFrame.checkConceptFraming(path);
+    expect(problems).toEqual([]);
+    expect(ok).toBe(true);
+    expect(measure.bbox).toEqual({ left: 60, top: 20, right: 139, bottom: 179 });
+    expect(measure.margins.top).toBeCloseTo(0.1, 5);
+    expect(measure.fill).toBeCloseTo(0.8, 5);
+    expect(measure.background).toBe('#ffffff');
+  });
+
+  it('fails a figure whose head touches the top edge and names the edge', async () => {
+    const path = await synth('cropped_top', { left: 60, top: 0, right: 139, bottom: 170 });
+    const { ok, problems } = await conceptFrame.checkConceptFraming(path);
+    expect(ok).toBe(false);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toMatch(/^top margin 0\.0%/);
+    expect(problems[0]).toContain('reconstructed cropped');
+  });
+
+  it('reports every failing edge, not just the first', async () => {
+    const path = await synth('cropped_sides', { left: 0, top: 20, right: 199, bottom: 179 });
+    const { problems } = await conceptFrame.checkConceptFraming(path);
+    expect(problems.map((p: string) => p.split(' ')[0])).toEqual(['left', 'right']);
+  });
+
+  it('fails a subject too small to reconstruct in detail', async () => {
+    const path = await synth('tiny', { left: 90, top: 90, right: 109, bottom: 129 });
+    const { ok, problems, measure } = await conceptFrame.checkConceptFraming(path);
+    expect(ok).toBe(false);
+    expect(measure.fill).toBeCloseTo(0.2, 5);
+    expect(problems).toHaveLength(1);
+    expect(problems[0]).toContain('20.0% of the frame height');
+  });
+
+  it('measures against a non-white background (the ring median, not assumed white)', async () => {
+    const path = await synth(
+      'grey',
+      { left: 60, top: 20, right: 139, bottom: 179 },
+      { background: 'grey' },
+    );
+    const { ok, measure } = await conceptFrame.checkConceptFraming(path);
+    expect(ok).toBe(true);
+    expect(measure.background).toBe('#d6d6d6');
+    expect(measure.bbox).toEqual({ left: 60, top: 20, right: 139, bottom: 179 });
+  });
+
+  it('uses alpha when the background is transparent', async () => {
+    const path = await synth(
+      'alpha',
+      { left: 60, top: 20, right: 139, bottom: 179 },
+      { background: 'transparent', subject: [255, 255, 255] },
+    );
+    const { ok, measure } = await conceptFrame.checkConceptFraming(path);
+    expect(ok).toBe(true);
+    expect(measure.background).toBe('transparent');
+    expect(measure.bbox).toEqual({ left: 60, top: 20, right: 139, bottom: 179 });
+  });
+
+  it('ignores a stray speck that would otherwise stretch the box to an edge', async () => {
+    const path = await synth('speck', { left: 60, top: 20, right: 139, bottom: 179 });
+    // One dark pixel in the top-left corner, far from the figure.
+    const { data, info } = await sharp(path).raw().toBuffer({ resolveWithObject: true });
+    data[0] = 0;
+    data[1] = 0;
+    data[2] = 0;
+    const specked = join(DIR, 'speck2.png');
+    await sharp(data, { raw: { width: info.width, height: info.height, channels: info.channels } })
+      .png()
+      .toFile(specked);
+    const { ok, measure } = await conceptFrame.checkConceptFraming(specked);
+    expect(ok).toBe(true);
+    expect(measure.bbox).toEqual({ left: 60, top: 20, right: 139, bottom: 179 });
+  });
+
+  it('reports a flat image as having no subject', async () => {
+    const path = await synth('flat', { left: -1, top: -1, right: -1, bottom: -1 });
+    const { ok, problems, measure } = await conceptFrame.checkConceptFraming(path);
+    expect(ok).toBe(false);
+    expect(measure.bbox).toBeNull();
+    expect(problems[0]).toContain('no subject');
   });
 });
 
