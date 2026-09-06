@@ -39,6 +39,22 @@ function insertAfterLine(file, anchor, newLines, presence) {
   writeLines(file, doc);
   console.log(`${file}: inserted ${newLines.length} line(s) after "${anchor.trim()}"`);
 }
+// Replaces a whole `const X: T = {` ... `};` block. The presence test compares the block
+// that is there against the block wanted, rather than a single marker line: two of the
+// three style blocks below differ only in their font size, so a one-line marker would read
+// a sibling block's line as this one's and skip the edit.
+function replaceBlock(file, openLine, newLines) {
+  const doc = readLines(file);
+  const at = only(doc.lines, (l) => l === openLine, `${file} "${openLine.trim()}"`);
+  const close = doc.lines.findIndex((l, i) => i > at && l === '};');
+  const current = doc.lines.slice(at, close + 1);
+  if (current.length === newLines.length && current.every((l, i) => l === newLines[i])) {
+    return console.log(`${file}: ${openLine.trim()} present`);
+  }
+  doc.lines.splice(at, close - at + 1, ...newLines);
+  writeLines(file, doc);
+  console.log(`${file}: replaced ${openLine.trim()}`);
+}
 
 // 1. The stylesheet joins the cascade in the empty `hud` layer, after components.css so a
 //    tie against a components rule goes to the layer order, not to source order.
@@ -351,4 +367,192 @@ insertAfterLine(
     "  document.body.classList.toggle('hud-painted', settings.get('paintedHud'));",
   ],
   "  document.body.classList.toggle('hud-painted', settings.get('paintedHud'));",
+);
+
+// 13. The overhead plates. The mock's NAMEPLATE is 160x40 against WoC's 80, and the health
+//     bar spans the plate, so the drawn width and its hit target move together here.
+const PICK = 'src/render/nameplate_pick_core.ts';
+replaceLine(
+  PICK,
+  'export const NAMEPLATE_BASE_WIDTH = 80;',
+  'export const NAMEPLATE_BASE_WIDTH = 160;',
+);
+replaceLine(
+  PICK,
+  'export const NAMEPLATE_BOSS_WIDTH = 100;',
+  'export const NAMEPLATE_BOSS_WIDTH = 200;',
+);
+
+// 14. The plate's faces and its two Painted HUD constants. Cinzel already carries the name;
+//     the level takes the mock's condensed figure, and a graded mob gets a mark and gold ink.
+const CANVAS = 'src/render/nameplate_canvas.ts';
+replaceLine(
+  CANVAS,
+  "const TITLE_FONT = 'Cinzel, Georgia, serif';",
+  [
+    "const TITLE_FONT = 'Cinzel, Georgia, serif';",
+    '// The mock sets the level figure in a condensed face so a three-digit level keeps the',
+    '// name row narrow. Fira Sans is the shipped fallback, ahead of the generic sans.',
+    'const LEVEL_FONT = \'"Barlow Semi Condensed", "Fira Sans", sans-serif\';',
+    '/** The Painted HUD grade marks, written before a graded name (painted_combat.GRADE). */',
+    "export const GRADE_MARK = { elite: '\\u25c6', boss: '\\u265b' } as const;",
+    '/** The mock gold a graded name takes; plain names keep the ink. */',
+    "export const GRADED_NAME_FILL = '#e2be6e';",
+  ],
+  "export const GRADE_MARK = { elite: '\\u25c6', boss: '\\u265b' } as const;",
+);
+// TARGET_NAME_STYLE before NAME_STYLE is not required by replaceBlock's block-wise presence
+// test, but it keeps the diff reading in the order the sizes grow.
+replaceBlock(CANVAS, 'const TARGET_NAME_STYLE: TextSpriteStyle = {', [
+  'const TARGET_NAME_STYLE: TextSpriteStyle = {',
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: emits source text, not a template
+  '  font: `700 16px ${TITLE_FONT}`,',
+  "  fill: '#f0eadc',",
+  "  stroke: '#000',",
+  '  lineWidth: 3,',
+  '};',
+]);
+replaceBlock(CANVAS, 'const NAME_STYLE: TextSpriteStyle = {', [
+  'const NAME_STYLE: TextSpriteStyle = {',
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: emits source text, not a template
+  '  font: `700 14px ${TITLE_FONT}`,',
+  "  fill: '#f0eadc',",
+  "  stroke: '#000',",
+  '  lineWidth: 3,',
+  '};',
+]);
+replaceBlock(CANVAS, 'const LEVEL_STYLE: TextSpriteStyle = {', [
+  'const LEVEL_STYLE: TextSpriteStyle = {',
+  // biome-ignore lint/suspicious/noTemplateCurlyInString: emits source text, not a template
+  '  font: `700 18px ${LEVEL_FONT}`,',
+  "  fill: '#f0eadc',",
+  "  stroke: '#000',",
+  '  lineWidth: 3,',
+  '};',
+]);
+// The drawn name colour. WoC resolves hostile-red over state.nameColor, and every mob a
+// player fights is hostile, so the painter's gold would never reach the canvas behind that
+// rule. The mock reads a mob's grade off the name ink, so the gold - and only the gold -
+// outranks the red here; a dead enemy still greys out first.
+replaceLine(
+  CANVAS,
+  "    const nameColor = state.deadEnemy ? '#bbb' : state.hostile ? '#ff5555' : state.nameColor;",
+  [
+    '    const graded = state.nameColor === GRADED_NAME_FILL;',
+    '    const nameColor = state.deadEnemy',
+    "      ? '#bbb'",
+    '      : state.hostile && !graded',
+    "        ? '#ff5555'",
+    '        : state.nameColor;',
+  ],
+  '    const graded = state.nameColor === GRADED_NAME_FILL;',
+);
+
+// 15. The painter writes the mark and the gold. The mark rides the marker sprite WoC already
+//     draws before the name (loot keeps its precedence), so nothing changes about the row's
+//     layout; only a living elite or boss gains a mark and the gold ink.
+const PAINTER = 'src/render/nameplate_painter.ts';
+replaceLine(
+  PAINTER,
+  '  createNameplateCanvasState,',
+  ['  createNameplateCanvasState,', '  GRADE_MARK,', '  GRADED_NAME_FILL,'],
+  '  GRADE_MARK,',
+);
+replaceLine(
+  PAINTER,
+  "    state.marker = entity.lootable ? 'loot' : elite && !entity.dead ? '◆' : '';",
+  [
+    "    const gradeMark = entity.dead ? '' : boss ? GRADE_MARK.boss : elite ? GRADE_MARK.elite : '';",
+    "    state.marker = entity.lootable ? 'loot' : gradeMark;",
+  ],
+  "    state.marker = entity.lootable ? 'loot' : gradeMark;",
+);
+// The gold goes after the marker pair rather than between them: the two marker lines are
+// read together.
+replaceLine(
+  PAINTER,
+  "    state.markerTone = entity.lootable ? 'loot' : 'none';",
+  [
+    "    state.markerTone = entity.lootable ? 'loot' : 'none';",
+    '    // A living graded mob takes the mock gold; drawNameRow lets it beat the hostile red.',
+    '    if (gradeMark) state.nameColor = GRADED_NAME_FILL;',
+  ],
+  '    if (gradeMark) state.nameColor = GRADED_NAME_FILL;',
+);
+
+// 16. WoC's own nameplate suites pin the numbers 13 and 14 just moved, so they move here in
+//     the same pass. The bar's horizontal hit pins are derived, not chosen: the plate is
+//     centred on sx=200, so a 160-wide bar spans 120..280 and a 200-wide boss bar 100..300.
+const PICK_TEST = 'tests/nameplate_pick_core.test.ts';
+replaceLine(
+  PICK_TEST,
+  '    expect(NAMEPLATE_BASE_WIDTH).toBe(80);',
+  '    expect(NAMEPLATE_BASE_WIDTH).toBe(160);',
+);
+replaceLine(
+  PICK_TEST,
+  '    expect(NAMEPLATE_BOSS_WIDTH).toBe(100);',
+  '    expect(NAMEPLATE_BOSS_WIDTH).toBe(200);',
+);
+replaceLine(
+  PICK_TEST,
+  '    expect(pickNameplateHealthBarAt(candidates, 1, 160, 87)).toBe(7);',
+  '    expect(pickNameplateHealthBarAt(candidates, 1, 120, 87)).toBe(7);',
+);
+replaceLine(
+  PICK_TEST,
+  '    expect(pickNameplateHealthBarAt(candidates, 1, 240, 103)).toBe(7);',
+  '    expect(pickNameplateHealthBarAt(candidates, 1, 280, 103)).toBe(7);',
+);
+replaceLine(
+  PICK_TEST,
+  '    expect(pickNameplateHealthBarAt(candidates, 1, 159.999, 95)).toBeNull();',
+  '    expect(pickNameplateHealthBarAt(candidates, 1, 119.999, 95)).toBeNull();',
+);
+replaceLine(
+  PICK_TEST,
+  '    expect(pickNameplateHealthBarAt([boss], 1, 150, 85)).toBe(8);',
+  '    expect(pickNameplateHealthBarAt([boss], 1, 100, 85)).toBe(8);',
+);
+replaceLine(
+  PICK_TEST,
+  '    expect(pickNameplateHealthBarAt([boss], 1, 250, 85)).toBe(8);',
+  '    expect(pickNameplateHealthBarAt([boss], 1, 300, 85)).toBe(8);',
+);
+replaceLine(
+  PICK_TEST,
+  '    expect(pickNameplateHealthBarAt([boss], 1, 149.999, 85)).toBeNull();',
+  '    expect(pickNameplateHealthBarAt([boss], 1, 99.999, 85)).toBeNull();',
+);
+
+// The target pin moves BEFORE the ordinary one: until it does, the ordinary edit's new
+// 14px line is still the target's old one, and the presence test would read it as done.
+const CANVAS_TEST = 'tests/nameplate_canvas.test.ts';
+replaceLine(
+  CANVAS_TEST,
+  "      '700 14px Cinzel, Georgia, serif',",
+  "      '700 16px Cinzel, Georgia, serif',",
+);
+replaceLine(
+  CANVAS_TEST,
+  "      '700 12px Cinzel, Georgia, serif',",
+  "      '700 14px Cinzel, Georgia, serif',",
+);
+replaceLine(
+  CANVAS_TEST,
+  "  it('E43: pairs ordinary 12px/16px/18px sizing against target 14px/18px/20px', () => {",
+  "  it('E43: pairs ordinary 14px/16px/18px sizing against target 16px/18px/20px', () => {",
+);
+replaceLine(
+  CANVAS_TEST,
+  "    expect((target?.[4] as { font?: string } | undefined)?.font).toContain('14px');",
+  "    expect((target?.[4] as { font?: string } | undefined)?.font).toContain('16px');",
+);
+
+// The browser suite redraws the name itself and diffs it against the surface, so its copy
+// of the name font has to be the one NAME_STYLE now carries or every pixel disagrees.
+replaceLine(
+  'tests/browser/nameplate_canvas.browser.test.ts',
+  "const NAME_FONT = '700 12px Cinzel, Georgia, serif';",
+  "const NAME_FONT = '700 14px Cinzel, Georgia, serif';",
 );

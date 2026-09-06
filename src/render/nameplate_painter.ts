@@ -30,6 +30,8 @@ import { anyCharacterRigDrawing, entityHasNoBody } from './entity_gate_stand_in_
 import { mobDisplayName, npcDisplayName, objectDisplayName } from './entity_labels';
 import {
   createNameplateCanvasState,
+  GRADE_MARK,
+  GRADED_NAME_FILL,
   type NameplateCanvasState,
   NameplateCanvasSurface,
   type NameplateMarkerTone,
@@ -502,8 +504,11 @@ export class NameplatePainter {
         });
     state.levelColor = mobNameColor(entity.level - player.level, entity.dead, state.friendlyPet);
     state.hpVisible = !entity.dead;
-    state.marker = entity.lootable ? 'loot' : elite && !entity.dead ? '◆' : '';
+    const gradeMark = entity.dead ? '' : boss ? GRADE_MARK.boss : elite ? GRADE_MARK.elite : '';
+    state.marker = entity.lootable ? 'loot' : gradeMark;
     state.markerTone = entity.lootable ? 'loot' : 'none';
+    // A living graded mob takes the mock gold; drawNameRow lets it beat the hostile red.
+    if (gradeMark) state.nameColor = GRADED_NAME_FILL;
     state.frame = entity.dead ? '' : boss ? 'boss' : elite ? 'elite' : '';
   }
 

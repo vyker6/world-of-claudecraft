@@ -27,16 +27,16 @@ function plate(
 
 describe('nameplate health-bar picking', () => {
   it('pins the drawn widths and a forgiving vertical hit area around the four-pixel bar', () => {
-    expect(NAMEPLATE_BASE_WIDTH).toBe(80);
-    expect(NAMEPLATE_BOSS_WIDTH).toBe(100);
+    expect(NAMEPLATE_BASE_WIDTH).toBe(160);
+    expect(NAMEPLATE_BOSS_WIDTH).toBe(200);
     expect(NAMEPLATE_HEALTH_HEIGHT).toBe(4);
     expect(NAMEPLATE_HEALTH_PICK_PADDING_Y).toBe(6);
 
     const candidates = [plate(7)];
     // No cast bar: the health bar is drawn at anchorY - 7, from y=93 to y=97.
-    expect(pickNameplateHealthBarAt(candidates, 1, 160, 87)).toBe(7);
-    expect(pickNameplateHealthBarAt(candidates, 1, 240, 103)).toBe(7);
-    expect(pickNameplateHealthBarAt(candidates, 1, 159.999, 95)).toBeNull();
+    expect(pickNameplateHealthBarAt(candidates, 1, 120, 87)).toBe(7);
+    expect(pickNameplateHealthBarAt(candidates, 1, 280, 103)).toBe(7);
+    expect(pickNameplateHealthBarAt(candidates, 1, 119.999, 95)).toBeNull();
     expect(pickNameplateHealthBarAt(candidates, 1, 200, 86.999)).toBeNull();
     expect(pickNameplateHealthBarAt(candidates, 1, 200, 103.001)).toBeNull();
   });
@@ -44,9 +44,9 @@ describe('nameplate health-bar picking', () => {
   it('uses the wider boss bar and follows the ten-pixel cast-bar lift', () => {
     const boss = plate(8, { boss: true, castVisible: true });
     // A visible cast bar moves the health bar from y=93 to y=83.
-    expect(pickNameplateHealthBarAt([boss], 1, 150, 85)).toBe(8);
-    expect(pickNameplateHealthBarAt([boss], 1, 250, 85)).toBe(8);
-    expect(pickNameplateHealthBarAt([boss], 1, 149.999, 85)).toBeNull();
+    expect(pickNameplateHealthBarAt([boss], 1, 100, 85)).toBe(8);
+    expect(pickNameplateHealthBarAt([boss], 1, 300, 85)).toBe(8);
+    expect(pickNameplateHealthBarAt([boss], 1, 99.999, 85)).toBeNull();
     expect(pickNameplateHealthBarAt([boss], 1, 200, 104)).toBeNull();
   });
 

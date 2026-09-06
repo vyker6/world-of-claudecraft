@@ -22,7 +22,7 @@ const HEIGHT = 180;
 const NAME_X = WIDTH / 2;
 const NAME_BOTTOM_Y = 120;
 const NAME_BASELINE_Y = NAME_BOTTOM_Y - 3;
-const NAME_FONT = '700 12px Cinzel, Georgia, serif';
+const NAME_FONT = '700 14px Cinzel, Georgia, serif';
 const SAMPLE = 'MAX 黒石 Герой';
 const SHIPPING_CINZEL_URL = '/fonts/cinzel-400-700-latin.woff2';
 let shippingCinzel: FontFace;

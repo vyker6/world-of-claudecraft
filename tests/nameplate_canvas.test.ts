@@ -1013,7 +1013,7 @@ describe('nameplate canvas surface', () => {
     expect(heraldry.nameBaseline).toBeLessThan(heraldry.plaque.y + heraldry.plaque.h);
   });
 
-  it('E43: pairs ordinary 12px/16px/18px sizing against target 14px/18px/20px', () => {
+  it('E43: pairs ordinary 14px/16px/18px sizing against target 16px/18px/20px', () => {
     const surface = new NameplateCanvasSurface(document.createElement('div'));
     const state = createNameplateCanvasState();
     Object.assign(state, { initialized: true, name: 'Ordinary', border: 'deepward' });
@@ -1023,7 +1023,7 @@ describe('nameplate canvas surface', () => {
     surface.drawBase(state, 320, 220);
     const ordinary = drawSpy.mock.calls.find((call) => call[1] === 'Ordinary');
     expect((ordinary?.[4] as { font?: string } | undefined)?.font).toBe(
-      '700 12px Cinzel, Georgia, serif',
+      '700 14px Cinzel, Georgia, serif',
     );
     expect(heraldryOf(surface).plaque.h - 2).toBe(16);
     expect(heraldryOf(surface).plaque.h).toBe(18);
@@ -1033,7 +1033,7 @@ describe('nameplate canvas surface', () => {
     surface.drawBase(state, 320, 220);
     const target = drawSpy.mock.calls.find((call) => call[1] === 'Target');
     expect((target?.[4] as { font?: string } | undefined)?.font).toBe(
-      '700 14px Cinzel, Georgia, serif',
+      '700 16px Cinzel, Georgia, serif',
     );
     expect(heraldryOf(surface).plaque.h - 2).toBe(18);
     expect(heraldryOf(surface).plaque.h).toBe(20);
@@ -1357,7 +1357,7 @@ describe('nameplate canvas surface', () => {
     surface.beginFrame(640, 360, 1);
     surface.drawBase(state, 320, 220);
     const target = drawSpy.mock.calls.filter((call) => call[1] === 'Target').at(-1);
-    expect((target?.[4] as { font?: string } | undefined)?.font).toContain('14px');
+    expect((target?.[4] as { font?: string } | undefined)?.font).toContain('16px');
     expect(heraldryOf(surface).plaque.h).toBe(20);
   });
 
