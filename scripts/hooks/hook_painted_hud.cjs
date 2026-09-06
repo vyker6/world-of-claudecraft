@@ -458,14 +458,30 @@ replaceLine(
   ['  createNameplateCanvasState,', '  GRADE_MARK,', '  GRADED_NAME_FILL,'],
   '  GRADE_MARK,',
 );
+// Ruling 29: the mark is written INLINE, before the name on the SAME line and in the same
+// gold, which is how tools/artgen/painted_combat.py:361-372 draws it
+// (`name = f"{mark} {actor.name}"`). Not the marker sprite, which the canvas gives a row of
+// its own above the name. A dead mob keeps the plain corpse name: death outranks grade.
+replaceLine(
+  PAINTER,
+  "    state.name = entity.dead ? t('worldContent.corpseName', { name: mobName }) : mobName;",
+  [
+    "    const gradeMark = entity.dead ? '' : boss ? GRADE_MARK.boss : elite ? GRADE_MARK.elite : '';",
+    '    state.name = entity.dead',
+    "      ? t('worldContent.corpseName', { name: mobName })",
+    '      : gradeMark',
+    // biome-ignore lint/suspicious/noTemplateCurlyInString: emits source text, not a template
+    '        ? `${gradeMark} ${mobName}`',
+    '        : mobName;',
+  ],
+  "    const gradeMark = entity.dead ? '' : boss ? GRADE_MARK.boss : elite ? GRADE_MARK.elite : '';",
+);
+// The marker sprite goes back to WoC's loot-only behaviour. The grade rides the name now, and
+// leaving it here too would draw the mark twice: once inline, once on the row above.
 replaceLine(
   PAINTER,
   "    state.marker = entity.lootable ? 'loot' : elite && !entity.dead ? '◆' : '';",
-  [
-    "    const gradeMark = entity.dead ? '' : boss ? GRADE_MARK.boss : elite ? GRADE_MARK.elite : '';",
-    "    state.marker = entity.lootable ? 'loot' : gradeMark;",
-  ],
-  "    state.marker = entity.lootable ? 'loot' : gradeMark;",
+  "    state.marker = entity.lootable ? 'loot' : '';",
 );
 // The gold goes after the marker pair rather than between them: the two marker lines are
 // read together.
@@ -555,4 +571,24 @@ replaceLine(
   'tests/browser/nameplate_canvas.browser.test.ts',
   "const NAME_FONT = '700 12px Cinzel, Georgia, serif';",
   "const NAME_FONT = '700 14px Cinzel, Georgia, serif';",
+);
+
+// 17. Ruling 29: the grade mark is written INLINE before the name, on the same line and in the
+//     same gold, which is how tools/artgen/painted_combat.py draws it. This suite pinned the
+//     elite's mark on the marker SPRITE, a row of its own above the name, so the pin moves with
+//     the behaviour: the sprite carries loot and quest marks only.
+const AI_TAG_TEST = 'tests/nameplate_ai_tag.test.ts';
+replaceLine(AI_TAG_TEST, "      marker: '◆',", "      marker: '',");
+insertAfterLine(
+  AI_TAG_TEST,
+  '    expect(stateOf(painter, corpse.id).name).not.toBe(stateOf(painter, boss.id).name);',
+  [
+    '    // The mark rides the NAME now, one line, ahead of it, and a graded living mob takes the',
+    '    // mock gold with it. A corpse keeps the plain corpse name: death outranks grade.',
+    "    expect(stateOf(painter, elite.id).name.startsWith('◆ ')).toBe(true);",
+    "    expect(stateOf(painter, boss.id).name.startsWith('♛ ')).toBe(true);",
+    "    expect(stateOf(painter, elite.id).nameColor).toBe('#e2be6e');",
+    "    expect(stateOf(painter, corpse.id).name.startsWith('♛')).toBe(false);",
+  ],
+  "    expect(stateOf(painter, elite.id).name.startsWith('◆ ')).toBe(true);",
 );
