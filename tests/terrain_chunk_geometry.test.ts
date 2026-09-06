@@ -331,7 +331,10 @@ describe('generated chunk geometry is stable', () => {
     // Proving Shore island: both sides' intended terrain changes combine, so
     // the digest matches neither parent (set from a suite run on the merged
     // tree).
-    expect(digestOf(inRect)).toBe('1d9b0a4a7e0d97c5a11c918b1a8f29c3');
+    // Re-pinned 2026-09 for Ninebend: the vale's south edge stopped being the
+    // world rim (the rim moved to Ninebend's south border), so the Eastbrook
+    // chunks along z -180 re-shaped; nothing else in the vale moved.
+    expect(digestOf(inRect)).toBe('00dc958616ec175bc9b6816795a0f4fb');
     // The gap super-chunk digest pin is gone with the gap chunks themselves
     // (the island claims the old vale gap cells); gapFill.length above pins
     // their absence.

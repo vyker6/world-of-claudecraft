@@ -88,8 +88,9 @@ describe('mob portrait source manifest', () => {
     // tutorial island's training_effigy, shore_scuttler, and mister_crabs
     // tide-pool miniboss, plus the seven Ignivar raid enemies (the herald,
     // the ember sentinel, cinder artificer, crucible warden, heart of the
-    // end, Varkhul the Forgefather, and the derelict mech bomber).
-    expect(liveIds).toHaveLength(242);
+    // end, Varkhul the Forgefather, and the derelict mech bomber), plus
+    // Ninebend's river_drowned (2026-09).
+    expect(liveIds).toHaveLength(243);
     expect(manifest.portraitCount).toBe(liveIds.length);
     expect(manifest.portraits.map((portrait) => portrait.id)).toEqual(liveIds);
     expect(manifest.schemaVersion).toBe(2);

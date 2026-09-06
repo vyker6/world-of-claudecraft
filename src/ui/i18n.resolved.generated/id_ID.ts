@@ -4939,6 +4939,8 @@ export const id_ID: EnTranslations = {
         "farshoreBlurb": "Sebuah pulau di seberang gosong pasir, tempat langit terkoyak di atas Riftfields dan Gullhaven membunyikan loncengnya setiap kali sebuah celah terbuka.",
         "provingName": "Pesisir Pembuktian",
         "provingBlurb": "Sebuah pulau latihan yang tenang di seberang selat, tempat para petualang baru menemukan pijakan mereka sebelum lembah meminta apa pun dari mereka.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Kuntum Malam",
         "nightBlurb": "Sebuah negeri tengah malam berbintang tempat bunga-bunga menerangi jalan setapak dan Moonrest menjaga kesiagaannya.",
         "hauntName": "Hutan Arwah",
@@ -5905,6 +5907,10 @@ export const id_ID: EnTranslations = {
       "provingGreeting": "Setiap pahlawan yang pernah lembah ini syukuri pernah berdiri di tempatmu berdiri sekarang, dan tak satu pun dari mereka tahu ujung mana dari sebilah pedang yang harus dipegang.",
       "provingGreeter": "Instruktur Maren, Perkemahan Dawnrest",
       "provingPlaceNotes": "Perkemahan Dawnrest adalah seluruh permukiman di pulau ini: beberapa tenda, sebuah kios, dan sebuah api unggun kumpul. Dermaga Tua menghadap ke lembah, tempat lingkaran penyeberangan membawa para lulusan melintasi selat; Pekarangan Latihan di selatan perkemahan menjaga patung-patung jeraminya tetap berdiri bagi siapa pun yang membutuhkannya; dan Deretan Bangkai Kapal adalah pesisir penuh barang rongsokan tempat pasang membayar pulau ini dengan peti-peti terdampar.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Berkeliling",
       "travelBody": "Setiap jalan di realm ini ditempuh dengan berjalan kaki atau berkuda. Tidak ada jalur terbang, tidak ada taksi, dan tidak ada jaringan teleportasi: peta ini adalah satu daratan menyambung, dan setiap sambungannya adalah sesuatu yang bisa kamu injak. Punggung bukit memisahkan satu realm dari yang berikutnya, dan di tempat dua realm berbagi sebuah punggung bukit, jalan itu mendaki lewat sebuah celah gunung. Namun tidak setiap perbatasan bekerja seperti itu. Di utara, sebuah jalan layang panjang membawa jalan itu keluar melintasi air dari Ceruk Terselubung menuju negeri bersalju di seberangnya, dan di selatan sana sebuah gosong pasir alami yang tipis bernama Ferrywalk membentang ke timur dari pesisir Lembah menuju Dermaga di pulau Pesisir Jauh, yang sama sekali tak memiliki perbatasan darat. Dan hanya ada satu pintu sejati di seluruh dunia luar: sebuah selubung senja tinggi di Thornpeak yang terbuka menuju Ceruk Terselubung. Punggung bukit selatan sang Ceruk tertutup rapat tanpa celah yang menembusnya, sehingga selubung itulah caramu pertama kali masuk, dan ia menutup di belakangmu dalam perjalanan kembali.\n\nKe mana pun kamu tumbang, perjalanan kembali selalu singkat. Setiap zona menyimpan setidaknya satu kuburan dengan Sang Penjaga Pucat melayang di atas bebatuannya, dan roh yang dilepaskan bangkit di kuburan terdekat.\n\nPeta ini tidak berakhir pada dinding tak kasatmata. Daratan berakhir menjadi pantai dan tanjung, lalu menjadi laut lepas. Penyeberangan yang memang dimaksudkan dunia ini untuk kamu renangi, selat dan rawa di antara satu realm dengan yang berikutnya, tenang dan aman untuk diseberangi. Namun berenanglah menuju laut lepas dan jarak itu sendiri akan mendorongmu kembali: kamu diperingatkan, dan diperingatkan lagi, dan jika kamu terus berenang, laut akan menguras tenagamu hingga membunuhmu. Menyelam memiliki batasnya sendiri, karena napasmu habis di bawah permukaan, jadi naiklah untuk bernapas dan berbaliklah saat air itu menyuruhmu.",
       "mountsTitle": "Tunggangan",
@@ -18612,6 +18618,27 @@ export const id_ID: EnTranslations = {
           },
           "4": {
             "label": "Jalur Rintangan"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

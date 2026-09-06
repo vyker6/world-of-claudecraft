@@ -573,8 +573,9 @@ describe('chunk-level ground residency', () => {
     // (nearest-rect assignment in cellOwnerId): the 96 cells outside every
     // zone rectangle are now built by their nearest zone, so pending-until-
     // built is correct for every cell and the fog clamp can trust the bitmap.
-    expect(cells.length).toBe(792);
-    expect(pendingCount()).toBe(792);
+    // 900 since Ninebend (2026-09) added the six-row band south of the vale.
+    expect(cells.length).toBe(900);
+    expect(pendingCount()).toBe(900);
 
     const zone = zoneAt(0, 0);
     const hubCx = Math.floor((zone.hub.x - grid.originX) / grid.size);

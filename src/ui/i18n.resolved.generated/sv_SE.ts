@@ -4939,6 +4939,8 @@ export const sv_SE: EnTranslations = {
         "farshoreBlurb": "En ö bortom sandreveln, där himlen brister upp över Revfälten och Måshamn ringer sin klocka för varje bräsch.",
         "provingName": "Prövostranden",
         "provingBlurb": "En stillsam träningsö på andra sidan sundet, där nya äventyrare hittar fotfästet innan dalen begär något av dem.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Nattblomstret",
         "nightBlurb": "Ett land av stjärnklar midnatt där blommorna lyser upp stigarna och Månvila håller sin vaka.",
         "hauntName": "Vålnadsskogen",
@@ -5905,6 +5907,10 @@ export const sv_SE: EnTranslations = {
       "provingGreeting": "Varje hjälte dalen någonsin tackat stod där du står nu, och ingen av dem visste vilken ände av ett svärd de skulle hålla i.",
       "provingGreeter": "Instruktör Maren, Gryningsvilan",
       "provingPlaceNotes": "Gryningsvilan är öns hela bosättning: några tält, ett stånd och en mönstringseld. Den gamla piren vetter mot dalen, där överfartscirkeln bär utexaminerade över sundet; Övningsgården söder om lägret håller sina halmdockor stående åt den som behöver dem; och Vraklinjen är den bärgningsströdda stranden där tidvattnet betalar ön i vrakkistor.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Att ta sig fram",
       "travelBody": "Varje väg i riket vandras eller rids. Det finns inga flygvägar, inga taxitjänster och inget teleportnätverk: kartan är en enda sammanhängande landmassa, och varje förbindelse är något du kan stå på. Höjdryggar skiljer ett rike från nästa, och där två riken delar en höjdrygg klättrar vägen genom ett pass. Men inte varje gräns fungerar så. I norr bär en lång vägbank vägen ut över vattnet från Slöjhålan in i snölandet bortom, och längre söderut löper en smal, naturlig sandrevel som kallas Färjeleden österut från Dalens kust till Landningsplatsen på Fjärrkustens ö, som inte har någon landgräns alls. Och det finns exakt en enda sann dörr i hela överjorden: en skymningsslöja högt uppe på Törntoppen som öppnar in i Slöjhålan. Hålans södra höjdrygg är förseglad utan pass genom den, så den slöjan är hur du först kommer in, och den stängs bakom dig på vägen tillbaka.\n\nVar du än faller är vägen tillbaka kort. Varje zon har minst en kyrkogård med Den bleka väktaren svävande över stenarna, och en frigjord ande stiger upp vid den närmaste av dem.\n\nKartan slutar inte i en osynlig vägg. Landet rinner ut i stränder och uddar, och sedan i öppet vatten. De passager världen menar att du ska simma, sunden och fjärdarna mellan ett rike och nästa, är lugna och säkra att korsa. Ge dig istället ut på öppet hav och avståndet självt vänder dig om: du varnas, och varnas igen, och om du fortsätter simma tröttar havet ut dig tills det dödar dig. Dykning har sin egen gräns, eftersom din andedräkt tar slut under ytan, så kom upp för luft och vänd om när vattnet säger åt dig.",
       "mountsTitle": "Riddjur",
@@ -18612,6 +18618,27 @@ export const sv_SE: EnTranslations = {
           },
           "4": {
             "label": "Gatloppet"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

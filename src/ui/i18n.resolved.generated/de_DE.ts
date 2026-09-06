@@ -4939,6 +4939,8 @@ export const de_DE: EnTranslations = {
         "farshoreBlurb": "Eine Insel jenseits der Sandbank, wo der Himmel über den Rissfeldern aufreißt und Gullhaven für jeden Bruch seine Glocke läutet.",
         "provingName": "Die Bewährungsküste",
         "provingBlurb": "Eine ruhige Übungsinsel jenseits der Meerenge, wo neue Abenteurer Tritt fassen, bevor das Tal etwas von ihnen verlangt.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Die Nachtblüte",
         "nightBlurb": "Ein Land sternenklarer Mitternacht, in dem die Blüten die Pfade erleuchten und Moonrest seine Wache hält.",
         "hauntName": "Der Gespensterwald",
@@ -5905,6 +5907,10 @@ export const de_DE: EnTranslations = {
       "provingGreeting": "Jeder Held, dem das Tal je gedankt hat, stand einmal genau da, wo du jetzt stehst, und keiner von ihnen wusste, an welchem Ende man eine Klinge hält.",
       "provingGreeter": "Ausbilderin Maren, Morgenrast-Lager",
       "provingPlaceNotes": "Morgenrast-Lager ist die gesamte Siedlung der Insel: ein paar Zelte, ein Stand und ein Sammelfeuer. Der Alte Steg blickt zum Tal, wo der Überfahrtskreis die Absolventen über die Meerenge trägt; der Übungsplatz südlich des Lagers hält seine Strohpuppen für jeden bereit, der sie braucht; und die Wracklinie ist der von Bergegut übersäte Strand, auf dem die Flut der Insel in Strandkisten zahlt.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Unterwegs",
       "travelBody": "Jede Straße im Reich wird zu Fuß oder zu Pferd zurückgelegt. Es gibt keine Flugrouten, keine Droschken und kein Teleportnetz: Die Karte ist eine einzige zusammenhängende Landmasse, und jede Verbindung ist etwas, worauf du stehen kannst. Grate trennen ein Reich vom nächsten, und wo zwei Reiche sich einen Grat teilen, steigt die Straße durch einen Pass. Nicht jede Grenze funktioniert jedoch so. Im Norden trägt ein langer Damm die Straße über das Wasser hinaus, von der Schleiersenke ins Schneeland dahinter, und im Süden verläuft eine schmale natürliche Sandbank namens Fährweg von der Küste des Tals ostwärts zur Anlegestelle auf der Insel der Fernküste, die überhaupt keine Landgrenze hat. Und es gibt genau eine echte Tür in der ganzen Oberwelt: einen Dämmerschleier hoch auf dem Thornpeak, der sich zur Schleiersenke hin öffnet. Der südliche Grat der Senke ist versiegelt und hat keinen Pass hindurch, sodass dieser Schleier dein erster Weg hinein ist, und er schließt sich hinter dir auf dem Rückweg.\n\nWo auch immer du fällst, der Weg zurück ist kurz. Jede Zone unterhält mindestens einen Friedhof mit einem Bleichen Hüter, der über den Steinen schwebt, und ein befreiter Geist erhebt sich am nächstgelegenen von ihnen.\n\nDie Karte endet nicht an einer unsichtbaren Wand. Das Land läuft in Strände und Landzungen aus, und dann in offenes Wasser. Die Überquerungen, die die Welt für dich zum Schwimmen vorsieht, die Meerengen und Seen zwischen einem Reich und dem nächsten, sind ruhig und sicher zu überqueren. Hältst du stattdessen auf die offene See zu, dreht dich die Entfernung selbst wieder um: Du wirst gewarnt, und noch einmal gewarnt, und schwimmst du weiter, zehrt dich die See aus, bis sie dich tötet. Tauchen hat sein eigenes Limit, da dir unter der Oberfläche der Atem ausgeht, komm also nach Luft, wenn das Wasser es dir sagt, und kehre um.",
       "mountsTitle": "Reittiere",
@@ -18612,6 +18618,27 @@ export const de_DE: EnTranslations = {
           },
           "4": {
             "label": "Der Spießrutenlauf"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

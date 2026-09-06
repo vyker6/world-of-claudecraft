@@ -60,6 +60,7 @@ export const TERRAIN_APPLIER = {
   provingCoast: 34,
   provingMoat: 35,
   gardenwalkWestPass: 36,
+  ninebendRiver: 37,
 } as const;
 
 function bounds(minX: number, maxX: number, minZ: number, maxZ: number): TerrainRegionBounds {
@@ -120,6 +121,9 @@ export const TERRAIN_APPLIER_BOUNDS: readonly (readonly TerrainRegionBounds[] | 
   // x-falloff (centered ON the border, STRIP_MAX_X 180) are both fully zero
   // outside this box.
   [bounds(122, 238, 748, 852)],
+  // the Nine Bend River: the whole Ninebend band, skirted so the carve fades
+  // inside the border before either seam.
+  [bounds(-188, 188, -548, -186)],
 ];
 
 interface MutableCell {

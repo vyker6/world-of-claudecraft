@@ -83,6 +83,7 @@
     "PROMPT",
     "SCENE",
     "STREAM_MS",
+    "TP_FACING",
     "TP_X",
     "TP_Z",
     "TRIPO_API_KEY",

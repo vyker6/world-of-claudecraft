@@ -68,6 +68,7 @@ const FISHING_ZONE_ROD_TIER_ROWS: Record<string, number> = {
   evergarden: 1,
   galecrest: 1,
   farshore_isle: 1,
+  ninebend: 1,
 };
 
 export const FISHING_ZONE_ROD_TIERS: Readonly<Record<string, number>> = Object.freeze({

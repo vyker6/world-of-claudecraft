@@ -2420,6 +2420,25 @@ export const GUIDE_ZONES: GuideZoneInfo[] = [
     "families": [
       "beast"
     ]
+  },
+  {
+    "id": "ninebend",
+    "name": "Ninebend",
+    "min": 1,
+    "max": 5,
+    "biome": "marsh",
+    "hub": "Ninebend",
+    "pois": [
+      "Ninebend",
+      "The Weir",
+      "The Drowned Reeds",
+      "The Ferry Landing",
+      "The Green Gate"
+    ],
+    "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+    "families": [
+      "undead"
+    ]
   }
 ];
 
@@ -3137,6 +3156,17 @@ export const GUIDE_FAMILIES: GuideFamily[] = [
   {
     "family": "undead",
     "creatures": [
+      {
+        "name": "River Drowned",
+        "min": 3,
+        "max": 5,
+        "rare": false,
+        "templateId": "river_drowned",
+        "model": "mob_river_drowned",
+        "tint": "#6f8a6a",
+        "tintStrength": 0.35,
+        "still": "/guide-stills/mob_river_drowned__6f8a6a__s35.webp"
+      },
       {
         "name": "Restless Bones",
         "min": 5,
@@ -10702,6 +10732,13 @@ export const GUIDE_PROF_GATHERING: GuideProfGathering[] = [
         "material": "Iron Ore"
       },
       {
+        "zone": "Ninebend",
+        "tier": 1,
+        "toolTier": 1,
+        "count": 2,
+        "material": "Copper Ore"
+      },
+      {
         "zone": "The Amberfall",
         "tier": 1,
         "toolTier": 1,
@@ -10912,6 +10949,13 @@ export const GUIDE_PROF_GATHERING: GuideProfGathering[] = [
         "material": "Ashwood Log"
       },
       {
+        "zone": "Ninebend",
+        "tier": 1,
+        "toolTier": 1,
+        "count": 2,
+        "material": "Ironbark Log"
+      },
+      {
         "zone": "The Amberfall",
         "tier": 1,
         "toolTier": 1,
@@ -11120,6 +11164,13 @@ export const GUIDE_PROF_GATHERING: GuideProfGathering[] = [
         "toolTier": 2,
         "count": 2,
         "material": "Goldleaf Herb"
+      },
+      {
+        "zone": "Ninebend",
+        "tier": 1,
+        "toolTier": 1,
+        "count": 2,
+        "material": "Sheenleaf Herb"
       },
       {
         "zone": "The Amberfall",
@@ -13173,6 +13224,13 @@ export const GUIDE_MODELS: Record<string, GuideModelSpec> = {
     "url": "models/creatures/demonalt.glb",
     "idle": "Idle",
     "height": 2.1,
+    "tintStrength": 0.35
+  },
+  "mob_river_drowned": {
+    "url": "models/creatures/river_drowned.glb",
+    "idle": "Idle",
+    "height": 2.5,
+    "yaw": -1.5707963267948966,
     "tintStrength": 0.35
   }
 };

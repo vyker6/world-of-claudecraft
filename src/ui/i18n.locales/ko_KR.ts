@@ -14222,15 +14222,28 @@ export const ko_KR: Partial<Record<TranslationKey, string>> = {
     '마렌이 그렇게 말했다고요? 내게 일주일 내내 밧줄 매듭 연습을 시킨 사람의 입에서 나온 말치고는 대단한 칭찬이군요. 준비가 되면 내 부두 옆에 선 종을 울리세요, {playerName}. 건너기가 이스트브룩 마을 한복판에 내려 줄 겁니다. 늑대를 조심하세요.',
   'entities.quests.q_ps_set_sail.objectives.0.label': '뱃사공 오도에게 보고',
   'entities.zones.proving_shore.name': '수련의 해안',
+  'entities.zones.ninebend.name': '나인벤드',
+  'entities.zones.ninebend.welcome': '나인벤드는 둑을 지키고, 둑은 나인벤드를 지킨다. 해가 진 뒤 갈대밭을 조심하라. 강은 빼앗은 것을 돌려주지만, 곱게 돌려주지는 않는다.',
+  'entities.zones.ninebend.pois.0.label': '나인벤드',
+  'entities.zones.ninebend.pois.1.label': '둑',
+  'entities.zones.ninebend.pois.2.label': '익사자의 갈대밭',
+  'entities.zones.ninebend.pois.3.label': '나루터',
+  'entities.zones.ninebend.pois.4.label': '녹색 문',
   'entities.zones.proving_shore.welcome':
     '수련의 해안이 당신에게 바라는 것은 시간뿐입니다. 야영지를 익히고, 허수아비를 치고, 난파선 해안을 걸어 보세요. 준비가 되면 뱃사공 오도가 골짜기까지 건네줄 겁니다.',
   'entities.zones.proving_shore.pois.0.label': '새벽쉼터 야영지',
   'entities.zones.proving_shore.pois.1.label': '낡은 부두',
   'entities.zones.proving_shore.pois.2.label': '수련장',
   'entities.zones.proving_shore.pois.3.label': '난파선 해안',
+  'guide.home.world.ninebendName': '나인벤드',
+  'guide.home.world.ninebendBlurb': '아홉 굽이 강가의 둑 마을. 밤이면 수문이 저절로 닫히고, 갈대밭은 강이 앗아간 것을 되돌려 준다.',
   'guide.home.world.provingName': '수련의 해안',
   'guide.home.world.provingBlurb':
     '해협 건너의 조용한 훈련 섬. 골짜기가 무언가를 요구하기 전에, 새내기 모험가들이 이곳에서 첫걸음을 다집니다.',
+  'guide.worldPage.ninebendBlurb': '아홉 굽이 강가의 둑 마을. 물 위에 선 고상 오두막들이 광장을 이루고, 나루터 위에는 망루가 서 있으며, 수문이 골짜기의 논밭을 살린다. 밤이면 무언가가 그 수문을 닫고 있다.',
+  'guide.worldPage.ninebendGreeting': '녹색 문 길을 내려왔다면 이 강이 얼마나 멀리 닿는지 알 것이다. 해가 진 뒤 갈대밭을 조심하라.',
+  'guide.worldPage.ninebendGreeter': '둑지기 오다, 나루터',
+  'guide.worldPage.ninebendPlaceNotes': '나인벤드는 강 위의 유일한 마을이고 그 나루터는 유일한 나룻배다. 광장 아래의 둑이 이 마을이 존재하는 이유 전부다. 아홉 굽이의 느린 물, 한 줄의 수문, 그리고 그 남쪽의 익사자의 갈대밭, 강은 그곳에서 빼앗은 것을 돌려준다.',
   'guide.worldPage.provingBlurb':
     '골짜기에서 해협을 건넌 곳에 있는 조용한 섬으로, 훈련장으로 쓰입니다. 야영지 하나, 수련장 하나, 잔해가 널린 바닷가, 그리고 양방향으로 다니는 나룻배가 있습니다.',
   'guide.worldPage.provingGreeting':

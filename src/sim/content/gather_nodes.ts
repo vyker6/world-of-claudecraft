@@ -1665,4 +1665,56 @@ export const GATHER_NODES: GatherNodeDef[] = [
     level: 5,
     tier: 1,
   },
+  // Ninebend (src/sim/content/ninebend.ts): the simpleMMO starting ring, a level
+  // 1-5 weir town, so every row takes the starting tier. The rows keep to the
+  // dry flats north and south of the river, clear of the bay, the straits and
+  // the Green Gate road.
+  {
+    id: 'ore_ninebend_1',
+    zoneId: 'ninebend',
+    type: 'ore',
+    pos: { x: -150, z: -300 },
+    level: 3,
+    tier: 1,
+  },
+  {
+    id: 'ore_ninebend_2',
+    zoneId: 'ninebend',
+    type: 'ore',
+    pos: { x: -120, z: -262 },
+    level: 3,
+    tier: 1,
+  },
+  {
+    id: 'wood_ninebend_1',
+    zoneId: 'ninebend',
+    type: 'wood',
+    pos: { x: -90, z: -250 },
+    level: 3,
+    tier: 1,
+  },
+  {
+    id: 'wood_ninebend_2',
+    zoneId: 'ninebend',
+    type: 'wood',
+    pos: { x: -40, z: -472 },
+    level: 3,
+    tier: 1,
+  },
+  {
+    id: 'herb_ninebend_1',
+    zoneId: 'ninebend',
+    type: 'herb',
+    pos: { x: -70, z: -300 },
+    level: 3,
+    tier: 1,
+  },
+  {
+    id: 'herb_ninebend_2',
+    zoneId: 'ninebend',
+    type: 'herb',
+    pos: { x: 70, z: -300 },
+    level: 3,
+    tier: 1,
+  },
 ];

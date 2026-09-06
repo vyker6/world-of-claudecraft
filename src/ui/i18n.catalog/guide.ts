@@ -205,6 +205,11 @@ export const guideStrings = {
       provingName: 'The Proving Shore',
       provingBlurb:
         'A quiet training island across the strait, where new adventurers find their feet before the vale asks anything of them.',
+      // Ninebend shares the marsh biome with the Mirefen, so it carries its own
+      // slug and copy (the simpleMMO starting ring).
+      ninebendName: 'Ninebend',
+      ninebendBlurb:
+        'A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.',
       nightName: 'The Nightbloom',
       nightBlurb:
         'A country of starry midnight where the flowers light the paths and Moonrest keeps its vigil.',
@@ -1702,6 +1707,15 @@ export const guideStrings = {
     provingGreeter: 'Instructor Maren, Dawnrest Camp',
     provingPlaceNotes:
       "Dawnrest Camp is the island's whole settlement: a few tents, a stall, and a muster fire. The Old Pier faces the vale, where the crossing circle carries graduates over the strait; the Practice Yard south of camp keeps its straw effigies standing for whoever needs them; and the Wreck Line is the salvage-strewn strand where the tide pays the island in castaway crates.",
+    // Ninebend (ninebend): the simpleMMO starting ring. It renders in the marsh
+    // biome, so it carries its own stem like the Farshore and the Proving Shore.
+    ninebendBlurb:
+      'A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.',
+    ninebendGreeting:
+      'You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.',
+    ninebendGreeter: 'Weir-Keeper Odda, the Landing',
+    ninebendPlaceNotes:
+      'Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.',
     // Getting around: the on-foot rule, the passes and causeways, the one overworld
     // doorway, the graveyards, and the sea at the map's edge. Paragraphs are split on
     // blank lines by paras().

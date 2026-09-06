@@ -4939,6 +4939,8 @@ export const tr_TR: EnTranslations = {
         "farshoreBlurb": "Kum setinin ötesindeki bir ada; gökyüzü Yarık Tarlaları'nın üzerinde yırtılır ve Gullhaven her gedik için çanını çalar.",
         "provingName": "Sınav Kıyısı",
         "provingBlurb": "Boğazın karşısında sessiz bir eğitim adası; yeni maceracılar, Vadi onlardan bir şey istemeden önce burada ayaklarını bulur.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Gece Çiçeği",
         "nightBlurb": "Çiçeklerin patikaları aydınlattığı ve Moonrest'in nöbetini tuttuğu, yıldızlı gece yarısı ülkesi.",
         "hauntName": "Hayalet Ormanı",
@@ -5905,6 +5907,10 @@ export const tr_TR: EnTranslations = {
       "provingGreeting": "Vadi'nin şimdiye dek teşekkür ettiği her kahraman, şu an senin durduğun yerde durdu, ve hiçbiri bir kılıcın hangi ucundan tutulacağını bilmiyordu.",
       "provingGreeter": "Eğitmen Maren, Dawnrest Kampı",
       "provingPlaceNotes": "Dawnrest Kampı, adanın tüm yerleşimidir: birkaç çadır, bir tezgah, ve bir toplanma ateşi. Eski İskele Vadi'ye bakar, geçiş çemberinin mezunları boğazın üzerinden taşıdığı yerdir; kampın güneyindeki Talim Alanı, ihtiyacı olan herkes için saman kuklalarını ayakta tutar; ve Enkaz Hattı, gelgidin adaya enkaz sandıklarıyla ödeme yaptığı, ganimetle dolu kumsaldır.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Etrafta gezinme",
       "travelBody": "Diyardaki her yol, yürünerek ya da atla kat edilir. Uçuş rotası, taksi ya da ışınlanma ağı yoktur: harita tek parça, bağlantılı bir kara parçasıdır ve her bağlantı üzerinde durabileceğiniz bir şeydir. Sırtlar bir bölgeyi bir sonrakinden ayırır ve iki bölgenin bir sırtı paylaştığı yerde yol bir geçitten tırmanır. Ancak her sınır böyle işlemez. Kuzeyde uzun bir geçit yolu, Örtülü Vadi'den suyun üzerinden ötesindeki karlı ülkeye kadar yolu taşır; güneyde ise Feribot Yolu adında ince, doğal bir kum seti, Doğudere Vadisi'nin kıyısından doğuya, hiç kara sınırı olmayan Uzak Kıyı adasındaki İskele'ye kadar uzanır. Ve bütün açık dünyada tam olarak bir gerçek kapı vardır: Dikenzirve'nin yükseklerinde, Örtülü Vadi'ye açılan bir alacakaranlık örtüsü. Örtülü Vadi'nin güney sırtı mühürlüdür ve içinden geçit yoktur, bu yüzden içeri ilk kez o örtüden girersiniz ve dönüş yolunda arkanızdan kapanır.\n\nNerede düşerseniz düşün, geri dönüş kısa bir yürüyüştür. Her bölge, mezar taşlarının üzerinde süzülen bir Solgun Bekçi'nin beklediği en az bir mezarlık barındırır ve serbest bırakılan ruh, en yakınındakinde yükselir.\n\nHarita görünmez bir duvarda bitmez. Kara, plajlara ve burunlara, ardından açık suya çıkar. Dünyanın yüzmenizi istediği geçişler, bir bölgeyle bir sonraki arasındaki boğazlar ve göller, sakin ve geçmesi güvenlidir. Bunun yerine açık denize doğru yol alırsanız mesafenin kendisi sizi geri çevirir: uyarılırsınız, tekrar uyarılırsınız ve yüzmeye devam ederseniz deniz sizi öldürene dek yıpratır. Dalışın kendi sınırı vardır, çünkü nefesiniz yüzeyin altında tükenir, bu yüzden su size söylediğinde hava almak için yüzeye çıkın ve geri dönün.",
       "mountsTitle": "Binekler",
@@ -18612,6 +18618,27 @@ export const tr_TR: EnTranslations = {
           },
           "4": {
             "label": "Parkur"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }
