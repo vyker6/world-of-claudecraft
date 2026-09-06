@@ -414,9 +414,15 @@
   body.hud-painted #player-frame #pf-combat,
   body.hud-painted #player-frame #pf-rest,
   body.hud-painted #player-frame #pf-name-header,
-  body.hud-painted #player-frame #combo-row,
   body.hud-painted #player-frame #pf-low-resource {
     display: none;
+  }
+  /* The combo row is hidden with them but takes the flag, for the reason the swing bars do:
+     hud.ts paints it with an INLINE `display: flex` whenever the class has points on the
+     board. A warrior never shows it, so the unflagged hide read as working; a rogue would
+     have put WoC's pip row straight onto the painting's rail. */
+  body.hud-painted #player-frame #combo-row {
+    display: none !important;
   }
   /* The shield overlay scales to (hp + absorb) / maxHp (absorb_bar.ts), so at full health
      with no shield at all it still spans the whole bar. On a flat bar that reads as a

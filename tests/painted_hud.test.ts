@@ -124,6 +124,12 @@ describe('painted target frame', () => {
       /#swingbar,\n\s*body\.hud-painted #swingbar-offhand,[\s\S]*?\{\s*display: none !important;/,
     );
   });
+  // Same leak, different painter: hud.ts writes an inline `display: flex` onto the combo row
+  // whenever the class has points on the board, so its hide carries the flag too. A warrior
+  // never shows the row, which is why the unflagged hide read as working.
+  it('hides the combo row against its painter inline write', () => {
+    expect(css).toMatch(/#player-frame #combo-row \{\s*display: none !important;/);
+  });
 });
 
 describe('painted minimap, tracker and chat', () => {
