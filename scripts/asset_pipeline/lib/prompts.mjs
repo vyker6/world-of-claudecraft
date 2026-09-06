@@ -13,7 +13,7 @@ const STYLE_CORE =
   'stylized low-poly fantasy game asset, flat shaded, clean hand-crafted topology look, ' +
   'muted classic-MMO medieval palette, subtle hand-painted color blocks, no photorealism';
 
-const LAYOUT_OBJECT =
+export const LAYOUT_OBJECT =
   'single object, centered, full object in frame, three-quarter view, transparent ' +
   'background, even diffuse studio lighting, crisp silhouette, no halos or fringing, no drop ' +
   'shadow, no extra objects, no text, no watermark, no logo';
