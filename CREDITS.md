@@ -342,6 +342,15 @@ non-commercial. For commercial use, arrange your own licence with the author.
 | Generated creature model + animations (river_drowned) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D, auto-rig + preset retargets) | Project asset | With the project only |
 | Generated player body (hero_warrior, the Horned Reaver) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (gpt-image concept, Tripo AI 3D image-to-model, proportion-fit rig onto the KayKit Rig_Medium skeleton with the knight clip library re-baked) | Project asset | With the project only |
 | Generated player body (hero_warrior_leather, the Reaver in his Ninebend starter kit) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (concept_dress.mjs gpt-image edit of the body plate, Tripo AI 3D image-to-model, rig-manual onto the hero skeleton) | Project asset | With the project only |
+| Generated prop model (ninebend_sluice_gate) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_weir_pier) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_stilt_hut) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_watchtower) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_lantern_post) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_shrine_stone) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_fish_rack) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_banner_pole) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
+| Generated prop model (ninebend_river_barge) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
 Assets were optimized for shipping (animation clip pruning, meshopt compression,
 texture resizing) via `scripts/assets/build_assets.mjs`; raw packs are not
 committed.
