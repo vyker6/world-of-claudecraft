@@ -960,20 +960,6 @@ const CHICKEN_COW: ClipMap = {
   jump: 'Jump',
 };
 
-// Creature-lane rigs (scripts/asset_pipeline/pipeline.mjs creature): Tripo
-// auto-rigged bipeds whose preset animations the lane retargets in place and
-// renames to the game vocabulary, so every lane creature shares this map.
-const CREATURE_LANE: ClipMap = {
-  idle: 'Idle',
-  walk: 'Walk',
-  run: 'Run',
-  attack: ['Attack'],
-  hit: ['Hit'],
-  death: 'Death',
-  cast: 'Cast',
-  jump: 'Jump',
-};
-
 // Raid 02 asset-pipeline rig (stone_cantor.glb): Mixamo-rigged, ships
 // Idle / Cast / Walk / Death plus a synthesized 'Hit' flinch authored by
 // scripts/_add_cantor_hit_anim.mjs (the batch has no hit-react take). A
@@ -3149,15 +3135,15 @@ export const VISUALS: Record<string, VisualDef> = {
     tint: 0x6b3a32,
     tintStrength: 0.3,
   },
-  // River Drowned (src/sim/content/ninebend.ts): the first simpleMMO creature-lane rig
-  // in the locked osrs_genshin direction. Tripo auto-rigs face +X in the file, so the
-  // quarter turn brings it to the facing-0 (+Z) convention; the entity tint lets the
-  // template colour (waterlogged green) read through the authored albedo.
+  // River Drowned (src/sim/content/ninebend.ts): the first simpleMMO creature, a Tripo
+  // image-to-model body bound onto the hero skeleton by rig-manual (river_drowned_kk),
+  // so it shares the KayKit joint names and the knight clip library: bare-handed
+  // swings, real hit reactions and a death. The entity tint lets the template
+  // colour (waterlogged green) read through the authored albedo.
   mob_river_drowned: {
     url: `${CREATURES}/river_drowned.glb`,
     height: 2.5,
-    yaw: -Math.PI / 2,
-    clips: CREATURE_LANE,
+    clips: kaykit(['Punch_A', '1H_Melee_Attack_Chop']),
     tint: 'entity',
     tintStrength: 0.35,
   },

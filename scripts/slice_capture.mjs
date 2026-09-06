@@ -25,6 +25,22 @@ const OUT = process.env.OUT ?? 'tmp/slice/hero_v1';
 const TP_X = process.env.TP_X !== undefined ? Number(process.env.TP_X) : null;
 const TP_Z = process.env.TP_Z !== undefined ? Number(process.env.TP_Z) : null;
 const TP_FACING = process.env.TP_FACING !== undefined ? Number(process.env.TP_FACING) : null;
+// Look and length of the fight capture: the day/night phase (0.5 = noon), whether the
+// HUD stays visible, and a timed burst (seconds at FPS, jpeg frames + an mp4 via
+// ffmpeg) instead of the 24-frame swing sample. ABILITIES is a comma list of ability
+// ids the local player casts in rotation every few seconds during the burst.
+const DAY_PHASE = process.env.DAY_PHASE !== undefined ? Number(process.env.DAY_PHASE) : 0.5;
+const SHOW_HUD = process.env.SHOW_HUD === '1';
+const BURST_SECONDS = Number(process.env.BURST_SECONDS ?? 0);
+const BURST_FPS = Number(process.env.BURST_FPS ?? 10);
+const ENEMY_COUNT = Math.max(1, Number(process.env.ENEMY_COUNT ?? 1));
+const HIDE_CHAT = process.env.HIDE_CHAT === '1';
+// Burst camera as "relYaw,dist,pitch" (relYaw is added to the player's facing; PI/2 is a profile).
+const BURST_CAM = (process.env.BURST_CAM ?? `${Math.PI / 2 + 0.5},7,0.25`).split(',').map(Number);
+const ABILITIES = (process.env.ABILITIES ?? '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
 const W = 1920;
 const H = 1080;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -114,7 +130,7 @@ for (let i = 0; i < 3; i++) {
 }
 
 const setup = await page.evaluate(
-  async ({ weaponItem, heroUrl, tp }) => {
+  async ({ weaponItem, heroUrl, tp, dayPhase, showHud, hideChat }) => {
     const g = window.__game;
     const sim = g.sim;
     const p = sim.player;
@@ -141,8 +157,8 @@ const setup = await page.evaluate(
       equipped = p.mainhandItemId ?? p.equipment?.mainhand ?? null;
     }
     const dn = await window.__appModule('/src/render/day_night_clock.ts');
-    dn.setDayNightPhaseOverride(0.5);
-    for (const id of ['ui', 'nameplates']) {
+    dn.setDayNightPhaseOverride(dayPhase);
+    for (const id of showHud ? (hideChat ? ['chatlog-wrap'] : []) : ['ui', 'nameplates']) {
       const el = document.getElementById(id);
       if (el) el.style.setProperty('display', 'none', 'important');
     }
@@ -152,6 +168,9 @@ const setup = await page.evaluate(
     weaponItem: WEAPON_ITEM,
     heroUrl: HERO_URL,
     tp: TP_X !== null && TP_Z !== null ? { x: TP_X, z: TP_Z, facing: TP_FACING } : null,
+    dayPhase: DAY_PHASE,
+    showHud: SHOW_HUD,
+    hideChat: HIDE_CHAT,
   },
 );
 console.log('setup:', JSON.stringify(setup));
@@ -203,24 +222,35 @@ if (TP_X !== null && TP_Z !== null) {
 }
 
 if (ENEMY) {
-  const fight = await page.evaluate(async (tpl) => {
-    const sim = window.__game.sim;
-    const p = sim.player;
-    const { spawnMobsForDev } = await window.__appModule('/src/sim/dev_commands.ts');
-    const ids = spawnMobsForDev(sim.ctx, sim.playerId, tpl, 1, 20);
-    if (!ids?.length) return { ok: false, reason: `spawn failed for ${tpl}` };
-    const mob = sim.entities.get(ids[0]);
-    const ang = p.facing;
-    const mpos = sim.groundPos(p.pos.x + Math.sin(ang) * 2.2, p.pos.z + Math.cos(ang) * 2.2);
-    mob.pos = { ...mpos };
-    mob.prevPos = { ...mpos };
-    sim.rebucket?.(mob);
-    mob.inCombat = true;
-    mob.aiState = 'attack';
-    p.targetId = mob.id;
-    p.autoAttack = true;
-    return { ok: true, mobId: mob.id, mobHp: mob.hp };
-  }, ENEMY);
+  const fight = await page.evaluate(
+    async ({ tpl, count }) => {
+      const sim = window.__game.sim;
+      const p = sim.player;
+      const { spawnMobsForDev } = await window.__appModule('/src/sim/dev_commands.ts');
+      const ids = spawnMobsForDev(sim.ctx, sim.playerId, tpl, count, 20);
+      if (!ids?.length) return { ok: false, reason: `spawn failed for ${tpl}` };
+      const ang = p.facing;
+      ids.forEach((id, i) => {
+        const mob = sim.entities.get(id);
+        const spread = (i - (ids.length - 1) / 2) * 0.55;
+        const dist = 2.2 + i * 1.4;
+        const mpos = sim.groundPos(
+          p.pos.x + Math.sin(ang + spread) * dist,
+          p.pos.z + Math.cos(ang + spread) * dist,
+        );
+        mob.pos = { ...mpos };
+        mob.prevPos = { ...mpos };
+        sim.rebucket?.(mob);
+        mob.inCombat = true;
+        mob.aiState = 'attack';
+      });
+      const mob = sim.entities.get(ids[0]);
+      p.targetId = mob.id;
+      p.autoAttack = true;
+      return { ok: true, mobId: mob.id, mobHp: mob.hp, ids };
+    },
+    { tpl: ENEMY, count: ENEMY_COUNT },
+  );
   console.log('fight:', JSON.stringify(fight));
   if (fight.ok) {
     await page.evaluate(
@@ -230,13 +260,77 @@ if (ENEMY) {
         inp.camDist = dist;
         inp.camPitch = pitch;
       },
-      { yaw: yawFor(facing, Math.PI / 2 + 0.5), dist: 7, pitch: 0.25 },
+      { yaw: yawFor(facing, BURST_CAM[0]), dist: BURST_CAM[1], pitch: BURST_CAM[2] },
     );
     await sleep(600);
-    // Burst: auto-attack swings every ~2.2 s; 24 frames at 110 ms span one swing.
-    for (let i = 0; i < 24; i++) {
-      await page.screenshot({ path: `${OUT}/attack_${String(i).padStart(2, '0')}.png` });
-      await sleep(110);
+    if (BURST_SECONDS > 0) {
+      // A timed fight: jpeg frames at BURST_FPS, abilities cast in rotation, then
+      // ffmpeg stitches the frames into OUT/burst.mp4.
+      const frames = Math.round(BURST_SECONDS * BURST_FPS);
+      const dt = 1000 / BURST_FPS;
+      let nextCast = Date.now() + 2500;
+      let castIndex = 0;
+      for (let i = 0; i < frames; i++) {
+        const t0 = Date.now();
+        if (i % 5 === 0) {
+          await page.evaluate((ids) => {
+            const sim = window.__game.sim;
+            const p = sim.player;
+            // The capture hero does not die: the fight is the subject, not the outcome.
+            p.hp = p.maxHp;
+            const cur = sim.entities.get(p.targetId);
+            if (cur && cur.hp > 0) return;
+            const next = ids.map((id) => sim.entities.get(id)).find((m) => m && m.hp > 0);
+            if (next) {
+              p.targetId = next.id;
+              p.autoAttack = true;
+            }
+          }, fight.ids ?? []);
+        }
+        if (ABILITIES.length && t0 >= nextCast) {
+          const id = ABILITIES[castIndex % ABILITIES.length];
+          castIndex++;
+          nextCast = t0 + 3200;
+          await page.evaluate((abilityId) => {
+            try {
+              window.__game.sim.castAbility(abilityId);
+            } catch {}
+          }, id);
+        }
+        await page.screenshot({
+          path: `${OUT}/burst_${String(i).padStart(4, '0')}.jpg`,
+          type: 'jpeg',
+          quality: 90,
+        });
+        const spent = Date.now() - t0;
+        if (spent < dt) await sleep(dt - spent);
+      }
+      const { spawnSync } = await import('node:child_process');
+      const enc = spawnSync(
+        'ffmpeg',
+        [
+          '-y',
+          '-framerate',
+          String(BURST_FPS),
+          '-i',
+          `${OUT}/burst_%04d.jpg`,
+          '-c:v',
+          'libx264',
+          '-pix_fmt',
+          'yuv420p',
+          '-crf',
+          '18',
+          `${OUT}/burst.mp4`,
+        ],
+        { stdio: 'ignore', shell: process.platform === 'win32' },
+      );
+      console.log(`burst: ${frames} frames -> ${OUT}/burst.mp4 (ffmpeg exit ${enc.status})`);
+    } else {
+      // Burst: auto-attack swings every ~2.2 s; 24 frames at 110 ms span one swing.
+      for (let i = 0; i < 24; i++) {
+        await page.screenshot({ path: `${OUT}/attack_${String(i).padStart(2, '0')}.png` });
+        await sleep(110);
+      }
     }
     console.log('attack burst captured');
   }
