@@ -210,3 +210,106 @@ const SETTINGS_TEST = 'tests/settings.test.ts';
     console.log(`${SETTINGS_TEST}: inserted the paintedHud default test`);
   }
 }
+
+// 7. Phase 2: the two HUD hooks. The class chrome (a data attribute plus the measured
+//    --pt-* properties) is written once per change of class rather than per frame, and the
+//    target plate's grade rides the same rank the elite/boss classes already come from.
+const HUD = 'src/ui/hud.ts';
+// Biome's organizeImports assist sorts this block by specifier, so both imports land at
+// their sorted place (./options_window < ./painted/class_chrome < ./painted/metrics <
+// ./painter_host) rather than beside the code they feed. Anywhere else and `biome check`
+// rewrites them.
+insertAfterLine(
+  HUD,
+  "import { OptionsWindow } from './options_window';",
+  [
+    "import { paintedChromeFor, paintedGradeFor } from './painted/class_chrome';",
+    "import { applyPaintedMetrics, type PaintedChromeKey } from './painted/metrics';",
+  ],
+  "import { paintedChromeFor, paintedGradeFor } from './painted/class_chrome';",
+);
+// The player's class is on the sim config, not on the entity: `sim.player` is an Entity and
+// Entity carries no `cls`, while `sim.cfg.playerClass` is what the rest of hud.ts reads.
+insertAfterLine(
+  HUD,
+  '    playerFrame.name = p.name;',
+  ['    this.syncPaintedChrome(sim.cfg.playerClass);'],
+  '    this.syncPaintedChrome(sim.cfg.playerClass);',
+);
+insertAfterLine(
+  HUD,
+  "      this.toggleClass(this.targetFrameEl, 'boss', targetRank === 'boss');",
+  [
+    '      const grade = paintedGradeFor(targetRank);',
+    '      if (this.targetFrameEl.dataset.grade !== grade) this.targetFrameEl.dataset.grade = grade;',
+  ],
+  '      const grade = paintedGradeFor(targetRank);',
+);
+// The method goes before toggleClass, so replace that line with the method plus itself.
+replaceLine(
+  HUD,
+  '  private toggleClass(el: HTMLElement, cls: string, on: boolean): void {',
+  [
+    '  private paintedChrome: PaintedChromeKey | null = null;',
+    '  /** The painted class chrome (hud.painted.css): a data attribute the theme picks the bar',
+    '   *  painting by, and the measured --pt-* properties for that bar, written once per change',
+    '   *  of class rather than per frame. The bar painting is picked off the body because',
+    '   *  #bottom-bar precedes #player-frame in index.html. */',
+    '  private syncPaintedChrome(cls: PlayerClass): void {',
+    '    const key = paintedChromeFor(cls);',
+    '    if (key === this.paintedChrome) return;',
+    '    this.paintedChrome = key;',
+    '    this.playerFrameEl.dataset.chrome = key;',
+    '    document.body.dataset.paintedChrome = key;',
+    "    const ui = document.getElementById('ui');",
+    '    if (ui) applyPaintedMetrics(ui.style, key);',
+    "    this.pfLevelEl.dataset.ptWord = t('hudChrome.options.paintedLevelWord');",
+    '  }',
+    '',
+    '  private toggleClass(el: HTMLElement, cls: string, on: boolean): void {',
+  ],
+  '  private syncPaintedChrome(cls: PlayerClass): void {',
+);
+
+// 8. painted_hud.metrics.json is a generated artifact of simpleMMO's export script, not
+//    hand-written source: Biome must not reformat it, or the next export churns the diff.
+insertAfterLine(
+  'biome.json',
+  '      "!public",',
+  ['      "!src/ui/painted/painted_hud.metrics.json",'],
+  '      "!src/ui/painted/painted_hud.metrics.json",',
+);
+
+// 9. The drive registry that pins every statement-position call Hud.update() makes. The new
+//    syncPaintedChrome call needs its row, in source order: it sits between the player frame
+//    name write and the player frame paint. The row goes in by replacing the paint row's own
+//    `call` line with the new row plus itself.
+replaceLine(
+  'tests/hud_update_drive.test.ts',
+  "    call: 'this.playerFramePainter.paint',",
+  [
+    "    call: 'this.syncPaintedChrome',",
+    "    band: 'frame',",
+    "    gate: '',",
+    "    surface: 'chrome',",
+    "    why: 'the painted class chrome: the data attributes the theme picks its bar painting by plus the measured --pt-* properties, written only when the class key changes',",
+    '  },',
+    '  {',
+    "    call: 'this.playerFramePainter.paint',",
+  ],
+  "    call: 'this.syncPaintedChrome',",
+);
+
+// 10. The same registry pins the surface split EXACTLY, so the new chrome row costs a
+//     number here too. The running narrative above the assertion records each delta.
+replaceLine(
+  'tests/hud_update_drive.test.ts',
+  '    ).toEqual({ window: 46, chrome: 84, none: 17 });',
+  [
+    '      // chrome 84 -> 85: the Painted HUD class chrome sync (painted/class_chrome.ts',
+    '      // and painted/metrics.ts), which writes the data attributes and the --pt-*',
+    '      // properties only when the class key changes.',
+    '    ).toEqual({ window: 46, chrome: 85, none: 17 });',
+  ],
+  '    ).toEqual({ window: 46, chrome: 85, none: 17 });',
+);
