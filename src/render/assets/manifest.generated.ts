@@ -418,7 +418,7 @@ export const MEDIA_ASSETS: Record<string, string> =
   "models/creatures/orc_hit_variety_anims.glb": "/media/models/creatures/orc_hit_variety_anims.d42d073bedbd.glb",
   "models/creatures/orcenemy.glb": "/media/models/creatures/orcenemy.49c2f413407e.glb",
   "models/creatures/pyre_colossus.glb": "/media/models/creatures/pyre_colossus.5edb7b6c76e6.glb",
-  "models/creatures/river_drowned.glb": "/media/models/creatures/river_drowned.b4ff825924e5.glb",
+  "models/creatures/river_drowned.glb": "/media/models/creatures/river_drowned.39215f2333a8.glb",
   "models/creatures/spider.glb": "/media/models/creatures/spider.5becf8b6510f.glb",
   "models/creatures/spider_egg_sac.glb": "/media/models/creatures/spider_egg_sac.4a0b3718097e.glb",
   "models/creatures/stag.glb": "/media/models/creatures/stag.ec967c29bd35.glb",

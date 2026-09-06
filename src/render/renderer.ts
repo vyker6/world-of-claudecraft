@@ -728,7 +728,13 @@ import {
   warriorCastVisualPlan,
 } from './warrior_cast_fx_core';
 import { RecklessSkullPainter } from './warrior_cast_fx_painter';
-import { buildWater, setWaterDayNight, setWaterSunDirection, type WaterView } from './water';
+import {
+  buildWater,
+  setWaterBiome,
+  setWaterDayNight,
+  setWaterSunDirection,
+  type WaterView,
+} from './water';
 import { buildWaterFlora } from './water_flora';
 import {
   buildWeaponVfxPrewarmGroup,
@@ -4854,6 +4860,7 @@ export class Renderer {
     sharedUniforms.uTime.value = this.time;
     // the paint-free carpet ring the terrain splat reads (see terrain.ts)
     sharedUniforms.uCarpetRing.value.set(p.pos.x, p.pos.z, GFX.bladeCarpetRadius);
+    setWaterBiome(zoneBiomeAt(p.pos.x, p.pos.z), dt);
     this.tmpV.set(p.pos.x, p.pos.y, p.pos.z);
     this.updateCamera(this.tmpV, dt);
     this.updateAmbience(p.pos.x, this.camera.position.y, dt);
@@ -10187,6 +10194,7 @@ export class Renderer {
     }
     this.time += dt;
     sharedUniforms.uTime.value = this.time;
+    setWaterBiome(zoneBiomeAt(this.sim.player.pos.x, this.sim.player.pos.z), dt);
     // the paint-free carpet ring the terrain splat reads (see terrain.ts)
     sharedUniforms.uCarpetRing.value.set(
       this.sim.player.pos.x,

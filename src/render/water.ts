@@ -9,7 +9,7 @@ import {
   WORLD_SIZE,
   ZONES,
 } from '../sim/data';
-import type { ZoneDef } from '../sim/types';
+import type { BiomeId, ZoneDef } from '../sim/types';
 import { waterLevel, waterLevelAt } from '../sim/world';
 import { loadTexture } from './assets/loader';
 import { registerDeferredPreload } from './assets/preload';
@@ -319,6 +319,32 @@ const DEEP_COLOR = new THREE.Color(0x0d3a52);
 /** Canonical shallow-water tint, exported for surfaces that must match the
  *  sea palette without the full shader (the Wildheart waterfall ribbons). */
 export const SHALLOW_COLOR = new THREE.Color(0x2d8077);
+
+// Per-biome water: the plane is one mesh over the whole world, so the tint follows the
+// biome the player stands in (the camera is always near them) and lerps across a zone
+// crossing. Biomes without a row keep the sea palette above. The marsh runs dark and
+// murky: Ninebend's river is black water between reed beds, not a lagoon.
+const WATER_PALETTE_BY_BIOME: Partial<Record<BiomeId, { deep: number; shallow: number }>> = {
+  marsh: { deep: 0x1a2416, shallow: 0x4f5d2e },
+};
+const SEA_DEEP = DEEP_COLOR.clone();
+const SEA_SHALLOW = SHALLOW_COLOR.clone();
+const targetDeep = new THREE.Color();
+const targetShallow = new THREE.Color();
+/** Ease the shared water colours toward the biome palette; call once per frame. */
+export function setWaterBiome(biome: BiomeId, dt: number): void {
+  const row = WATER_PALETTE_BY_BIOME[biome];
+  if (row) {
+    targetDeep.setHex(row.deep);
+    targetShallow.setHex(row.shallow);
+  } else {
+    targetDeep.copy(SEA_DEEP);
+    targetShallow.copy(SEA_SHALLOW);
+  }
+  const k = 1 - Math.exp(-Math.max(0, dt) * 1.5);
+  DEEP_COLOR.lerp(targetDeep, k);
+  SHALLOW_COLOR.lerp(targetShallow, k);
+}
 const SKY_TINT = new THREE.Color(0x7fb2e0); // matches the sky horizon band
 const SUN_COLOR = new THREE.Color(0xfff0d4);
 
