@@ -35,6 +35,7 @@ describe('renderer zone-streaming horizon', () => {
       'eastbrook_vale',
       'farshore_isle',
       'mirefen_marsh',
+      'ninebend', // the band south of the vale
       'galecrest',
       'proving_shore', // the tutorial island, one cell west of the vale
       'willowfen',
@@ -47,6 +48,7 @@ describe('renderer zone-streaming horizon', () => {
     expect(nearby.map((zone) => zone.id)).toEqual([
       'eastbrook_vale',
       'farshore_isle',
+      'ninebend', // the marsh band south of the vale
       'mirefen_marsh',
       'proving_shore', // the tutorial island shares the vale biome, so no new sky
     ]);

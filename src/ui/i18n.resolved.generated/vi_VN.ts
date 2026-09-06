@@ -4939,6 +4939,8 @@ export const vi_VN: EnTranslations = {
         "farshoreBlurb": "Một hòn đảo bên kia doi cát, nơi bầu trời xé toạc trên Riftfields và Gullhaven rung chuông báo mỗi khi có một vết rạn xuất hiện.",
         "provingName": "Bờ Biển Thử Thách",
         "provingBlurb": "Một hòn đảo huấn luyện yên tĩnh bên kia eo biển, nơi những nhà phiêu lưu mới vững vàng đôi chân trước khi thung lũng đòi hỏi bất cứ điều gì ở họ.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Cánh Đồng Dạ Hoa",
         "nightBlurb": "Một xứ sở của đêm khuya lấp lánh sao trời, nơi hoa lá thắp sáng những lối đi và Moonrest lặng lẽ canh giữ.",
         "hauntName": "Rừng Oan Hồn",
@@ -5905,6 +5907,10 @@ export const vi_VN: EnTranslations = {
       "provingGreeting": "Mọi anh hùng mà thung lũng từng biết ơn đều đã đứng nơi bạn đang đứng bây giờ, và không một ai trong số họ biết cầm lưỡi kiếm ở đầu nào.",
       "provingGreeter": "Giáo Quan Maren, Trại Dawnrest",
       "provingPlaceNotes": "Trại Dawnrest là toàn bộ khu định cư của hòn đảo: vài chiếc lều, một quầy hàng, và một đống lửa tập hợp. Bến Tàu Cũ hướng về thung lũng, nơi vòng tròn vượt biển đưa những người tốt nghiệp qua eo biển; Sân Tập ở phía nam khu trại giữ những hình nộm rơm của nó luôn đứng vững cho bất cứ ai cần đến; và Tuyến Xác Tàu là bờ biển rải rác phế liệu, nơi thủy triều trả công cho hòn đảo bằng những thùng trôi dạt.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Di chuyển khắp thế giới",
       "travelBody": "Mọi con đường trong vương quốc đều được đi bộ hoặc cưỡi ngựa qua. Không có lộ trình bay, không xe taxi, và không có mạng lưới dịch chuyển tức thời: bản đồ là một vùng đất liền mạch duy nhất, và mọi điểm nối đều là nơi bạn có thể đặt chân lên. Các rặng núi chia vùng đất này với vùng đất kia, và nơi hai vùng đất chung một rặng núi, con đường sẽ leo qua một đèo núi. Nhưng không phải biên giới nào cũng vận hành theo cách đó. Ở phía bắc, một con đê dài đưa con đường vượt qua mặt nước từ Thung Lũng Sương Phủ vào vùng đất tuyết giá xa hơn nữa, còn ở phía nam, một doi cát tự nhiên mỏng manh mang tên Ferrywalk chạy về phía đông từ bờ biển của Vale tới Bến Tàu trên hòn đảo Farshore, hòn đảo hoàn toàn không có biên giới đất liền nào. Và có đúng một cánh cửa thật sự duy nhất trong toàn bộ thế giới mở: một tấm màn hoàng hôn cao trên Đỉnh Gai mở vào Thung Lũng Sương Phủ. Rặng núi phía nam của Thung Lũng bị phong kín không lối nào xuyên qua, nên tấm màn ấy là cách duy nhất để bạn vào lần đầu, và nó khép lại sau lưng bạn trên đường trở về.\n\nDù bạn ngã xuống ở đâu, đường trở về cũng ngắn thôi. Mỗi vùng đất đều giữ ít nhất một nghĩa địa có một Người Canh Giữ Nhợt Nhạt lơ lửng trên những bia đá, và một linh hồn được giải thoát sẽ trỗi dậy tại nghĩa địa gần nhất trong số đó.\n\nBản đồ không kết thúc bằng một bức tường vô hình. Đất liền chạy dài ra thành bãi biển và mũi đất, rồi đến vùng biển khơi. Những đoạn nước mà thế giới muốn bạn bơi qua, các eo biển và đầm nước nằm giữa vùng đất này với vùng đất kia, đều êm ả và an toàn để vượt qua. Nhưng nếu bạn cố bơi ra biển khơi, chính khoảng cách sẽ đẩy bạn quay lại: bạn sẽ được cảnh báo, rồi cảnh báo thêm lần nữa, và nếu bạn vẫn tiếp tục bơi, biển cả sẽ bào mòn sức bạn cho đến khi giết chết bạn. Lặn xuống nước cũng có giới hạn riêng của nó, vì hơi thở của bạn sẽ cạn dần dưới mặt nước, nên hãy trồi lên lấy hơi và quay lại khi nước ra dấu cho bạn.",
       "mountsTitle": "Thú Cưỡi",
@@ -18612,6 +18618,27 @@ export const vi_VN: EnTranslations = {
           },
           "4": {
             "label": "Vòng Khổ Luyện"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

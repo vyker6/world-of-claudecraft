@@ -14217,15 +14217,28 @@ export const ja_JP: Partial<Record<TranslationKey, string>> = {
     'マレンがそう言ったのかい？私に一週間も舫い結びの稽古をさせた人からの、これは大した誉め言葉だ。支度ができたら、私の桟橋のそばに立つ鐘を鳴らしなさい、{playerName}。渡しがイーストブルックの町の真ん中に降ろしてくれる。狼には気をつけて。',
   'entities.quests.q_ps_set_sail.objectives.0.label': '渡し守オドに報告する',
   'entities.zones.proving_shore.name': '修練の浜',
+  'entities.zones.ninebend.name': 'ナインベンド',
+  'entities.zones.ninebend.welcome': 'ナインベンドは堰を守り、堰はナインベンドを守る。日暮れ後の葦原には気をつけろ。川は奪ったものを返してくるが、優しく返してはくれない。',
+  'entities.zones.ninebend.pois.0.label': 'ナインベンド',
+  'entities.zones.ninebend.pois.1.label': '堰',
+  'entities.zones.ninebend.pois.2.label': '溺れ人の葦原',
+  'entities.zones.ninebend.pois.3.label': '渡し場',
+  'entities.zones.ninebend.pois.4.label': '緑の門',
   'entities.zones.proving_shore.welcome':
     '修練の浜が君に求めるのは時間だけ。野営地を覚え、かかしを打ち、難破の浜を歩き、支度ができたら渡し守オドが渓谷まで送り届けてくれる。',
   'entities.zones.proving_shore.pois.0.label': '暁の野営地',
   'entities.zones.proving_shore.pois.1.label': '古い桟橋',
   'entities.zones.proving_shore.pois.2.label': '練習場',
   'entities.zones.proving_shore.pois.3.label': '難破の浜',
+  'guide.home.world.ninebendName': 'ナインベンド',
+  'guide.home.world.ninebendBlurb': '九曲川のほとりの堰の町。夜になると水門がひとりでに閉まり、葦原は川が奪ったものを返してよこす。',
   'guide.home.world.provingName': '修練の浜',
   'guide.home.world.provingBlurb':
     '海峡の向こうの静かな訓練の島。渓谷が何かを求めてくる前に、新米冒険者はここで足場を固める。',
+  'guide.worldPage.ninebendBlurb': '九曲川のほとりの堰の町。水の上に建つ高床の小屋が広場を囲み、渡し場には物見櫓が立ち、谷の田畑を生かす水門が並ぶ。夜になると、何かがその水門を閉めている。',
+  'guide.worldPage.ninebendGreeting': '緑の門の道を下ってきたのなら、この川がどこまで届くかは知っているだろう。日暮れ後の葦原には気をつけろ。',
+  'guide.worldPage.ninebendGreeter': '堰守オッダ、渡し場',
+  'guide.worldPage.ninebendPlaceNotes': 'ナインベンドは川沿いで唯一の町で、その渡し場は唯一の渡し船だ。広場の下の堰こそが町の存在理由そのもの。九つの緩やかな川曲がり、一列の水門、そしてその南にある溺れ人の葦原、川はそこで奪ったものを返す。',
   'guide.worldPage.provingBlurb':
     '渓谷から海峡を隔てた静かな島で、訓練場として保たれている。野営地がひとつ、練習場がひとつ、残骸の散らばる浜、そして行きも帰りも通う渡し船。',
   'guide.worldPage.provingGreeting':

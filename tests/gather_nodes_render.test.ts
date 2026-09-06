@@ -24,9 +24,11 @@ describe('gather node rendering', () => {
     // (the +36 bottom-three set) took the content to 156 nodes and 68
     // batches (11 new zone:type:band combos across willowfen, galecrest,
     // and farshore_isle).
-    expect(GATHER_NODES).toHaveLength(156);
-    expect(expectedBatches.size).toBe(69);
-    expect(meshes).toHaveLength(69);
+    // 162 since Ninebend (2026-09): the starter kit, two nodes of each type.
+    expect(GATHER_NODES).toHaveLength(162);
+    // 73 since Ninebend (2026-09): its six starter nodes fall into four new batches.
+    expect(expectedBatches.size).toBe(73);
+    expect(meshes).toHaveLength(73);
     expect(meshes.reduce((sum, mesh) => sum + mesh.count, 0)).toBe(GATHER_NODES.length);
     expect(new Set(meshes.map((mesh) => mesh.geometry)).size).toBe(3);
     expect(new Set(meshes.map((mesh) => mesh.material)).size).toBe(3);

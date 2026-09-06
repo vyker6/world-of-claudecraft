@@ -154,7 +154,15 @@ import {
   NIGHTBLOOM_ROADS,
   NIGHTBLOOM_ZONE,
 } from './content/nightbloom';
-import { NINEBEND_MOBS } from './content/ninebend';
+import {
+  NINEBEND_CAMPS,
+  NINEBEND_ITEMS,
+  NINEBEND_MOBS,
+  NINEBEND_PORTALS,
+  NINEBEND_PROPS,
+  NINEBEND_ROADS,
+  NINEBEND_ZONE,
+} from './content/ninebend';
 import { MUSTER_BOARDS, NOTICEBOARDS } from './content/noticeboards';
 import {
   PALMREACH_CAMPS,
@@ -380,6 +388,7 @@ export const ITEMS: Record<string, ItemDef> = mergeItems(
   FARSHORE_ITEMS,
   WILDHEART_ITEMS,
   PROVING_SHORE_ITEMS,
+  NINEBEND_ITEMS,
   DUNGEON_KEEPSAKE_ITEMS,
   IGNIVAR_DROP_ITEMS,
   CRUCIBLE_PROFESSION_ITEMS,
@@ -561,6 +570,7 @@ export const CAMPS: CampDef[] = [
   // private streams (mob/idle_rng.ts) move: a content append like this one
   // legitimately re-mints the parity goldens without touching a draw digest.
   ...PROVING_SHORE_CAMPS,
+  ...NINEBEND_CAMPS,
 ];
 
 // Escort quest runs (src/sim/escort.ts): defs authored per realm, merged here
@@ -616,6 +626,7 @@ export const ROADS: { x: number; z: number }[][] = [
   ...GALECREST_ROADS,
   ...FARSHORE_ROADS,
   ...PROVING_SHORE_ROADS,
+  ...NINEBEND_ROADS,
 ];
 
 // Paired overworld portals (src/sim/portals.ts checks these each tick).
@@ -631,6 +642,7 @@ export const PORTALS: PortalDef[] = [
   ...GALECREST_PORTALS,
   ...FARSHORE_PORTALS,
   ...PROVING_SHORE_PORTALS,
+  ...NINEBEND_PORTALS,
 ];
 
 export const PROPS: ZonePropsDef = mergeProps([
@@ -650,6 +662,7 @@ export const PROPS: ZonePropsDef = mergeProps([
   GALECREST_PROPS,
   FARSHORE_PROPS,
   PROVING_SHORE_PROPS,
+  NINEBEND_PROPS,
 ]);
 
 function mergeProps(sets: ZonePropsDef[]): ZonePropsDef {
@@ -732,6 +745,7 @@ export const ZONES: ZoneDef[] = [
   GALECREST_ZONE,
   FARSHORE_ZONE,
   PROVING_SHORE_ZONE,
+  NINEBEND_ZONE,
 ];
 
 export const WORLD_SIZE = 360; // the original strip's width (one grid column)

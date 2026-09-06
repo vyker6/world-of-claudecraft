@@ -57,19 +57,23 @@ describe('the continent derives the right border set', () => {
     // stadium (the New Eastbrook program demolition); back to 9 when the
     // Proving Shore's moat carve joined starterMoat in the always-run mask
     // (its south open-sea band has unbounded z support).
+    // appliers 9 to 10 (2026-09): the Nine Bend River applier's band bounds end at
+    // the vale border, one cell south of the town sample, so it joins the cell's
+    // candidate list (one early-return bounds check; nothing it does reaches here).
     expect(terrainRegionCandidateCountsAt(2, -2)).toEqual({
-      appliers: 9,
+      appliers: 10,
       camps: 17,
       hubs: 1,
     });
   });
 
-  it('has twelve horizontal borders and sixteen column edges', () => {
+  it('has thirteen horizontal borders and sixteen column edges', () => {
     // the Farshore adds a v-edge against the vale and an h-line under the
     // Galecrest: both are open-sea borders with no isthmus (ferry only); the
     // Proving Shore mirrors both on the east column (v-edge against the
     // vale, h-line under the Willowfen), open sea with the ferry portal only
-    expect(edges.filter((e) => e.kind === 'h').length).toBe(12);
+    // Ninebend (2026-09) adds the h-line under the vale, the strip's new south border.
+    expect(edges.filter((e) => e.kind === 'h').length).toBe(13);
     expect(edges.filter((e) => e.kind === 'v').length).toBe(16);
   });
 

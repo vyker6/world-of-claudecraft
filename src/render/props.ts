@@ -177,6 +177,18 @@ export const PROP_ASSET_DEFS: Record<string, PropAssetDef> = {
   cart: { url: '/models/props/cart.glb', kit: 'village', strip: /^(Red|Beige)$/ },
   fence: { url: '/models/props/fence.glb', kit: 'village' },
   bonfire: { url: '/models/props/bonfire.glb', kit: 'village' },
+  // Ninebend, the simpleMMO starting ring: the weir town set, generated through the
+  // prop lane in the locked osrs_genshin direction (concept_prop.mjs plates, Tripo,
+  // normalize). Placed via NINEBEND_PROPS.decorProps (src/sim/content/ninebend.ts).
+  ninebendSluiceGate: { url: '/models/props/ninebend_sluice_gate.glb', kit: 'ninebend' },
+  ninebendWeirPier: { url: '/models/props/ninebend_weir_pier.glb', kit: 'ninebend' },
+  ninebendRiverBarge: { url: '/models/props/ninebend_river_barge.glb', kit: 'ninebend' },
+  ninebendStiltHut: { url: '/models/props/ninebend_stilt_hut.glb', kit: 'ninebend' },
+  ninebendWatchtower: { url: '/models/props/ninebend_watchtower.glb', kit: 'ninebend' },
+  ninebendLanternPost: { url: '/models/props/ninebend_lantern_post.glb', kit: 'ninebend' },
+  ninebendShrineStone: { url: '/models/props/ninebend_shrine_stone.glb', kit: 'ninebend' },
+  ninebendFishRack: { url: '/models/props/ninebend_fish_rack.glb', kit: 'ninebend' },
+  ninebendBannerPole: { url: '/models/props/ninebend_banner_pole.glb', kit: 'ninebend' },
   oreRocks: { url: '/models/props/ore_rocks.glb', kit: 'ore' },
   tentOpen: { url: '/models/props/tent_open.glb', kit: 'tent', yaw: Math.PI },
   tentSmall: { url: '/models/props/tent_small.glb', kit: 'tent', yaw: Math.PI },

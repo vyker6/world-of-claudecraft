@@ -4939,6 +4939,8 @@ export const pl_PL: EnTranslations = {
         "farshoreBlurb": "Wyspa za mielizną, gdzie niebo rozdziera się nad Polami Szczelin, a Gullhaven bije w dzwon przy każdym wyłomie.",
         "provingName": "Wybrzeże Prób",
         "provingBlurb": "Spokojna wyspa szkoleniowa po drugiej stronie cieśniny, gdzie nowi poszukiwacze przygód uczą się stać na własnych nogach, zanim dolina zażąda od nich czegokolwiek.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Nocny Kwiat",
         "nightBlurb": "Kraina gwiaździstej północy, gdzie kwiaty oświetlają ścieżki, a Moonrest utrzymuje swoje czuwanie.",
         "hauntName": "Widmowy Bór",
@@ -5905,6 +5907,10 @@ export const pl_PL: EnTranslations = {
       "provingGreeting": "Każdy bohater, jakiemu dolina kiedykolwiek podziękowała, stał tam, gdzie ty stoisz teraz, i żaden z nich nie wiedział, za który koniec ostrza trzymać.",
       "provingGreeter": "Instruktorka Maren, Obóz Dawnrest",
       "provingPlaceNotes": "Obóz Dawnrest to cała osada na wyspie: kilka namiotów, kramik i ognisko zbiórki. Stary Pomost patrzy w stronę doliny, gdzie krąg przeprawy niesie absolwentów przez cieśninę; Plac Ćwiczeń na południe od obozu utrzymuje swoje słomiane kukły w gotowości dla każdego, kto ich potrzebuje; a Linia Wraków to usiana złomem plaża, gdzie przypływ płaci wyspie skrzyniami rozbitków.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Podróżowanie",
       "travelBody": "Każdą drogą w królestwie idzie się pieszo albo jedzie wierzchem. Nie ma szlaków lotu, taksówek ani sieci teleportów: mapa to jeden spójny ląd, a każde połączenie to coś, na czym możesz stanąć. Grzbiety dzielą jedną krainę od drugiej, a tam, gdzie dwie krainy dzielą wspólny grzbiet, droga wspina się przez przełęcz. Nie każda granica działa jednak w ten sposób. Na północy długa grobla wyprowadza drogę ponad wodą z Zasłoniętej Kotliny w krainę śniegu za nią, a z powrotem na południu cienka naturalna mielizna zwana Promowym Szlakiem biegnie na wschód od wybrzeża Vale do Przystani na wyspie Dalekiego Wybrzeża, która nie ma żadnej granicy lądowej. I jest dokładnie jedno prawdziwe wejście w całym otwartym świecie: zasłona zmierzchu wysoko na Thornpeak, która otwiera przejście do Zasłoniętej Kotliny. Południowy grzbiet Kotliny jest zapieczętowany, bez żadnej przełęczy, więc ta zasłona jest jedynym sposobem, by dostać się tam po raz pierwszy, i zamyka się za tobą w drodze powrotnej.\n\nGdziekolwiek polegniesz, droga powrotna jest krótka. Każda strefa ma co najmniej jeden cmentarz z Bladym Strażnikiem unoszącym się nad kamieniami, a uwolniony duch powstaje przy najbliższym z nich.\n\nMapa nie kończy się niewidzialną ścianą. Ląd wybiega w plaże i cyple, a potem w otwartą wodę. Przeprawy, które świat chce, byś przepłynął, cieśniny i rozlewiska między jedną krainą a drugą, są spokojne i bezpieczne do przekroczenia. Wypłyń zamiast tego na pełne morze, a sam dystans cię zawróci: zostaniesz ostrzeżony, i ostrzeżony ponownie, a jeśli będziesz płynąć dalej, morze będzie cię wyczerpywać, aż cię zabije. Nurkowanie ma swój własny limit, ponieważ pod powierzchnią kończy ci się oddech, więc wynurz się, by zaczerpnąć powietrza, i zawróć, gdy każe ci to woda.",
       "mountsTitle": "Wierzchowce",
@@ -18612,6 +18618,27 @@ export const pl_PL: EnTranslations = {
           },
           "4": {
             "label": "Tor Przeszkód"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

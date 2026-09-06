@@ -4939,6 +4939,8 @@ export const es: EnTranslations = {
         "farshoreBlurb": "Una isla al otro lado del banco de arena, donde el cielo se desgarra sobre los Campos de la Brecha y Gullhaven hace sonar su campana con cada brecha.",
         "provingName": "La Costa de la Prueba",
         "provingBlurb": "Una isla de entrenamiento tranquila al otro lado del estrecho, donde los nuevos aventureros aprenden a valerse por sí mismos antes de que el valle les pida nada.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "La Flor Nocturna",
         "nightBlurb": "Un reino de medianoche estrellada donde las flores iluminan los senderos y Moonrest guarda su vigilia.",
         "hauntName": "El Bosque de los Espectros",
@@ -5905,6 +5907,10 @@ export const es: EnTranslations = {
       "provingGreeting": "Cada héroe al que el valle ha dado las gracias estuvo alguna vez donde tú estás ahora, y ninguno sabía por qué extremo se sujetaba una espada.",
       "provingGreeter": "Instructora Maren, Campamento Dawnrest",
       "provingPlaceNotes": "El Campamento Dawnrest es el asentamiento entero de la isla: unas cuantas tiendas, un puesto y una hoguera de reunión. El Viejo Muelle mira hacia el valle, donde el círculo de travesía lleva a los graduados al otro lado del estrecho; el Patio de Prácticas, al sur del campamento, mantiene sus efigies de paja en pie para quien las necesite; y la Línea de Naufragios es la orilla sembrada de restos donde la marea paga a la isla en cajas de naufragio.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Cómo moverse",
       "travelBody": "Cada camino del reino se recorre a pie o a caballo. No hay rutas de vuelo, ni taxis, ni red de teletransporte: el mapa es una única masa de tierra conectada, y cada conexión es algo que puedes pisar. Las crestas separan un reino del siguiente, y donde dos reinos comparten una cresta, el camino sube por un paso. Sin embargo, no todas las fronteras funcionan así. Al norte, una larga calzada lleva el camino sobre el agua desde la Hondonada Velada hasta el país nevado más allá, y más al sur, un delgado banco de arena natural llamado el Ferrywalk corre hacia el este desde la costa del Valle hasta El Embarcadero, en la isla del Farshore, que no tiene frontera terrestre alguna. Y hay exactamente una puerta verdadera en la totalidad del mundo exterior: un velo de ocaso en lo alto de Thornpeak que se abre a la Hondonada Velada. La cresta sur de la Hondonada está sellada, sin ningún paso que la atraviese, así que ese velo es tu primera entrada, y se cierra tras de ti a la vuelta.\n\nCaigas donde caigas, el camino de vuelta es corto. Cada zona guarda al menos un cementerio con un Guardián Pálido velando sobre las lápidas, y un espíritu liberado se alza en el más cercano de ellos.\n\nEl mapa no termina en un muro invisible. La tierra se deshace en playas y cabos, y luego en mar abierto. Los cruces que el mundo espera que nades, los estrechos y lagunas entre un reino y el siguiente, son tranquilos y seguros de cruzar. Adéntrate en cambio mar adentro y la distancia misma te hace retroceder: te avisan, y te avisan de nuevo, y si sigues nadando, el mar te agota hasta matarte. Bucear tiene su propio límite, ya que el aliento se te acaba bajo la superficie, así que sube a respirar y da media vuelta cuando el agua te lo indique.",
       "mountsTitle": "Monturas",
@@ -18612,6 +18618,27 @@ export const es: EnTranslations = {
           },
           "4": {
             "label": "El Guante"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

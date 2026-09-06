@@ -72,6 +72,8 @@ const ZONE_KEY_STEM: Record<string, string> = {
   // The tutorial island also renders in the vale biome, so it takes its own
   // stem for the same anchor-collision reason as the Farshore above.
   proving_shore: 'proving',
+  // Ninebend renders in the marsh biome, which the Mirefen already speaks for.
+  ninebend: 'ninebend',
 };
 
 /** The stem that names a zone's curated catalog keys and its world-page anchor. */

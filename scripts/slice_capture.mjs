@@ -10,6 +10,7 @@
 // Usage: node scripts/slice_capture.mjs
 //   HERO_URL=models/chars/players/<body>.glb  (default: the wired player_warrior body)
 //   WEAPON_ITEM=reaver_axe  ENEMY_TEMPLATE=vale_bandit  OUT=tmp/slice/hero_v1
+//   TP_X=8 TP_Z=-330 [TP_FACING=3.14]  (teleport to a zone before the shots)
 import fs from 'node:fs';
 import puppeteer from 'puppeteer-core';
 import { BROWSER_PATH } from './browser_path.mjs';
@@ -20,6 +21,10 @@ const HERO_URL = process.env.HERO_URL ?? '';
 const WEAPON_ITEM = process.env.WEAPON_ITEM ?? 'reaver_axe';
 const ENEMY = process.env.ENEMY_TEMPLATE ?? 'vale_bandit';
 const OUT = process.env.OUT ?? 'tmp/slice/hero_v1';
+// Optional teleport before the shots (world coordinates), e.g. a zone's arrival point.
+const TP_X = process.env.TP_X !== undefined ? Number(process.env.TP_X) : null;
+const TP_Z = process.env.TP_Z !== undefined ? Number(process.env.TP_Z) : null;
+const TP_FACING = process.env.TP_FACING !== undefined ? Number(process.env.TP_FACING) : null;
 const W = 1920;
 const H = 1080;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -96,7 +101,7 @@ if (HERO_URL) {
 const booted = await enterOfflineGame(page, {
   charClass: 'warrior',
   charName: 'Slice',
-  settleMs: 5000,
+  settleMs: 9000,
   selectorTimeoutMs: 120000,
   gameBootTimeoutMs: 600000,
 });
@@ -109,13 +114,23 @@ for (let i = 0; i < 3; i++) {
 }
 
 const setup = await page.evaluate(
-  async ({ weaponItem, heroUrl }) => {
+  async ({ weaponItem, heroUrl, tp }) => {
     const g = window.__game;
     const sim = g.sim;
     const p = sim.player;
     sim.setPlayerLevel(20);
     p.maxHp = 999999;
     p.hp = 999999;
+    if (tp) {
+      const g = sim.groundPos(tp.x, tp.z);
+      p.pos = { ...g };
+      p.prevPos = { ...g };
+      if (tp.facing !== null) {
+        p.facing = tp.facing;
+        p.prevFacing = tp.facing;
+      }
+      sim.rebucket?.(p);
+    }
     // Leave the modular composition path: the renderer's live-redesign branch then
     // recomposes the local player onto the fixed player_warrior rig.
     if (heroUrl) p.modularAppearance = undefined;
@@ -133,10 +148,25 @@ const setup = await page.evaluate(
     }
     return { pos: p.pos, facing: p.facing, equipped, modular: p.modularAppearance != null };
   },
-  { weaponItem: WEAPON_ITEM, heroUrl: HERO_URL },
+  {
+    weaponItem: WEAPON_ITEM,
+    heroUrl: HERO_URL,
+    tp: TP_X !== null && TP_Z !== null ? { x: TP_X, z: TP_Z, facing: TP_FACING } : null,
+  },
 );
 console.log('setup:', JSON.stringify(setup));
-await sleep(4000); // visual rebuild + GLB load + texture upload
+// visual rebuild + GLB load + texture upload, and the entering-the-world fade:
+// a cold Vite graph lands the first shot on the loading overlay otherwise.
+await page
+  .waitForFunction(
+    () => {
+      const el = document.getElementById('loading-screen');
+      return !el || getComputedStyle(el).display === 'none' || getComputedStyle(el).opacity === '0';
+    },
+    { timeout: 120000, polling: 500 },
+  )
+  .catch(() => {});
+await sleep(6000);
 
 async function shot(name, { yaw, dist = 7, pitch = 0.32 }) {
   await page.evaluate(
@@ -165,6 +195,12 @@ await shot('idle_side', { yaw: yawFor(facing, Math.PI / 2), dist: 7 });
 await shot('idle_back', { yaw: yawFor(facing, 0), dist: 7 });
 await shot('idle_front34_close', { yaw: yawFor(facing, Math.PI + 0.7), dist: 4.5, pitch: 0.2 });
 await shot('idle_default_cam', { yaw: yawFor(facing, 0), dist: 12 });
+// Teleported into a zone: two wide views of the ground the harness landed on.
+if (TP_X !== null && TP_Z !== null) {
+  await shot('zone_high', { yaw: yawFor(facing, 0), dist: 45, pitch: 1.1 });
+  await shot('zone_far', { yaw: yawFor(facing, Math.PI / 2), dist: 90, pitch: 0.75 });
+  await shot('zone_far_back', { yaw: yawFor(facing, Math.PI), dist: 90, pitch: 0.75 });
+}
 
 if (ENEMY) {
   const fight = await page.evaluate(async (tpl) => {

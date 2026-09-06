@@ -609,6 +609,8 @@ const ZONE_IDS = [
   'galecrest',
   'farshore_isle',
   'proving_shore',
+  // Ninebend, the simpleMMO starting ring (src/sim/content/ninebend.ts).
+  'ninebend',
 ] as const;
 const DUNGEON_IDS = [
   'hollow_crypt',

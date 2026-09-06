@@ -5,6 +5,12 @@ import { castlePadTarget, castlePadWeight, castleSkirtWeight, LAST_SPRING } from
 import { EMBER_BAYS, EMBER_LAND_LOBES, forgefatherScatterExcluded } from './content/ember_coast';
 import { STABLE_FLAT, STABLE_PADDOCK } from './content/mounts';
 import { PALMREACH_PROPS } from './content/palmreach';
+import {
+  NINEBEND_BAYS,
+  NINEBEND_LAND_LOBES,
+  NINEBEND_RECT,
+  NINEBEND_RIVER,
+} from './content/ninebend';
 import { VALE_BAYS, VALE_LAND_LOBES } from './content/vale_coast';
 import {
   bgOriginAt,
@@ -1586,7 +1592,10 @@ export function valeLandness(x: number, z: number): number {
 // (tests/terrain_window_seams.test.ts pins both lines.)
 function applyValeCoast(x: number, z: number, h: number): number {
   if (z > 178 || z < -215 || x > 190) return h;
-  const w = (1 - smoothstep(178, 190, x)) * (1 - smoothstep(162, 178, z));
+  // ...and the south edge fades too, now that Ninebend fills the band below
+  // z -180 (the carve used to stop dead at z -215 behind the old world rim).
+  const w =
+    (1 - smoothstep(178, 190, x)) * (1 - smoothstep(162, 178, z)) * smoothstep(-215, -200, z);
   if (w <= 0) return h;
   const land = valeLandness(x, z);
   const t = smoothstep(0.02, 0.3, land);
@@ -2699,6 +2708,68 @@ function palmConeOffset(x: number, z: number): number {
   const cone = 22 * (1 - smoothstep(4, 32, d));
   const crater = -8 * (1 - smoothstep(0, 9, d));
   return (cone + crater) * smoothstep(7, 14, roadDistance(x, z));
+}
+
+// The Nine Bend River: Ninebend's river is carved along NINEBEND_RIVER's
+// centreline, a channel bed below the waterline inside halfWidth with banks
+// that ease out over `bank` yards (about a 0.5 rise/run at the marsh flats,
+// so every bank is a walk, never a scramble). Roads never cross it (the weir
+// carries the only crossing, as a prop) and camps flatten first and stay dry
+// through the same gate the fen braids use; the band edges feather so the
+// carve never prints a seam on either border.
+const NB_LAND_FIELD = boundedBlobs(NINEBEND_LAND_LOBES);
+const NB_BAY_FIELD = boundedBlobs(NINEBEND_BAYS);
+function ninebendLandness(x: number, z: number): number {
+  return metaballLandness(NB_LAND_FIELD, NB_BAY_FIELD, x, z);
+}
+function ninebendRiverDistance(x: number, z: number): number {
+  const pts = NINEBEND_RIVER.points;
+  let best = Number.POSITIVE_INFINITY;
+  for (let i = 0; i + 1 < pts.length; i++) {
+    const a = pts[i];
+    const b = pts[i + 1];
+    const abx = b.x - a.x;
+    const abz = b.z - a.z;
+    const len2 = abx * abx + abz * abz;
+    let t = len2 > 0 ? ((x - a.x) * abx + (z - a.z) * abz) / len2 : 0;
+    t = Math.max(0, Math.min(1, t));
+    const d = Math.hypot(x - (a.x + abx * t), z - (a.z + abz * t));
+    if (d < best) best = d;
+  }
+  return best;
+}
+function applyNinebendRiver(x: number, z: number, h: number): number {
+  if (x < NINEBEND_RECT.xMin - 8 || x > NINEBEND_RECT.xMax + 8) return h;
+  if (z < NINEBEND_RECT.zMin + 8 || z > NINEBEND_RECT.zMax - 8) return h;
+  const edge =
+    smoothstep(NINEBEND_RECT.zMin + 8, NINEBEND_RECT.zMin + 48, z) *
+    (1 - smoothstep(NINEBEND_RECT.zMax - 48, NINEBEND_RECT.zMax - 8, z)) *
+    smoothstep(NINEBEND_RECT.xMin - 8, NINEBEND_RECT.xMin + 32, x) *
+    (1 - smoothstep(NINEBEND_RECT.xMax - 32, NINEBEND_RECT.xMax + 8, x));
+  if (edge <= 0) return h;
+  // The flood plain: the band is open sea by default, so the land lobes raise
+  // a low plain with gentle relief out of it (the proving coast recipe: sea
+  // floor, a shelf, a beach apron, then land), and the river is cut into that.
+  const land = ninebendLandness(x, z);
+  const t = smoothstep(0.02, 0.3, land);
+  const shelf = smoothstep(-0.4, 0.06, land);
+  const floor = WATER_LEVEL - 3.2 + (WATER_LEVEL - 0.8 - (WATER_LEVEL - 3.2)) * shelf;
+  const plain = 2.6 + (fbm2(x * 0.03, z * 0.03, 4711, 3) - 0.5) * 2.4;
+  let out = h + (floor + (plain - floor) * t - h) * edge;
+  const beachT = 1 - smoothstep(0.05, 0.28, land);
+  if (beachT > 0 && out > 1.4) out = out + (1.4 + (out - 1.4) * 0.2 - out) * beachT * edge;
+  const { halfWidth, bank } = NINEBEND_RIVER;
+  const d = ninebendRiverDistance(x, z);
+  if (d > halfWidth + bank) return out;
+  let channel = (1 - smoothstep(halfWidth, halfWidth + bank, d)) * edge;
+  for (const camp of CAMPS) {
+    if (camp.center.z < NINEBEND_RECT.zMin || camp.center.z >= NINEBEND_RECT.zMax) continue;
+    const dc = Math.hypot(x - camp.center.x, z - camp.center.z);
+    channel *= smoothstep(camp.radius * 1.6, camp.radius * 2.4, dc);
+  }
+  if (channel <= 0) return out;
+  const bed = WATER_LEVEL - 2.4;
+  return out + (Math.min(out, bed) - out) * channel;
 }
 
 // The Braids: the Willowfen's east water-meadows dissolve into winding
@@ -4371,6 +4442,9 @@ function terrainHeightUnpadded(x: number, z: number, seed: number, skipEdits = f
   }
   if (terrainRegionHas(region, TERRAIN_APPLIER.provingMoat)) {
     h = applyProvingMoat(x, z, h);
+    if (terrainRegionHas(region, TERRAIN_APPLIER.ninebendRiver)) {
+      h = applyNinebendRiver(x, z, h);
+    }
   }
   if (terrainRegionHas(region, TERRAIN_APPLIER.columnStraits)) {
     h = applyColumnStraits(x, z, h);

@@ -4939,6 +4939,8 @@ export const nl_NL: EnTranslations = {
         "farshoreBlurb": "Een eiland voorbij de zandbank, waar de lucht openscheurt boven de Riftvelden en Meeuwenhaven bij elke breuk haar klok luidt.",
         "provingName": "De Beproevingskust",
         "provingBlurb": "Een rustig trainingseiland aan de overkant van de zeeëngte, waar nieuwe avonturiers hun draai vinden voordat het dal iets van hen vraagt.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "De Nachtbloesem",
         "nightBlurb": "Een land van sterrenheldere middernacht waar de bloemen de paden verlichten en Maanrust de wake houdt.",
         "hauntName": "Het Schimmenwoud",
@@ -5905,6 +5907,10 @@ export const nl_NL: EnTranslations = {
       "provingGreeting": "Elke held die het dal ooit heeft bedankt, stond waar jij nu staat, en geen van hen wist welk eind van een kling je vast moest houden.",
       "provingGreeter": "Instructeur Maren, Kamp Dageraadrust",
       "provingPlaceNotes": "Kamp Dageraadrust is de hele nederzetting van het eiland: een paar tenten, een kraam, en een verzamelvuur. De Oude Pier kijkt uit op het dal, waar de oversteekcirkel afgestudeerden over de zeeëngte draagt; het Oefenterrein ten zuiden van het kamp houdt zijn stropoppen overeind voor wie ze nodig heeft; en de Wraklijn is het met berging bezaaide strand waar het getij het eiland uitbetaalt in aangespoelde kisten.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Je verplaatsen",
       "travelBody": "Elke weg in het rijk leg je te voet of te paard af. Er zijn geen vliegroutes, geen taxi's en geen teleportnetwerk: de kaart is één aaneengesloten landmassa, en elke verbinding is iets waar je op kunt staan. Bergkammen scheiden het ene rijk van het volgende, en waar twee rijken een bergkam delen, klimt de weg door een pas. Niet elke grens werkt zo, overigens. In het noorden voert een lange dijk de weg over het water vanuit De Sluierholte naar het sneeuwland daarachter, en verder naar het zuiden loopt een dunne natuurlijke zandbank genaamd de Veerloop oostwaarts van de kust van het Dal naar De Aanlegplaats op het eiland van de Verrekust, dat helemaal geen landgrens heeft. En er is precies één echte doorgang in de hele bovenwereld: een sluier van schemering hoog op Doorntop die toegang geeft tot De Sluierholte. De zuidelijke bergkam van de Holte is verzegeld zonder pas erdoorheen, dus die sluier is hoe je er voor het eerst binnenkomt, en hij sluit zich achter je op de terugweg.\n\nWaar je ook valt, de terugweg is kort. Elke zone bewaart minstens één begraafplaats met een Bleke Hoeder die boven de stenen zweeft, en een losgelaten geest herrijst bij de dichtstbijzijnde daarvan.\n\nDe kaart eindigt niet in een onzichtbare muur. Het land loopt uit in stranden en landtongen, en dan in open water. De oversteekplaatsen die de wereld je laat zwemmen, de zeestraten en wateren tussen het ene rijk en het volgende, zijn kalm en veilig om over te steken. Zwem in plaats daarvan de open zee op en de afstand zelf stuurt je terug: je wordt gewaarschuwd, en nogmaals gewaarschuwd, en als je blijft zwemmen, put de zee je uit tot ze je doodt. Duiken heeft zijn eigen grens, want je adem raakt op onder het oppervlak, dus kom boven voor lucht en keer om zodra het water het je zegt.",
       "mountsTitle": "Rijdieren",
@@ -18612,6 +18618,27 @@ export const nl_NL: EnTranslations = {
           },
           "4": {
             "label": "De Hindernisbaan"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

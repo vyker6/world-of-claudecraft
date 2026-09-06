@@ -4939,6 +4939,8 @@ export const it_IT: EnTranslations = {
         "farshoreBlurb": "Un'isola oltre la barra di sabbia, dove il cielo si squarcia sopra i Campi degli Squarci e Gullhaven suona la sua campana per ogni breccia.",
         "provingName": "La Riva della Prova",
         "provingBlurb": "Una tranquilla isola d'addestramento al di là dello stretto, dove i nuovi avventurieri trovano il loro equilibrio prima che la valle chieda loro qualcosa.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Nightbloom",
         "nightBlurb": "Una terra di mezzanotte stellata dove i fiori illuminano i sentieri e Moonrest veglia senza sosta.",
         "hauntName": "Wraithwood",
@@ -5905,6 +5907,10 @@ export const it_IT: EnTranslations = {
       "provingGreeting": "Ogni eroe che la valle abbia mai ringraziato è stato dove sei tu ora, e nessuno di loro sapeva da che parte impugnare una lama.",
       "provingGreeter": "Istruttrice Maren, Campo di Dawnrest",
       "provingPlaceNotes": "Il Campo di Dawnrest è l'intero insediamento dell'isola: qualche tenda, una bancarella, e un fuoco del raduno. Il Vecchio Molo guarda verso la valle, dove il cerchio di traversata porta i diplomati oltre lo stretto; il Campo d'Addestramento a sud del campo tiene in piedi le sue effigie di paglia per chiunque ne abbia bisogno; e la Linea dei Relitti è la spiaggia disseminata di recupero dove la marea paga l'isola in casse del naufrago.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Come spostarsi",
       "travelBody": "Ogni strada del reame si percorre a piedi o a cavallo. Non ci sono percorsi di volo, non ci sono taxi, e non c'è una rete di teletrasporto: la mappa è un'unica massa continentale, e ogni collegamento è qualcosa su cui puoi mettere i piedi. Le creste dividono un reame dal successivo, e dove due reami condividono una cresta la strada sale attraverso un passo. Non tutti i confini funzionano così, però. A nord una lunga strada rialzata porta la via sull'acqua dalla Valletta Velata fino alle terre innevate oltre, e più a sud un sottile banco di sabbia naturale chiamato Ferrywalk corre a est dalla costa della Valle fino all'Approdo sull'isola del Farshore, che non ha alcun confine di terra. E c'è esattamente un'unica vera porta in tutto il mondo aperto: un velo di crepuscolo alto su Thornpeak che si apre sulla Valletta Velata. Il crinale meridionale della Valletta è sigillato, senza alcun passo che lo attraversi, quindi quel velo è il modo in cui vi entri la prima volta, e si richiude alle tue spalle sulla via del ritorno.\n\nOvunque tu cada, la strada del ritorno è breve. Ogni zona custodisce almeno un cimitero con un Custode Pallido che aleggia sulle pietre, e uno spirito liberato risorge nel più vicino di essi.\n\nLa mappa non finisce contro un muro invisibile. La terra sfuma in spiagge e promontori, e poi in acque aperte. I tratti d'acqua che il mondo prevede tu attraversi a nuoto, gli stretti e i laghetti tra un reame e l'altro, sono calmi e sicuri da attraversare. Se ti spingi invece verso il mare aperto, è la distanza stessa a respingerti: vieni avvisato, e avvisato di nuovo, e se continui a nuotare il mare ti prosciuga le forze finché non ti uccide. Anche immergersi ha il proprio limite, dato che il fiato si esaurisce sott'acqua, quindi risali per respirare e torna indietro quando l'acqua te lo dice.",
       "mountsTitle": "Cavalcature",
@@ -18612,6 +18618,27 @@ export const it_IT: EnTranslations = {
           },
           "4": {
             "label": "La Corsa a Ostacoli"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

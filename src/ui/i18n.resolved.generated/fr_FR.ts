@@ -4939,6 +4939,8 @@ export const fr_FR: EnTranslations = {
         "farshoreBlurb": "Une île au-delà du banc de sable, où le ciel se déchire au-dessus des Champs de la Faille et où Gullhaven fait sonner sa cloche à chaque brèche.",
         "provingName": "Le Rivage de l'Épreuve",
         "provingBlurb": "Une île d'entraînement paisible de l'autre côté du détroit, où les nouveaux aventuriers prennent leurs marques avant que le val ne leur demande quoi que ce soit.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "La Fleur de Nuit",
         "nightBlurb": "Un royaume de minuit étoilé où les fleurs éclairent les chemins et où Moonrest monte la garde.",
         "hauntName": "Le Bois des Spectres",
@@ -5905,6 +5907,10 @@ export const fr_FR: EnTranslations = {
       "provingGreeting": "Chaque héros que le val a jamais remercié s'est tenu là où vous vous tenez maintenant, et pas un seul ne savait par quel bout tenir une lame.",
       "provingGreeter": "Instructrice Maren, Camp de Dawnrest",
       "provingPlaceNotes": "Le Camp de Dawnrest est toute l'installation de l'île : quelques tentes, un étal, et un feu de rassemblement. La Vieille Jetée fait face au val, là où le cercle de traversée porte les diplômés au-delà du détroit ; la Cour d'Entraînement au sud du camp garde ses effigies de paille dressées pour qui en a besoin ; et la Ligne des Épaves est la grève jonchée de récupération où la marée paie l'île en caisses du naufrage.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Se déplacer",
       "travelBody": "Toute route du royaume se parcourt à pied ou à cheval. Il n'existe ni liaison aérienne, ni taxi, ni réseau de téléportation : la carte est une seule masse continentale reliée, et chaque liaison est un terrain sur lequel on peut se tenir. Des crêtes séparent chaque zone de la suivante, et là où deux zones partagent une crête, la route grimpe par un col. Mais toutes les frontières ne fonctionnent pas de cette façon. Au nord, une longue chaussée porte la route au-dessus de l'eau depuis le Vallon Voilé jusqu'au pays de neige au-delà, et plus au sud, un mince banc de sable naturel appelé le Ferrywalk court vers l'est depuis la côte du Val jusqu'au Débarcadère, sur l'île du Rivage Lointain, qui elle, n'a aucune frontière terrestre. Et il n'existe qu'une seule véritable porte dans tout le monde ouvert : un voile de crépuscule haut sur Thornpeak qui s'ouvre sur le Vallon Voilé. La crête méridionale du Vallon est scellée, sans col pour la traverser, si bien que ce voile est votre unique moyen d'y entrer la première fois, et il se referme derrière vous au retour.\n\nOù que vous tombiez, le chemin du retour est court. Chaque zone conserve au moins un cimetière où plane un Veilleur pâle au-dessus des pierres, et un esprit libéré se relève au plus proche d'entre eux.\n\nLa carte ne s'arrête pas sur un mur invisible. La terre se termine en plages et en promontoires, puis en eau libre. Les traversées que le monde vous invite à nager, les détroits et les bras de mer entre deux zones, sont calmes et sûres à traverser. Élancez-vous plutôt vers le large et la distance elle-même vous fera rebrousser chemin : vous serez averti, puis averti à nouveau, et si vous continuez de nager, la mer finit par vous épuiser jusqu'à vous tuer. La plongée a sa propre limite, puisque votre souffle s'épuise sous la surface, alors remontez respirer et faites demi-tour quand l'eau vous le dit.",
       "mountsTitle": "Montures",
@@ -18612,6 +18618,27 @@ export const fr_FR: EnTranslations = {
           },
           "4": {
             "label": "Le Gantelet"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

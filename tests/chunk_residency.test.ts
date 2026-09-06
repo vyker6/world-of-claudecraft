@@ -164,7 +164,8 @@ describe('nearest unbuilt ground', () => {
         if (cellOwner(cx, cz) === null) unowned.push([cx, cz]);
       }
     }
-    expect(unowned.length).toBe(60);
+    // 132 since Ninebend (2026-09): its band adds 108 cells, 36 of them owned.
+    expect(unowned.length).toBe(132);
     const isPending = pendingOutside(new Set(ZONES.map((zone) => zone.id)));
     // Stand in the middle of an unowned cell: even at zero distance it must not
     // clamp, and the full biome request is granted.
@@ -352,7 +353,10 @@ describe('the view wedge (turning on the spot must not move the horizon)', () =>
     // The Proving Shore tutorial island now owns the west cell, so it joins the
     // built set here to keep the spawn's one open heading (west, over the
     // island toward the ocean past x=-540) that the report measured.
-    const eastbrookOnly = pendingOutside(new Set(['eastbrook_vale', 'proving_shore']));
+    // Ninebend (2026-09) owns the band south of the spawn; it joins the built
+    // set so the southern headings still read the world back, as they did
+    // when that band was the world rim.
+    const eastbrookOnly = pendingOutside(new Set(['eastbrook_vale', 'proving_shore', 'ninebend']));
     const spawn = { x: 2, z: -2 };
     const served = [];
     for (let i = 0; i < 16; i++) {
@@ -386,11 +390,12 @@ describe('partially built neighbours (the reported walls)', () => {
     // Reported live: logging in at (-2, 580) put the player 40 yd from the
     // Mirefen rectangle, and the peaks preset's 850-yard vista sat at the
     // 45-yard floor for about a minute while a whole 36-chunk zone plus its
-    // HDRI finished. Mirefen occupies cell rows 6 to 11; the two rows against
-    // the border are the only ones that were ever in the way.
+    // HDRI finished. Mirefen occupies cell rows 12 to 17 (6 to 11 before Ninebend
+    // added six rows south of the vale); the two rows against the border are the
+    // only ones that were ever in the way.
     const login = { x: -2, z: 580 };
     const mirefenRow = (cz: number): boolean => cellOwner(8, cz) === 'mirefen_marsh';
-    expect([6, 7, 8, 9, 10, 11].every(mirefenRow)).toBe(true);
+    expect([12, 13, 14, 15, 16, 17].every(mirefenRow)).toBe(true);
 
     const builtZones = new Set(['thornpeak_heights']);
     const wholeZonePending = pendingOutside(builtZones);
@@ -398,14 +403,14 @@ describe('partially built neighbours (the reported walls)', () => {
       fogFarForBuiltGround(GRID, wholeZonePending, login.x, login.z, MAX_OUTDOOR_FOG_FAR),
     ).toBe(MIN_OUTDOOR_FOG_FAR);
 
-    // Now build ONLY Mirefen's two northern rows (cz 10 and 11, z 420 to 540).
+    // Now build ONLY Mirefen's two northern rows (cz 16 and 17, z 420 to 540).
     const twoRowsBuilt: GroundPendingAt = (cx, cz) => {
       const owner = cellOwner(cx, cz);
       if (owner === null || builtZones.has(owner)) return false;
-      if (owner === 'mirefen_marsh' && cz >= 10) return false;
+      if (owner === 'mirefen_marsh' && cz >= 16) return false;
       return true;
     };
-    // The nearest ground still owed is Mirefen row 9, whose north edge is
+    // The nearest ground still owed is Mirefen row 15, whose north edge is
     // z = 420: 160 yd out instead of 40, so the wall is gone for the cost of
     // 12 chunks rather than 36 chunks plus an HDRI.
     const opened = fogFarForBuiltGround(GRID, twoRowsBuilt, login.x, login.z, MAX_OUTDOOR_FOG_FAR);
@@ -451,7 +456,9 @@ describe('partially built neighbours (the reported walls)', () => {
         if (owner === 'mirefen_marsh') return cz < lowestBuiltRow;
         return true;
       };
-    const opened = [12, 11, 10, 9, 8, 7, 6].map((row) =>
+    // Rows are grid-relative: Ninebend (2026-09) added six rows south of the
+    // vale, so the Mirefen's rows sit six deeper than they did.
+    const opened = [18, 17, 16, 15, 14, 13, 12].map((row) =>
       fogFarForBuiltGround(GRID, builtThrough(row), camera.x, camera.z, MAX_OUTDOOR_FOG_FAR),
     );
     // Each row lands 60 yd further out, so the view earns 60 yd back per row
@@ -472,7 +479,8 @@ describe('partially built neighbours (the reported walls)', () => {
 
 describe('chunk build order (the which-chunk-next seam)', () => {
   const cells: [number, number][] = [];
-  for (let cz = 6; cz <= 11; cz++) for (let cx = 6; cx <= 11; cx++) cells.push([cx, cz]);
+  // Mirefen's rows: 12 to 17 since Ninebend added six rows south of the vale.
+  for (let cz = 12; cz <= 17; cz++) for (let cx = 6; cx <= 11; cx++) cells.push([cx, cz]);
 
   it('builds outward from the entry point, nearest first', () => {
     const entry = { x: 0, z: 500 };

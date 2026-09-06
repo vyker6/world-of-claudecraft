@@ -4939,6 +4939,8 @@ export const cs_CZ: EnTranslations = {
         "farshoreBlurb": "Ostrov za pískovou kosou, kde se nebe trhá nad Trhlinovými poli a Gullhaven zvoní na zvon při každém průlomu.",
         "provingName": "Zkušební pobřeží",
         "provingBlurb": "Tichý cvičný ostrov za úžinou, kde noví dobrodruzi najdou pevnou půdu pod nohama, než po nich údolí začne něco chtít.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Noční květ",
         "nightBlurb": "Kraj hvězdné půlnoci, kde cesty osvětlují květiny a Moonrest drží svou hlídku.",
         "hauntName": "Přízračný les",
@@ -5905,6 +5907,10 @@ export const cs_CZ: EnTranslations = {
       "provingGreeting": "Každý hrdina, kterému kdy údolí poděkovalo, stál tam, kde stojíš teď ty, a ani jeden z nich nevěděl, za který konec meče se chytit.",
       "provingGreeter": "Instruktorka Maren, Tábor Svítání",
       "provingPlaceNotes": "Tábor Svítání je celá osada ostrova: pár stanů, stánek a shromažďovací oheň. Staré molo hledí směrem k údolí, kde přívozní kruh přenáší absolventy přes úžinu; Cvičiště jižně od tábora drží své slaměné podobizny vztyčené pro kohokoli, kdo je potřebuje; a Řada vraků je troskami posetá pláž, kde příliv platí ostrovu vyplavenými bednami.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Cestování",
       "travelBody": "Každou cestou v říši se buď jde pěšky, nebo jede na koni. Nejsou tu žádné letecké trasy, žádná taxi a žádná teleportační síť: mapa je jedna souvislá pevnina a každé spojení je něco, na čem můžeš stát. Hřebeny oddělují jednu říši od druhé, a tam, kde si dvě říše dělí hřeben, stoupá cesta průsmykem. Ne každá hranice ale funguje takhle. Na severu vede dlouhá hráz cestu přes vodu ze Zahalené kotliny do zasněžené krajiny za ní, a zpátky na jihu vede tenká přírodní písečná kosa zvaná Přívozní stezka na východ od pobřeží Údolí k Přístavišti na ostrově Vzdáleného pobřeží, který nemá žádnou pozemní hranici vůbec. A v celém nadzemním světě existují přesně jedny opravdové dveře: závoj soumraku vysoko na Thornpeaku, který se otevírá do Zahalené kotliny. Jižní hřeben Kotliny je zapečetěný bez průsmyku skrz něj, takže tenhle závoj je způsob, jak se tam poprvé dostaneš, a za tebou se zavírá na cestě zpátky.\n\nAť padneš kdekoli, cesta zpátky je krátká. Každá zóna má aspoň jeden hřbitov, nad jehož náhrobky se vznáší Bledý strážce, a propuštěný duch povstane u toho nejbližšího z nich.\n\nMapa nekončí neviditelnou zdí. Země přechází v pláže a mysy, a pak v otevřenou vodu. Přechody, které svět zamýšlí, abys přeplaval, úžiny a jezera mezi jednou říší a druhou, jsou klidné a bezpečné k přeplavání. Vyraz místo toho na otevřené moře a sama vzdálenost tě obrátí zpátky: budeš varován, a pak znovu, a pokud budeš plavat dál, moře tě vyčerpá, dokud tě nezabije. Potápění má svůj vlastní limit, protože ti pod hladinou dojde dech, takže se vynoř na nádech a otoč se zpátky, když ti to voda řekne.",
       "mountsTitle": "Jízdní zvířata",
@@ -18612,6 +18618,27 @@ export const cs_CZ: EnTranslations = {
           },
           "4": {
             "label": "Překážková dráha"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

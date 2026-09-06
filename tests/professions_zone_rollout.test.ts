@@ -69,6 +69,11 @@ const PROFESSIONS_ZONE_ROLLOUT: Readonly<Record<string, RolloutState>> = {
   // its chain pays the copper for the tier-1 tool kit, and the vale's own
   // counters sell it. Every absence arm below enforces the 'none' row.
   proving_shore: 'none',
+  // Ninebend, the simpleMMO starting ring: a level 1-5 weir town. It ships the
+  // starter row (gather nodes of every type, the material rows, a rod tier) and
+  // flips to 'complete' when its hub gets a station, a stocked vendor and the
+  // gatherer chronicle.
+  ninebend: 'starter',
 };
 
 /** The zones the assert-complete arms sweep: every 'complete' ledger row. */
@@ -110,9 +115,9 @@ describe('the R37 professions zone-rollout guard', () => {
     expect([...ZONES.map((z) => z.id)].sort()).toEqual(
       [...Object.keys(PROFESSIONS_ZONE_ROLLOUT)].sort(),
     );
-    expect(ZONES.length).toBe(15);
+    expect(ZONES.length).toBe(16);
     expect(ROLLED_OUT.size).toBe(3);
-    expect(STARTER_ZONES.size).toBe(11);
+    expect(STARTER_ZONES.size).toBe(12);
     // The 'none' state is real, not decorative: the Proving Shore ships on
     // it, and this arm keeps the complete-filter honest against a bare key
     // read that would sweep a professions-free zone as rolled out.
@@ -165,6 +170,7 @@ describe('the R37 professions zone-rollout guard', () => {
       evergarden: 2,
       galecrest: 6,
       farshore_isle: 6,
+      ninebend: 2, // the simpleMMO starting ring ships the uniform starter kit
     };
     expect(new Set(Object.keys(STARTER_NODES_PER_TYPE))).toEqual(STARTER_ZONES);
     for (const zoneId of STARTER_ZONES) {

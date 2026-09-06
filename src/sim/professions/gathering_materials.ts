@@ -30,6 +30,7 @@ const MATERIAL_QTY_BY_RARITY: Record<MaterialRarity, number> = Object.freeze({
 export const NODE_MATERIAL_TABLE: Record<GatherNodeType, Record<string, NodeMaterialRow>> = {
   ore: {
     eastbrook_vale: { itemId: 'copper_ore', qtyByRarity: MATERIAL_QTY_BY_RARITY },
+    ninebend: { itemId: 'copper_ore', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     mirefen_marsh: { itemId: 'iron_ore', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     thornpeak_heights: { itemId: 'thorium_ore', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     veiled_hollow: { itemId: 'thorium_ore', qtyByRarity: MATERIAL_QTY_BY_RARITY },
@@ -46,6 +47,7 @@ export const NODE_MATERIAL_TABLE: Record<GatherNodeType, Record<string, NodeMate
   },
   wood: {
     eastbrook_vale: { itemId: 'ironbark_log', qtyByRarity: MATERIAL_QTY_BY_RARITY },
+    ninebend: { itemId: 'ironbark_log', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     mirefen_marsh: { itemId: 'ashwood_log', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     thornpeak_heights: { itemId: 'elderwood_log', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     veiled_hollow: { itemId: 'elderwood_log', qtyByRarity: MATERIAL_QTY_BY_RARITY },
@@ -62,6 +64,7 @@ export const NODE_MATERIAL_TABLE: Record<GatherNodeType, Record<string, NodeMate
   },
   herb: {
     eastbrook_vale: { itemId: 'silverleaf_herb', qtyByRarity: MATERIAL_QTY_BY_RARITY },
+    ninebend: { itemId: 'silverleaf_herb', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     mirefen_marsh: { itemId: 'goldleaf_herb', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     thornpeak_heights: { itemId: 'sunpetal_herb', qtyByRarity: MATERIAL_QTY_BY_RARITY },
     veiled_hollow: { itemId: 'sunpetal_herb', qtyByRarity: MATERIAL_QTY_BY_RARITY },

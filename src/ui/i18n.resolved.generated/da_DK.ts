@@ -4939,6 +4939,8 @@ export const da_DK: EnTranslations = {
         "farshoreBlurb": "En ø hinsides sandbanken, hvor himlen river sig op over Riftmarkerne, og Mågehavn ringer med klokken ved hvert brud.",
         "provingName": "Prøvestranden",
         "provingBlurb": "En stille træningsø hinsides strædet, hvor nye eventyrere finder deres ben, før dalen beder om noget af dem.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Natblomsten",
         "nightBlurb": "Et land af stjerneklar midnat, hvor blomsterne lyser stierne op, og Månero holder sin vagt.",
         "hauntName": "Genfærdsskoven",
@@ -5905,6 +5907,10 @@ export const da_DK: EnTranslations = {
       "provingGreeting": "Enhver helt, dalen nogensinde har takket, har stået, hvor du står nu, og ikke én af dem vidste, hvilken ende af et blad man holder i.",
       "provingGreeter": "Instruktør Maren, Daggryhvile Lejr",
       "provingPlaceNotes": "Daggryhvile Lejr er øens hele bebyggelse: nogle få telte, en bod og et mønstringsbål. Den Gamle Mole vender mod dalen, hvor overfartscirklen bærer dimittender over strædet; Træningspladsen syd for lejren holder sine halmdukker stående for enhver, der har brug for dem; og Vraglinjen er den bjærgegods-strøede strand, hvor tidevandet betaler øen i vragkasser.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Sådan kommer du rundt",
       "travelBody": "Hver vej i riget vandres eller rides. Der er ingen flyveruter, ingen taxier og intet teleportnet: kortet er én sammenhængende landmasse, og hver forbindelse er noget, du kan stå på. Højderygge skiller det ene rige fra det næste, og hvor to riger deler en højderyg, klatrer vejen gennem et pas. Ikke hver grænse fungerer sådan, dog. I nord bærer en lang dæmningsvej vejen ud over vandet fra Den Tilslørede Hule og ind i snelandet bagved, og længere sydpå løber en tynd, naturlig sandbanke kaldet Færgestien østpå fra Dalens kyst til Landgangen på øen Fjernkysten, som slet ingen landgrænse har. Og der findes præcis én sand dør i hele oververdenen: et skumringsslør højt på Tornetop, der åbner ind til Den Tilslørede Hule. Hulens sydlige højderyg er forseglet uden noget pas igennem den, så det slør er, hvordan du først kommer ind, og det lukker sig bag dig på vejen tilbage.\n\nUanset hvor du falder, er turen tilbage kort. Hver zone holder mindst én kirkegård med Den Blege Vogter svævende over stenene, og en frigivet ånd rejser sig ved den nærmeste af dem.\n\nKortet ender ikke i en usynlig mur. Landet løber ud i strande og næs og derefter i åbent vand. De overgange, verden mener, du skal svømme, sundene og fjordene mellem det ene rige og det næste, er rolige og sikre at krydse. Styr i stedet ud mod det åbne hav, og selve afstanden vender dig om: du bliver advaret, og advaret igen, og bliver du ved med at svømme, slider havet dig ned, indtil det dræber dig. Dykning har sin egen grænse, siden din vejrtrækning slipper op under overfladen, så kom op efter luft, og vend om, når vandet siger til.",
       "mountsTitle": "Ridedyr",
@@ -18612,6 +18618,27 @@ export const da_DK: EnTranslations = {
           },
           "4": {
             "label": "Gauntlet"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

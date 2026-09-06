@@ -4939,6 +4939,8 @@ export const pt_BR: EnTranslations = {
         "farshoreBlurb": "Uma ilha além do banco de areia, onde o céu se rasga sobre os Campos das Fendas e Gullhaven toca seu sino a cada brecha.",
         "provingName": "A Costa da Provação",
         "provingBlurb": "Uma ilha de treinamento tranquila do outro lado do estreito, onde novos aventureiros encontram o próprio ritmo antes de o vale pedir qualquer coisa deles.",
+        "ninebendName": "Ninebend",
+        "ninebendBlurb": "A weir town on the Nine Bend River, where the sluices close at night and the reeds give back what the water took.",
         "nightName": "Nightbloom",
         "nightBlurb": "Um país de meia-noite estrelada onde as flores iluminam os caminhos e Moonrest mantém sua vigília.",
         "hauntName": "Wraithwood",
@@ -5905,6 +5907,10 @@ export const pt_BR: EnTranslations = {
       "provingGreeting": "Todos os heróis que o vale já agradeceu estiveram onde você está agora, e nenhum deles sabia qual ponta da lâmina segurar.",
       "provingGreeter": "Instrutora Maren, Acampamento Dawnrest",
       "provingPlaceNotes": "O Acampamento Dawnrest é o povoado inteiro da ilha: algumas tendas, uma banca e uma fogueira de reunião. O Cais Antigo encara o vale, onde o círculo de travessia leva os formados pelo estreito; o Pátio de Treinamento ao sul do acampamento mantém suas efígies de palha de pé para quem precisar delas; e a Linha de Destroços é a praia semeada de salvados onde a maré paga a ilha em caixas naufragadas.",
+      "ninebendBlurb": "A weir town on the Nine Bend River: a square of stilt huts above the water, a watchtower over the ferry landing, and the sluices that keep the valley fields alive. Something has been closing them at night.",
+      "ninebendGreeting": "You came down the Green Gate road, so you know how far the river reaches. Mind the reeds after dark.",
+      "ninebendGreeter": "Weir-Keeper Odda, the Landing",
+      "ninebendPlaceNotes": "Ninebend is the only town on the river and its landing is the only ferry. The weir below the square is the whole reason for the town: nine bends of slow water, a sluice line, and the Drowned Reeds south of it, where the river gives back what it takes.",
       "travelTitle": "Como se locomover",
       "travelBody": "Cada caminho no reino é percorrido a pé ou a cavalo. Não há rotas de voo, não há táxis, e não há rede de teletransporte: o mapa é um único território conectado, e cada ligação é algo em que você pode pisar. Cumeeiras dividem um reino do próximo, e onde dois reinos compartilham uma cumeeira, a estrada sobe por uma passagem. Nem toda fronteira funciona assim, porém. Ao norte, um longo dique leva a estrada sobre a água, saindo do Vale Velado rumo ao país de neve além dele, e mais ao sul, um fino banco de areia natural chamado Ferrywalk corre para leste desde a costa do Vale até o Desembarque, na ilha da Farshore, que não tem fronteira terrestre alguma. E existe exatamente uma verdadeira porta no mundo aberto inteiro: um véu de crepúsculo no alto de Thornpeak que se abre para o Vale Velado. A cumeeira sul do Vale Velado está selada, sem nenhuma passagem por ela, então é por esse véu que você entra pela primeira vez, e ele se fecha atrás de você na volta.\n\nOnde quer que você caia, a caminhada de volta é curta. Cada zona mantém pelo menos um cemitério com um Guardião Pálido pairando sobre as lápides, e um espírito liberado se ergue no mais próximo deles.\n\nO mapa não termina em uma parede invisível. A terra se esvai em praias e promontórios, e depois em mar aberto. As travessias que o mundo espera que você nade, os estreitos e lagoas entre um reino e o próximo, são calmas e seguras de atravessar. Se você seguir mar aberto adentro, é a própria distância que o faz recuar: você recebe um aviso, e depois outro, e se continuar nadando o mar o esgota até matá-lo. Mergulhar tem seu próprio limite, já que seu fôlego se esgota sob a superfície, então suba para respirar e dê meia-volta quando a água mandar.",
       "mountsTitle": "Montarias",
@@ -18612,6 +18618,27 @@ export const pt_BR: EnTranslations = {
           },
           "4": {
             "label": "A Pista"
+          }
+        }
+      },
+      "ninebend": {
+        "name": "Ninebend",
+        "welcome": "Ninebend keeps the weir, and the weir keeps Ninebend. Mind the reeds after dark: the river gives back what it takes, and it does not give it back kindly.",
+        "pois": {
+          "0": {
+            "label": "Ninebend"
+          },
+          "1": {
+            "label": "The Weir"
+          },
+          "2": {
+            "label": "The Drowned Reeds"
+          },
+          "3": {
+            "label": "The Ferry Landing"
+          },
+          "4": {
+            "label": "The Green Gate"
           }
         }
       }

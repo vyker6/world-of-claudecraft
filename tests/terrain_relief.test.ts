@@ -86,7 +86,9 @@ describe('the calm field keeps graded features on their exact classic terrain', 
     // docs/design/eastbrook-revamp/site-plan.md); calm is exactly 0 there
     // and the value is the town-plat grade the square is built on, the same
     // authored-grade family as the ember camp core and bench rows below.
-    ['vale hub core', -14, -102, -0.8902171227961108],
+    // 2026-09: Ninebend's roads, hub and camps joined the calm-anchor field;
+    // their far-field weight moves the vale hub sample by 5e-4.
+    ['vale hub core', -14, -102, -0.8897259096341356],
     ['drakemaw bench n', 390, 2330, 13.5055094022491],
     ['drakemaw bench s', 390, 2308, 13.4],
     ['drakemaw bench e', 402, 2320, 13.4],
