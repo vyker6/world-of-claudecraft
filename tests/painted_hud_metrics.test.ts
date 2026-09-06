@@ -40,6 +40,10 @@ describe('painted metrics properties', () => {
     expect(props.get('--pt-chip')).toBe(`${PAINTED_METRICS.frame.chip}px`);
     expect(props.get('--pt-cast-w')).toBe(`${PAINTED_METRICS.frame.cast_w}px`);
     expect(props.get('--pt-cast-h')).toBe(`${PAINTED_METRICS.frame.cast_h}px`);
+    // The zone header's row and the tracker veil's spread: the two composition steps the
+    // top-right column is built from, exported so the CSS restates neither.
+    expect(props.get('--pt-zone-h')).toBe(`${PAINTED_METRICS.frame.zone_h}px`);
+    expect(props.get('--pt-veil-spread')).toBe(`${PAINTED_METRICS.frame.veil_spread}px`);
   });
   it('never writes a property without a px unit', () => {
     for (const [k, v] of collect('reaver')) expect(v, k).toMatch(/^-?\d+px$/);

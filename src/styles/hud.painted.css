@@ -50,6 +50,10 @@
     --pt-gold: rgb(226 190 110);
     --pt-gilt: rgb(198 168 108 / 0.7);
     --pt-plate: rgb(10 8 11 / 0.91);
+    /* The tracker field's depth at its core: build_hud_painted.VEIL = 190 of 255, the D4
+       study's right-column value, over the mock's DARK. A palette value like --pt-plate, not
+       a position, so the alpha is written out rather than measured. */
+    --pt-veil: rgb(8 7 9 / 0.745);
     --pt-face-display: "Cinzel", Georgia, serif;
     --pt-face-body: "Fira Sans", "Alegreya Sans", sans-serif;
     --pt-face-condensed: "Barlow Semi Condensed", "Fira Sans", sans-serif;
@@ -897,11 +901,14 @@
      painting's own pixel. position: absolute is restated because the wrap is the containing
      block those rects resolve against; that is this rule's own load-bearing property, not
      something to borrow from hud.css. overflow stays visible so the zone label, which hangs
-     above the wrap's box, is not clipped away. */
+     above the wrap's box, is not clipped away.
+     The chrome starts one zone row below the safe line, not on it: the mock sets the header at
+     SAFE and the map at SAFE + SP["snug"] (build_hud_painted.top_right), and --pt-zone-h IS
+     that step, so the label's row occupies the safe line and the painting begins under it. */
   body.hud-painted #minimap-wrap {
     position: absolute;
     right: var(--pt-safe);
-    top: var(--pt-safe);
+    top: calc(var(--pt-safe) + var(--pt-zone-h));
     width: var(--pt-map-w);
     height: var(--pt-map-h);
     background: url("/ui/painted/minimap.webp") center / 100% 100% no-repeat;
@@ -912,13 +919,17 @@
     overflow: visible;
   }
   /* The measured opening is 281 x 148 - a LANDSCAPE recess, not a round one - so the disc
-     takes no radius: it is the window the map is seen through, and it crops. */
+     takes no radius: it is the window the map is seen through, and it crops.
+     The plate is the recess's own field. The painter fills a circle, which cannot fill a
+     landscape rectangle, so the fields either side of it and the four corners read as chrome
+     rather than as a hole onto the world. */
   body.hud-painted #minimap-disc {
     position: absolute;
     left: var(--pt-map-win-x);
     top: var(--pt-map-win-y);
     width: var(--pt-map-win-w);
     height: var(--pt-map-win-h);
+    background: var(--pt-plate);
     border: 0;
     border-radius: 0;
     overflow: hidden;
@@ -928,22 +939,30 @@
   body.hud-painted #minimap-disc::before {
     display: none;
   }
-  /* The painter owns a 162 square and clips its draw to a circle inside it, so the canvas
-     takes the window's WIDTH as its side and centres on the window's height: one uniform
-     scale, never a stretch, with the window cropping the circle top and bottom. */
+  /* The painter owns a 162 square (index.html fixes the backing store, MINIMAP_SIZE) and clips
+     its draw to a circle inside it, so the canvas can only ever be square here. It takes the
+     window's HEIGHT as its side and centres on the window's width: 162 down to 148 is a
+     DOWNSCALE, so the raster stays crisp inside a crisp frame, where sizing to the window's
+     width upscaled it 1.73x and read soft. The fields it leaves either side are the disc's
+     plate. A map that actually fills a landscape recess needs the painter's arc clip and
+     square projection to change, which is not a theme layer's to do. */
   body.hud-painted #minimap {
     position: absolute;
-    left: 0;
-    top: calc((var(--pt-map-win-h) - var(--pt-map-win-w)) / 2);
-    width: var(--pt-map-win-w);
-    height: var(--pt-map-win-w);
+    left: calc((var(--pt-map-win-w) - var(--pt-map-win-h)) / 2);
+    top: 0;
+    width: var(--pt-map-win-h);
+    height: var(--pt-map-win-h);
     border: 0;
     border-radius: 0;
     box-shadow: none;
   }
-  /* The zone reads as a header over the map, ending on the chrome's right edge one gap above
-     it. hud.css leaves a 3px bottom margin under the label from when it sat in the wrap's
-     flow; absolutely positioned that would be a hand offset, so it goes.
+  /* The zone reads as a header over the map, ending on the chrome's right edge. Its row is
+     --pt-zone-h deep and sits directly on the chrome's top edge, so with the wrap seated one
+     zone row below the safe line the row occupies exactly [safe, safe + zone_h) and nothing in
+     the composition crosses the safe margin. The row IS the line box, so the line-height rides
+     in the font shorthand the way the cast troughs' does. hud.css leaves a 3px bottom margin
+     under the label from when it sat in the wrap's flow; absolutely positioned that would be a
+     hand offset, so it goes.
      It is the one label the composition sets on bare world rather than on chrome, so it
      takes the mock's own reading for that case (build_hud_painted.top_right sets the zone
      header in INK with outline=DARK): full ink and the hard --pt-outline edge. A dim fill
@@ -952,12 +971,13 @@
     position: absolute;
     left: 0;
     right: 0;
-    bottom: calc(100% + var(--pt-gap));
+    bottom: 100%;
     top: auto;
+    height: var(--pt-zone-h);
     margin: 0;
     padding: 0;
     text-align: right;
-    font: 400 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    font: 400 var(--pt-size-body) / var(--pt-zone-h) var(--pt-face-condensed);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--pt-ink);
@@ -980,20 +1000,46 @@
   /* The stack, not #quest-tracker, is the positioned host: the trackers are its flow
      children, and each one seating itself would stack them all on the same coordinate. The
      seat is the map's own bottom edge plus two gaps, so it reads off the painting.
-     display: flex and the direction are restated because the gap below is a flex gap.
-     The top is the stylesheet seat, which is what stands whenever the minimap column is
-     hidden; while it is visible tracker_stack_anchor.ts re-measures the column on the slow
-     band and writes its own `style.top` INLINE, one gap under the same painting edge this
-     calc reads. See task-7-report.md: neutralising that write needs author-important, which
-     the pinned string cannot carry. */
+     display: flex and the direction are restated because the gap below is a flex gap, and
+     isolation because the veil below hangs on a negative z-index and has to stay inside the
+     stack's own stacking context rather than fall behind the world canvas.
+     The seat reads the whole column off the painting: the safe line, the zone header's row,
+     the chrome, then two gaps (the mock's SP["tight"] under the map). !important because
+     tracker_stack_anchor.ts re-measures the column on the slow band and writes its own
+     `style.top` INLINE - a compensation for a content-driven column height that a fixed-size
+     painting does not have, and an author-important declaration is the only thing in the
+     cascade that outranks an inline write (the #tf-name precedent above). */
   body.hud-painted #right-tracker-stack {
     position: absolute;
     right: var(--pt-safe);
-    top: calc(var(--pt-safe) + var(--pt-map-h) + var(--pt-gap) * 2);
+    top: calc(var(--pt-safe) + var(--pt-zone-h) + var(--pt-map-h) + var(--pt-gap) * 2) !important;
     width: var(--pt-map-w);
     display: flex;
     flex-direction: column;
     gap: var(--pt-gap);
+    isolation: isolate;
+  }
+  /* The tracker's ground. The mock never sets this column on bare world: build_hud_painted
+     .tracker lays a feathered field first, because "ours is lit stone, where outlined ink
+     alone reads as a stroke". --pt-veil-spread is the mock's own SP["loose"] overhang on every
+     side; the 80% stop is its feather=(0.2, 0.2), a fraction of the field rather than a
+     length, so it stays a percentage here too.
+     closest-side, not the default farthest-corner: the mock's field reaches alpha 0 at every
+     EDGE (hud_kit.veil ramps from each side independently), and a farthest-corner ellipse is
+     still part opaque where it meets an edge midpoint, so the box clipped it into a hard line
+     across the chrome above. closest-side lands the transparent stop on each edge. */
+  body.hud-painted #right-tracker-stack::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--pt-veil-spread));
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse closest-side at center,
+      var(--pt-veil) 0%,
+      var(--pt-veil) 80%,
+      transparent 100%
+    );
   }
   body.hud-painted #quest-tracker {
     background: none;
@@ -1070,6 +1116,13 @@
     border-radius: 0;
     box-shadow: none;
     mask-image: linear-gradient(to top, rgb(0 0 0) 60%, transparent);
+  }
+  /* WoC insets the pane 7px by 10px inside its panel. With the panel gone that inset is a hand
+     offset that pushed the run of lines off the safe margin the composer's plate sits on, so
+     the text column and the plate's left edge disagreed by 10px. Zeroed, both start on
+     --pt-safe. */
+  body.hud-painted #chatlog {
+    padding: 0;
   }
   /* The ink is !important because hud.ts writes `div.style.color = chatChannelColor(chan)`
      INLINE on every line it builds, and an author-important declaration is the only thing in

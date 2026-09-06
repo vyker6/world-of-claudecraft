@@ -106,7 +106,11 @@ describe('painted minimap, tracker and chat', () => {
     expect(css).toContain('url("/ui/painted/minimap.webp")');
     expect(css).toContain('width: var(--pt-map-w);');
     expect(css).toContain('left: var(--pt-map-win-x);');
-    expect(css).toContain('top: calc(var(--pt-safe) + var(--pt-map-h) + var(--pt-gap) * 2);');
+    // The tracker seats under the WHOLE column: the zone header's row, then the chrome, then
+    // two gaps. !important because tracker_stack_anchor.ts writes an inline `top` of its own.
+    expect(css).toContain(
+      'top: calc(var(--pt-safe) + var(--pt-zone-h) + var(--pt-map-h) + var(--pt-gap) * 2) !important;',
+    );
   });
   it('strips the chat frame to plain fading lines', () => {
     expect(css).toContain('body.hud-painted #chatlog-frame {');

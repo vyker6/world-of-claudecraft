@@ -51,6 +51,10 @@ export interface PaintedMetrics {
     chip: number;
     cast_w: number;
     cast_h: number;
+    // The zone header's row above the minimap chrome, and how far the tracker's feathered
+    // field spreads past its column on every side. Both are the mock's own steps.
+    zone_h: number;
+    veil_spread: number;
   };
   bar: { width: number };
   classes: Record<PaintedChromeKey, PaintedClassMetrics>;
@@ -86,6 +90,8 @@ export function applyPaintedMetrics(sink: PropertySink, chrome: PaintedChromeKey
   px('--pt-chip', m.frame.chip);
   px('--pt-cast-w', m.frame.cast_w);
   px('--pt-cast-h', m.frame.cast_h);
+  px('--pt-zone-h', m.frame.zone_h);
+  px('--pt-veil-spread', m.frame.veil_spread);
   px('--pt-bar-w', m.bar.width);
   px('--pt-bar-h', c.height);
   px('--pt-bar-bottom', m.frame.rail_bottom - (c.height - c.rail_foot));

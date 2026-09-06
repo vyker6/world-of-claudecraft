@@ -11,7 +11,9 @@
     "strip_h": 32,
     "chip": 40,
     "cast_w": 344,
-    "cast_h": 24
+    "cast_h": 24,
+    "zone_h": 24,
+    "veil_spread": 64
   },
   "bar": {
     "width": 992
