@@ -8,7 +8,7 @@
 // them onto the fixed class rig, which is where a single-mesh class body lives.
 //
 // Usage: node scripts/slice_capture.mjs
-//   HERO_URL=models/chars/players/hero_warrior.glb  (empty string = keep the knight)
+//   HERO_URL=models/chars/players/<body>.glb  (default: the wired player_warrior body)
 //   WEAPON_ITEM=reaver_axe  ENEMY_TEMPLATE=vale_bandit  OUT=tmp/slice/hero_v1
 import fs from 'node:fs';
 import puppeteer from 'puppeteer-core';
@@ -16,7 +16,7 @@ import { BROWSER_PATH } from './browser_path.mjs';
 import { enterOfflineGame } from './enter_offline_game.mjs';
 
 const URL = process.env.GAME_URL ?? 'http://localhost:5173';
-const HERO_URL = process.env.HERO_URL ?? 'models/chars/players/hero_warrior.glb';
+const HERO_URL = process.env.HERO_URL ?? '';
 const WEAPON_ITEM = process.env.WEAPON_ITEM ?? 'reaver_axe';
 const ENEMY = process.env.ENEMY_TEMPLATE ?? 'vale_bandit';
 const OUT = process.env.OUT ?? 'tmp/slice/hero_v1';

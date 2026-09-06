@@ -9,7 +9,9 @@
 //  - a character with no authored look composing a default body instead of
 //    keeping its class rig;
 //  - a Combat Mech wearer growing a second body inside the mech;
-//  - a hostile or stale wire payload reaching the compose path unclamped.
+//  - a hostile or stale wire payload reaching the compose path unclamped;
+//  - a simpleMMO hero class (FIXED_BODY_CLASSES) composing the KayKit kit over its
+//    bespoke fixed body.
 
 import { describe, expect, it, vi } from 'vitest';
 import { type ArmorSetId, DEFAULT_APPEARANCE } from '../src/render/characters/modular';
@@ -17,6 +19,7 @@ import {
   armorSetSourceFor,
   charselectLook,
   composedLook,
+  FIXED_BODY_CLASSES,
   helmSlotAvailable,
   helmSlotAvailableForEntity,
   helmSlotAvailableForLook,
@@ -167,7 +170,7 @@ describe('helmSlotAvailable (issue: hide helmet does nothing)', () => {
   });
 
   it('is true for a class kit whose set has a head piece', () => {
-    expect(helmSlotAvailable('warrior', false)).toBe(true);
+    expect(helmSlotAvailable('shaman', false)).toBe(true);
     expect(helmSlotAvailable('mage', false)).toBe(true);
     expect(helmSlotAvailable('paladin', false)).toBe(true);
   });
@@ -176,7 +179,30 @@ describe('helmSlotAvailable (issue: hide helmet does nothing)', () => {
     // A mech is a whole replacement body that never composes the kit at all
     // (renderer.ts skips its look via the same isMechWearer guard), so even a
     // helmed class kit has nothing the eye could hide while mech-skinned.
-    expect(helmSlotAvailable('warrior', true)).toBe(false);
+    expect(helmSlotAvailable('paladin', true)).toBe(false);
+  });
+});
+
+describe('FIXED_BODY_CLASSES', () => {
+  // The simpleMMO warrior wears a bespoke Tripo body on the hero skeleton
+  // (VISUALS.player_warrior), not a composition over the KayKit part library:
+  // an authored look must not turn it back into the modular knight, and the
+  // paperdoll eye has no kit helm to hide.
+  it('lists the warrior', () => {
+    expect(FIXED_BODY_CLASSES.has('warrior')).toBe(true);
+  });
+
+  it('keeps a fixed-body player on its rig even with an authored look', () => {
+    const e = playerEntity({ templateId: 'warrior', modularAppearance: { gender: 'male' } });
+    expect(inWorldLookFor(e, CLASS_KIT)).toBeNull();
+  });
+
+  it('keeps a fixed-body roster row on its rig', () => {
+    expect(charselectLook({ class: 'warrior', appearance: { gender: 'male' } })).toBeNull();
+  });
+
+  it('offers no helm toggle for a fixed-body class', () => {
+    expect(helmSlotAvailable('warrior', false)).toBe(false);
   });
 });
 

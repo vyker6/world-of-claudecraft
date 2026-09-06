@@ -335,6 +335,7 @@ export const MEDIA_ASSETS: Record<string, string> =
   "models/chars/players/druid_ability_anims.glb": "/media/models/chars/players/druid_ability_anims.dc813ac0b1ff.glb",
   "models/chars/players/druid_hit_variety_anims.glb": "/media/models/chars/players/druid_hit_variety_anims.33927356a569.glb",
   "models/chars/players/hero_warrior.glb": "/media/models/chars/players/hero_warrior.623c7040182b.glb",
+  "models/chars/players/hero_warrior_leather.glb": "/media/models/chars/players/hero_warrior_leather.ed492e720482.glb",
   "models/chars/players/hunter_ability_anims.glb": "/media/models/chars/players/hunter_ability_anims.7e49780d1257.glb",
   "models/chars/players/knight.glb": "/media/models/chars/players/knight.063f81b53c35.glb",
   "models/chars/players/knight_hit_variety_anims.glb": "/media/models/chars/players/knight_hit_variety_anims.56249f6c3499.glb",

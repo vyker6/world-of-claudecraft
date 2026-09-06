@@ -28,6 +28,15 @@ import {
   slotCovered,
 } from './modular';
 
+/**
+ * Classes whose body is a bespoke fixed rig instead of a composition over the modular
+ * KayKit part library: the simpleMMO heroes (the warrior wears hero_warrior_leather.glb,
+ * VISUALS.player_warrior). A creator-authored look does not apply to them, so every
+ * surface in this module keeps their class rig and offers no helm toggle. Grows by one
+ * entry as each class receives its hero body.
+ */
+export const FIXED_BODY_CLASSES: ReadonlySet<PlayerClass> = new Set<PlayerClass>(['warrior']);
+
 /** The roster-row fields a look is composed from. Structural on purpose: the
  *  char-select `CharacterSummary` satisfies it without this render module
  *  importing the net layer. */
@@ -75,12 +84,14 @@ export function composedLook(
  * Null for a non-player or a player with no authored look: they keep the fixed
  * class rig. `armorSetFor` is how the caller expresses the local-player-only
  * armour-set override without this core reading a store.
+ * A FIXED_BODY_CLASSES class is null too: its bespoke body is never composed over.
  */
 export function inWorldLookFor(
   e: Entity,
   armorSetFor: (cls: PlayerClass) => ArmorSetId,
 ): ModularLook | null {
   if (e.kind !== 'player' || !e.modularAppearance) return null;
+  if (FIXED_BODY_CLASSES.has(e.templateId as PlayerClass)) return null;
   return composedLook(e.modularAppearance, armorSetFor(e.templateId as PlayerClass), e.helmHidden);
 }
 
@@ -113,6 +124,7 @@ export function armorSetSourceFor(
  */
 export function charselectLook(c: RosterLookRow): ModularLook | null {
   if (c.skinCatalog === 'mech') return null;
+  if (FIXED_BODY_CLASSES.has(c.class)) return null;
   return composedLook(c.appearance, classArmorSet(c.class), c.helmHidden === true);
 }
 
@@ -159,9 +171,11 @@ export function modularLookChanged(
  * helm-toggle diff already applies). Toggling `helmHidden` when this is false
  * still flips the flag, but nothing about the drawn body ever changes, so the
  * eye must not be offered at all (issue: "hide helmet does nothing").
+ * A fixed-body class (FIXED_BODY_CLASSES) never composes a kit, so it is false as well.
  */
 export function helmSlotAvailable(cls: PlayerClass, isMech: boolean): boolean {
-  return !isMech && slotCovered(fullSet(classArmorSet(cls)), 'head');
+  if (isMech || FIXED_BODY_CLASSES.has(cls)) return false;
+  return slotCovered(fullSet(classArmorSet(cls)), 'head');
 }
 
 /** Whether an already-composed look has a removable head piece. */

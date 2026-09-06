@@ -340,6 +340,8 @@ non-commercial. For commercial use, arrange your own licence with the author.
 | Generated prop model (varkhul_grand_forge) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
 | Generated weapon model + icon (axe_reaver) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D) | Project asset | With the project only |
 | Generated creature model + animations (river_drowned) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (Tripo AI 3D, auto-rig + preset retargets) | Project asset | With the project only |
+| Generated player body (hero_warrior, the Horned Reaver) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (gpt-image concept, Tripo AI 3D image-to-model, proportion-fit rig onto the KayKit Rig_Medium skeleton with the knight clip library re-baked) | Project asset | With the project only |
+| Generated player body (hero_warrior_leather, the Reaver in his Ninebend starter kit) | World of ClaudeCraft | Project-generated via scripts/asset_pipeline (concept_dress.mjs gpt-image edit of the body plate, Tripo AI 3D image-to-model, rig-manual onto the hero skeleton) | Project asset | With the project only |
 Assets were optimized for shipping (animation clip pruning, meshopt compression,
 texture resizing) via `scripts/assets/build_assets.mjs`; raw packs are not
 committed.
