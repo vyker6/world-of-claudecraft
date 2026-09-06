@@ -1022,12 +1022,15 @@
   /* The tracker's ground. The mock never sets this column on bare world: build_hud_painted
      .tracker lays a feathered field first, because "ours is lit stone, where outlined ink
      alone reads as a stroke". --pt-veil-spread is the mock's own SP["loose"] overhang on every
-     side; the 80% stop is its feather=(0.2, 0.2), a fraction of the field rather than a
-     length, so it stays a percentage here too.
+     side; the feather is its feather=(0.2, 0.2), a fraction of the field rather than a length,
+     so it stays a percentage here too.
      closest-side, not the default farthest-corner: the mock's field reaches alpha 0 at every
      EDGE (hud_kit.veil ramps from each side independently), and a farthest-corner ellipse is
      still part opaque where it meets an edge midpoint, so the box clipped it into a hard line
-     across the chrome above. closest-side lands the transparent stop on each edge. */
+     across the chrome above. closest-side lands the transparent stop on each edge.
+     Opaque to 60%, not 80%: the mock's 0.2 is a fraction of the FULL height, while a radial
+     stop is a fraction of the RADIUS, which is half of it. 0.2 of the height is 0.4 of the
+     radius, so the ramp starts at 60% and reaches transparent at 100%. */
   body.hud-painted #right-tracker-stack::before {
     content: "";
     position: absolute;
@@ -1037,7 +1040,7 @@
     background: radial-gradient(
       ellipse closest-side at center,
       var(--pt-veil) 0%,
-      var(--pt-veil) 80%,
+      var(--pt-veil) 60%,
       transparent 100%
     );
   }
