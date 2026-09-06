@@ -1945,6 +1945,13 @@ export const hudChromeStrings = {
     // squares. Bound slots (and the fixed Attack button) are unaffected, so the
     // slot layout used to arrange buffs/consumables on the extra rows holds.
     hideUnusedActionSlots: 'Hide Unused Action Slots',
+    // Interface panel toggle (ON by default): the simpleMMO Painted HUD theme layer
+    // (styles/hud.painted.css) repaints the combat HUD over the same DOM. Off restores
+    // the WoC HUD unchanged; nothing about the sim or a slot's behaviour moves either way.
+    paintedHud: 'Painted HUD',
+    // The word stacked above the level number on the painted player plate. Short by
+    // design: the plate is a fixed painted well, so a locale supplies its own casing.
+    paintedLevelWord: 'LEVEL',
     // Interface panel toggle (off by default) that locks the action bar slots
     // against drag-to-move, drag-to-replace, and clear so an accidental
     // click-and-drag mid-fight can't disturb a slot. Abilities still fire from

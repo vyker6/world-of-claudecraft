@@ -1585,6 +1585,8 @@ export const tr_TR: EnTranslations = {
       "showThirdActionBar": "Üçüncü Eylem Çubuğunu Göster",
       "combineActionBars": "Eylem Çubuklarını Birleştir",
       "hideUnusedActionSlots": "Kullanılmayan Eylem Alanlarını Gizle",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Eylem Çubuklarını Kilitle",
       "showTargetOfTarget": "Hedefin Hedefini Göster",
       "showTargetSwingTimer": "Hedefin savurma zamanlayıcısını göster",

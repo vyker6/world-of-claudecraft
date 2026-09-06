@@ -1585,6 +1585,8 @@ export const en_XA: EnTranslations = {
       "showThirdActionBar": "[Šĥóŵ Ţĥíŕð Áçţíóñ Ɓáŕ]",
       "combineActionBars": "[Çóɱƀíñé Áçţíóñ Ɓáŕš]",
       "hideUnusedActionSlots": "[Ĥíðé Úñúšéð Áçţíóñ Šļóţš]",
+      "paintedHud": "[Þáíñţéð ĤÚÐ]",
+      "paintedLevelWord": "[ĻÉƲÉĻ]",
       "lockActionBars": "[Ļóçķ Áçţíóñ Ɓáŕš]",
       "showTargetOfTarget": "[Šĥóŵ Ţáŕĝéţ óƒ Ţáŕĝéţ]",
       "showTargetSwingTimer": "[Šĥóŵ Ţáŕĝéţ Šŵíñĝ Ţíɱéŕ]",

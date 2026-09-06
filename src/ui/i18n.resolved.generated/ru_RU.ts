@@ -1585,6 +1585,8 @@ export const ru_RU: EnTranslations = {
       "showThirdActionBar": "Показывать третью панель действий",
       "combineActionBars": "Объединить панели действий",
       "hideUnusedActionSlots": "Скрыть неиспользуемые ячейки действий",
+      "paintedHud": "Рисованный интерфейс",
+      "paintedLevelWord": "УРОВЕНЬ",
       "lockActionBars": "Заблокировать панели действий",
       "showTargetOfTarget": "Показывать цель цели",
       "showTargetSwingTimer": "Показывать таймер замаха цели",

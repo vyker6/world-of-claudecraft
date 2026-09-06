@@ -1585,6 +1585,8 @@ export const cs_CZ: EnTranslations = {
       "showThirdActionBar": "Zobrazit třetí panel akcí",
       "combineActionBars": "Sloučit akční lišty",
       "hideUnusedActionSlots": "Skrýt nepoužitá políčka akcí",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Uzamknout akční lišty",
       "showTargetOfTarget": "Zobrazit cíl cíle",
       "showTargetSwingTimer": "Zobrazit časovač švihu cíle",

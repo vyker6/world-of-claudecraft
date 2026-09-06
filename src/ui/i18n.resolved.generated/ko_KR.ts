@@ -1585,6 +1585,8 @@ export const ko_KR: EnTranslations = {
       "showThirdActionBar": "세 번째 액션 바 표시",
       "combineActionBars": "액션 바 합치기",
       "hideUnusedActionSlots": "사용하지 않는 행동 칸 숨기기",
+      "paintedHud": "페인티드 HUD",
+      "paintedLevelWord": "레벨",
       "lockActionBars": "액션 바 잠금",
       "showTargetOfTarget": "대상의 대상 표시",
       "showTargetSwingTimer": "대상의 공격 타이머 표시",

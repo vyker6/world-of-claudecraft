@@ -1556,6 +1556,8 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'hudChrome.options.showSecondaryActionBar': 'Показывать вторичную панель действий',
   'hudChrome.options.showThirdActionBar': 'Показывать третью панель действий',
   'hudChrome.options.hideUnusedActionSlots': 'Скрыть неиспользуемые ячейки действий',
+  'hudChrome.options.paintedHud': 'Рисованный интерфейс',
+  'hudChrome.options.paintedLevelWord': 'УРОВЕНЬ',
   'hudChrome.options.lockActionBars': 'Заблокировать панели действий',
   'hudChrome.options.showDailyRewardsChest': 'Показывать сундук ежедневных наград',
   'hudChrome.options.mobileCameraJoystick': 'Джойстик камеры',

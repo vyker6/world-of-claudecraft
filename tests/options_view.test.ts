@@ -903,6 +903,7 @@ describe('options_view: interface tab taxonomy', () => {
     for (const key of [
       'combineActionBars',
       'hideUnusedActionSlots',
+      'paintedHud',
       'mouseoverCast',
       'lockActionBars',
       'playerFrameScale',

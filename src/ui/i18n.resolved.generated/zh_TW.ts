@@ -1585,6 +1585,8 @@ export const zh_TW: EnTranslations = {
       "showThirdActionBar": "顯示第三動作列",
       "combineActionBars": "合併動作列",
       "hideUnusedActionSlots": "隱藏未使用的動作欄位",
+      "paintedHud": "彩繪介面",
+      "paintedLevelWord": "等級",
       "lockActionBars": "鎖定動作列",
       "showTargetOfTarget": "顯示目標的目標",
       "showTargetSwingTimer": "顯示目標的揮砍計時器",

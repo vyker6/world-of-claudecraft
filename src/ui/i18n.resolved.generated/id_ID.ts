@@ -1585,6 +1585,8 @@ export const id_ID: EnTranslations = {
       "showThirdActionBar": "Tampilkan Bilah Tindakan Ketiga",
       "combineActionBars": "Gabungkan Bilah Aksi",
       "hideUnusedActionSlots": "Sembunyikan Slot Aksi yang Tidak Terpakai",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Kunci Bilah Aksi",
       "showTargetOfTarget": "Tampilkan Sasaran dari Sasaran",
       "showTargetSwingTimer": "Tampilkan pengatur waktu ayunan target",

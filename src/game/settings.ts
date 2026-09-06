@@ -463,6 +463,9 @@ export const BOOL_SETTINGS = {
   // disturbs the deliberate slot layout the extra rows exist for (arranging buffs
   // and consumables); the slots stay in place and keybind-reachable either way.
   hideUnusedActionSlots: { def: false },
+  // ON by default: the simpleMMO Painted HUD theme layer (styles/hud.painted.css) over
+  // the combat HUD. Off restores the WoC HUD unchanged.
+  paintedHud: { def: true },
   // OFF by default: the interactive water wake/ripple height-field
   // (render/water_simulation.ts) that swimmers, waders and splashes disturb.
   // Purely decorative — bubbles, splash particles and the scrolling water

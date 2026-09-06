@@ -1,0 +1,61 @@
+/* The simpleMMO Painted HUD as a theme over WoC's HUD DOM. Lives in the `hud` cascade layer
+   (declared empty in index.css) so it wins every equal-specificity tie against hud.css and
+   components.css without editing them. Every rule is scoped under body.hud-painted; the
+   paintedHud setting removes the class and WoC's own HUD comes back untouched.
+
+   Geometry comes from --pt-* custom properties that src/ui/painted/metrics.ts writes onto #ui
+   from painted_hud.metrics.json (measured out of the paintings by simpleMMO's artgen). The
+   only literal numbers here are the mock's type scale. A hand offset is a defect. */
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/cinzel-400-700-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fira Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/fira-sans-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Fira Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/fira-sans-700.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/barlow-semi-condensed-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/barlow-semi-condensed-700.ttf") format("truetype");
+}
+@layer hud {
+  body.hud-painted {
+    /* the mock's palette (painted_combat.py) and type scale (hud_kit.SIZES) */
+    --pt-dark: rgb(8 7 9);
+    --pt-ink: rgb(240 234 220);
+    --pt-dim: rgb(176 168 154);
+    --pt-gold: rgb(226 190 110);
+    --pt-gilt: rgb(198 168 108 / 0.7);
+    --pt-plate: rgb(10 8 11 / 0.91);
+    --pt-face-display: "Cinzel", Georgia, serif;
+    --pt-face-body: "Fira Sans", "Alegreya Sans", sans-serif;
+    --pt-face-condensed: "Barlow Semi Condensed", "Fira Sans", sans-serif;
+    --pt-size-dense: 14px;
+    --pt-size-body: 18px;
+    --pt-size-display: 24px;
+    --pt-size-wordmark: 42px;
+  }
+}

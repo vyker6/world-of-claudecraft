@@ -1494,6 +1494,8 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'hudChrome.options.showSecondaryActionBar': '顯示副動作列',
   'hudChrome.options.showThirdActionBar': '顯示第三動作列',
   'hudChrome.options.hideUnusedActionSlots': '隱藏未使用的動作欄位',
+  'hudChrome.options.paintedHud': '彩繪介面',
+  'hudChrome.options.paintedLevelWord': '等級',
   'hudChrome.options.lockActionBars': '鎖定動作列',
   'hudChrome.options.showDailyRewardsChest': '顯示每日獎勵寶箱',
   'hudChrome.options.mobileCameraJoystick': '攝影機搖桿',

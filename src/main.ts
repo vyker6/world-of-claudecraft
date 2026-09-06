@@ -497,6 +497,7 @@ import { applyNativeDeviceLanguage } from './ui/native_language';
 import { scheduleNativeUpdateCheck } from './ui/native_update_prompt';
 import { loadNewsInto } from './ui/news_feed';
 import { hideOtaUpdateOverlay, renderOtaUpdateOverlay } from './ui/ota_update_overlay';
+import { armPaintedWidthProbes } from './ui/painted/metrics';
 import { createMetricsSampler } from './ui/perf_metrics_sampler';
 import { applyPerfOrnamentVars, applyWindowOrnamentVars } from './ui/perf_ornament_svg';
 import { PerfOverlay } from './ui/perf_overlay';
@@ -2572,6 +2573,15 @@ async function startGame(
         'hide-unused-action-slots',
         settings.set('hideUnusedActionSlots', !!value),
       );
+      return;
+    }
+    if (key === 'paintedHud') {
+      // The simpleMMO Painted HUD theme layer: a body class the hud.painted.css rules
+      // read, plus the width probes the theme positions the level plate and target
+      // level from (metrics.ts). Purely presentational.
+      const on = settings.set('paintedHud', !!value);
+      document.body.classList.toggle('hud-painted', on);
+      if (on) armPaintedWidthProbes(document.getElementById('ui'));
       return;
     }
     if (key === 'showSecondaryActionBar' || key === 'showThirdActionBar') {

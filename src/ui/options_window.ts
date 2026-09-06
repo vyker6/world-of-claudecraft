@@ -1557,6 +1557,7 @@ export class OptionsWindow {
         'frameSnapToGrid',
         'combineActionBars',
         'hideUnusedActionSlots',
+        'paintedHud',
         'mouseoverCast',
         'lockActionBars',
       ],

@@ -1585,6 +1585,8 @@ export const zh_CN: EnTranslations = {
       "showThirdActionBar": "显示第三动作条",
       "combineActionBars": "合并动作条",
       "hideUnusedActionSlots": "隐藏未使用的动作栏位",
+      "paintedHud": "彩绘界面",
+      "paintedLevelWord": "等级",
       "lockActionBars": "锁定动作条",
       "showTargetOfTarget": "显示目标的目标",
       "showTargetSwingTimer": "显示目标的挥击计时器",
