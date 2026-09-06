@@ -960,6 +960,20 @@ const CHICKEN_COW: ClipMap = {
   jump: 'Jump',
 };
 
+// Creature-lane rigs (scripts/asset_pipeline/pipeline.mjs creature): Tripo
+// auto-rigged bipeds whose preset animations the lane retargets in place and
+// renames to the game vocabulary, so every lane creature shares this map.
+const CREATURE_LANE: ClipMap = {
+  idle: 'Idle',
+  walk: 'Walk',
+  run: 'Run',
+  attack: ['Attack'],
+  hit: ['Hit'],
+  death: 'Death',
+  cast: 'Cast',
+  jump: 'Jump',
+};
+
 // Raid 02 asset-pipeline rig (stone_cantor.glb): Mixamo-rigged, ships
 // Idle / Cast / Walk / Death plus a synthesized 'Hit' flinch authored by
 // scripts/_add_cantor_hit_anim.mjs (the batch has no hit-react take). A
@@ -3134,6 +3148,18 @@ export const VISUALS: Record<string, VisualDef> = {
     tint: 0x6b3a32,
     tintStrength: 0.3,
   },
+  // River Drowned (src/sim/content/ninebend.ts): the first simpleMMO creature-lane rig
+  // in the locked osrs_genshin direction. Tripo auto-rigs face +X in the file, so the
+  // quarter turn brings it to the facing-0 (+Z) convention; the entity tint lets the
+  // template colour (waterlogged green) read through the authored albedo.
+  mob_river_drowned: {
+    url: `${CREATURES}/river_drowned.glb`,
+    height: 2.5,
+    yaw: -Math.PI / 2,
+    clips: CREATURE_LANE,
+    tint: 'entity',
+    tintStrength: 0.35,
+  },
   mob_dark_caster: {
     url: `${PLAYERS}/mage.glb`,
     animUrls: [`${PLAYERS}/mage_hit_variety_anims.glb`],
@@ -3408,6 +3434,7 @@ for (const propSet of NPC_PROP_SET_IDS) {
 const MOB_KEYS: Record<string, string> = {
   // WIP forge mech enemy (crawl/standup/die placeholder rig).
   derelict_mech: 'mob_mech',
+  river_drowned: 'mob_river_drowned',
   [IGNIVAR_BOSS_ID]: 'mob_ignivar',
   ignivar_heart_of_the_end: 'mob_ignivar_heart_of_the_end',
   [IGNIVAR_CRUCIBLE_WARDEN_ID]: 'mob_ignivar_crucible_warden',

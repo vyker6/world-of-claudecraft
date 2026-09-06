@@ -11482,6 +11482,7 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.wildheart_hexcaller.name': 'Заклинатель Солнечной Кости',
   'entities.mobs.wildheart_beastmaster.name': 'Повелитель клыков',
   'entities.mobs.wildheart_high_priest.name': 'Зулгар, Голос Котловины',
+  'entities.mobs.river_drowned.name': 'Речной утопленник',
   'entities.mobs.apprentice_wren.name': 'Ученица Рен',
   'entities.mobs.barrow_wight.name': 'Курганное умертвие',
   'entities.mobs.castaway_navigator.name': 'Штурман Сули',
@@ -14839,5 +14840,6 @@ export const ru_RU: Partial<Record<TranslationKey, string>> = {
   'entities.items.forgefire_spire.name': 'Шпиль горнового огня',
   'entities.items.springtouched_crozier.name': 'Посох родникового касания',
   'entities.items.wand_of_quenched_sparks.name': 'Жезл угасших искр',
+  'entities.items.reaver_axe.name': 'Бородатый топор разорителя',
   'crucibleShop.balanceEntry': '{name} x{count}',
 };

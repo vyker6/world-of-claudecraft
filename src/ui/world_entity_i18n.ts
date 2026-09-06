@@ -247,6 +247,8 @@ const MOB_IDS = [
   'wildheart_hexcaller',
   'wildheart_beastmaster',
   'wildheart_high_priest',
+  // Ninebend, the simpleMMO starting ring (src/sim/content/ninebend.ts).
+  'river_drowned',
 ] as const;
 
 const NPC_IDS = [

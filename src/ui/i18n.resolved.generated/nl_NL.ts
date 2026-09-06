@@ -13905,6 +13905,9 @@ export const nl_NL: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Toverstaf van Gedoofde Vonken"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Getoverd bronwater"
       },
@@ -15304,6 +15307,9 @@ export const nl_NL: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Stem van het Bekken"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "IJzerader-Voorman"

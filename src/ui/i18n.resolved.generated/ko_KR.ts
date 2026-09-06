@@ -13905,6 +13905,9 @@ export const ko_KR: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "꺼진 불꽃의 마법봉"
       },
+      "reaver_axe": {
+        "name": "약탈자의 수염 도끼"
+      },
       "conjured_water4": {
         "name": "창조된 샘물"
       },
@@ -15304,6 +15307,9 @@ export const ko_KR: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "분지의 목소리 줄가르"
+      },
+      "river_drowned": {
+        "name": "강의 익사자"
       },
       "ironvein_foreman": {
         "name": "철맥 감독관"

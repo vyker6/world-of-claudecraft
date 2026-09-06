@@ -13905,6 +13905,9 @@ export const vi_VN: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Đũa Tia Lửa Đã Dập Tắt"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Nước Suối Được Tạo Phép"
       },
@@ -15304,6 +15307,9 @@ export const vi_VN: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Tiếng Nói Của Vùng Trũng"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Quản Đốc Mạch Sắt"

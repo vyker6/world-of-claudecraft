@@ -2664,6 +2664,7 @@ const ITEM_ENTITY_IDS = [
   'forgefire_spire',
   'springtouched_crozier',
   'wand_of_quenched_sparks',
+  'reaver_axe',
 ] as const;
 
 type ItemEntityId = (typeof ITEM_ENTITY_IDS)[number];
@@ -3018,6 +3019,7 @@ const APPENDED_ITEM_NAMES: Partial<Record<ItemEntityId, string>> = {
   forgefire_spire: 'Forgefire Spire',
   springtouched_crozier: 'Springtouched Crozier',
   wand_of_quenched_sparks: 'Wand of Quenched Sparks',
+  reaver_axe: "Reaver's Bearded Axe",
 };
 
 function itemTranslations(names: readonly string[]): ItemEntityTranslations {

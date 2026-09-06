@@ -13905,6 +13905,9 @@ export const sv_SE: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "De slocknade gnistornas stav"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Frambesvärjt källvatten"
       },
@@ -15304,6 +15307,9 @@ export const sv_SE: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Bassängens röst"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Järnådersförman"

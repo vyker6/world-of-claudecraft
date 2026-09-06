@@ -98,6 +98,7 @@ export const WEAPON_TYPE_BY_ITEM: Record<string, ItemWeaponType> = {
   varkhul_forgebreaker: 'mace',
   // Axes
   rusty_hatchet: 'axe',
+  reaver_axe: 'axe',
   copper_bearded_axe: 'axe',
   arcanite_war_axe: 'axe',
   gorraks_cruel_chopper: 'axe',

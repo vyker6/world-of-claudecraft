@@ -87,6 +87,15 @@ export const BASE_ITEMS: Record<string, ItemDef> = {
     weapon: { min: 2, max: 5, speed: 2.2 },
     sellValue: 10,
   },
+  reaver_axe: {
+    id: 'reaver_axe',
+    name: "Reaver's Bearded Axe",
+    kind: 'weapon',
+    slot: 'mainhand',
+    quality: 'common',
+    weapon: { min: 2, max: 5, speed: 2.2 },
+    sellValue: 10,
+  },
   recruit_tunic: {
     id: 'recruit_tunic',
     name: "Levyman's Tunic",

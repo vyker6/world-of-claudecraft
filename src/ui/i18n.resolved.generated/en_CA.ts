@@ -13905,6 +13905,9 @@ export const en_CA: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Wand of Quenched Sparks"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Conjured Springwater"
       },
@@ -15304,6 +15307,9 @@ export const en_CA: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Voice of the Basin"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Ironvein Foreman"

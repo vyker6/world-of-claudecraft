@@ -13905,6 +13905,9 @@ export const cs_CZ: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Hůlka Uhašených jisker"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Vyčarovaná pramenitá voda"
       },
@@ -15304,6 +15307,9 @@ export const cs_CZ: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, hlas Kotliny"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Předák Železné žíly"

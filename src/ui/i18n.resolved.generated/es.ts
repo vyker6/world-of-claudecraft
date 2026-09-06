@@ -13905,6 +13905,9 @@ export const es: EnTranslations = {
       "wand_of_quenched_sparks": {
         "name": "Varita de Chispas Apagadas"
       },
+      "reaver_axe": {
+        "name": "Reaver's Bearded Axe"
+      },
       "conjured_water4": {
         "name": "Agua de Manantial Conjurada"
       },
@@ -15304,6 +15307,9 @@ export const es: EnTranslations = {
       },
       "wildheart_high_priest": {
         "name": "Zulgar, Voz de la Cuenca"
+      },
+      "river_drowned": {
+        "name": "River Drowned"
       },
       "ironvein_foreman": {
         "name": "Capataz Vena de Hierro"

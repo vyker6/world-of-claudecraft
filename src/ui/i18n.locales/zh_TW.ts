@@ -10755,6 +10755,7 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'entities.mobs.wildheart_hexcaller.name': '日骨巫咒師',
   'entities.mobs.wildheart_beastmaster.name': '獠牙領主馴獸師',
   'entities.mobs.wildheart_high_priest.name': '盆地之聲祖爾加',
+  'entities.mobs.river_drowned.name': '河溺亡者',
   'entities.mobs.apprentice_wren.name': '學徒雯恩',
   'entities.mobs.barrow_wight.name': '古塚屍妖',
   'entities.mobs.castaway_navigator.name': '領航員蘇莉',
@@ -14327,5 +14328,6 @@ export const zh_TW: Partial<Record<TranslationKey, string>> = {
   'entities.items.forgefire_spire.name': '爐火尖塔杖',
   'entities.items.springtouched_crozier.name': '泉息牧杖',
   'entities.items.wand_of_quenched_sparks.name': '熄火花魔杖',
+  'entities.items.reaver_axe.name': '掠奪者的鬍鬚斧',
   'crucibleShop.balanceEntry': '{name} x{count}',
 };

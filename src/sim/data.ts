@@ -154,6 +154,7 @@ import {
   NIGHTBLOOM_ROADS,
   NIGHTBLOOM_ZONE,
 } from './content/nightbloom';
+import { NINEBEND_MOBS } from './content/ninebend';
 import { MUSTER_BOARDS, NOTICEBOARDS } from './content/noticeboards';
 import {
   PALMREACH_CAMPS,
@@ -414,6 +415,7 @@ export const MOBS: Record<string, MobTemplate> = {
   ...GALECREST_MOBS,
   ...FARSHORE_MOBS,
   ...PROVING_SHORE_MOBS,
+  ...NINEBEND_MOBS,
 };
 
 // Heroic upgraded drop variants: generated from the base item + mob loot tables and
