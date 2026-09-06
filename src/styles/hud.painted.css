@@ -221,11 +221,18 @@
   /* The icon is a background-image span (hud.ts buildActionBar), not an img: it fills the
      well the painter left for it, edge to edge, with no inset of its own. */
   body.hud-painted #actionbar .action-btn .icon-label,
-  body.hud-painted #actionbar .action-btn .cd-overlay,
-  body.hud-painted #actionbar .action-btn .recharge-overlay {
+  body.hud-painted #actionbar .action-btn .cd-overlay {
     inset: 0;
     width: 100%;
     height: 100%;
+    border-radius: 0;
+  }
+  /* The recharge veil is NOT in that group: hud.css anchors it left/right/bottom with a
+     height the painter writes inline per frame (action_bar_painter, rechargePercent), so it
+     rises from the foot of the slot. Adding `top` and a height of its own would over-constrain
+     the box, drop the `bottom`, and hang the veil from the top of the icon instead. Its own
+     left/right already span the well, because the well is the button. */
+  body.hud-painted #actionbar .action-btn .recharge-overlay {
     border-radius: 0;
   }
   /* The keycap reads under its well, not inside it: the painted well is the icon's whole
@@ -257,8 +264,15 @@
 
   /* The bars WoC stacks around the cluster have no seat in the painting, so they anchor
      above its top edge and keep their own internal layout. Each takes a lane one painted
-     slot deep plus the frame gap - the only measured row pitch the art carries - stacked
-     in WoC's own visual order, so two rows switched on at once never meet. */
+     slot deep plus the frame gap - the only measured row pitch the art carries - so two
+     rows switched on at once can never meet.
+
+     The lane against the painting goes to the stance row, the only one of the four that is
+     on in the shipped default (the two optional action rows are off, and both pet frames are
+     hidden until the player has a pet). Ordering the lanes by WoC's own stacking instead
+     would leave the stance bar hanging two empty lanes clear of the cluster whenever the
+     optional rows are off, which is every default session. Above it the optional rows keep
+     WoC's order among themselves, bar 2 under bar 3, with the pet cluster topmost. */
   body.hud-painted #actionbar2,
   body.hud-painted #actionbar3,
   body.hud-painted #stancebar,
@@ -268,13 +282,13 @@
     margin: 0;
     z-index: 1;
   }
-  body.hud-painted #actionbar2 {
+  body.hud-painted #stancebar {
     bottom: calc(100% + var(--pt-gap));
   }
-  body.hud-painted #actionbar3 {
+  body.hud-painted #actionbar2 {
     bottom: calc(100% + var(--pt-gap) + (var(--pt-well-1-h) + var(--pt-gap)));
   }
-  body.hud-painted #stancebar {
+  body.hud-painted #actionbar3 {
     bottom: calc(100% + var(--pt-gap) + 2 * (var(--pt-well-1-h) + var(--pt-gap)));
   }
   body.hud-painted #pet-cluster {
@@ -373,10 +387,14 @@
   body.hud-painted #bottom-bar .tf-edge-glow {
     display: none;
   }
-  /* An orb fill rises: the bar is turned a quarter so WoC's scaleX fill grows upward,
-     and the text turns back. A square rect turns onto itself, so the box is the orb's.
-     The quarter turn also turns every gradient below: local +x is screen UP, so a band
-     that runs rim-to-surface on screen is written `to right` here. */
+  /* An orb fill rises: the box is turned a quarter so WoC's scaleX fill grows upward, and the
+     readout turns back. No class's orb rect is square (reaver's health orb is 82x77, hero's
+     84x79), so a box cut to the orb's own rect would come out of the turn 5 to 7 px narrow
+     and as much too tall, leaving an unveiled sliver on each rim and a dark arc over the top.
+     Each orb therefore takes the orb's HEIGHT for its width and its WIDTH for its height,
+     seated so the two centres coincide, and the quarter turn lands its rendered box back on
+     the orb rect exactly. The turn also turns every gradient below: local +x is screen UP,
+     so a band that runs rim-to-surface on screen is written `to right` here. */
   body.hud-painted #player-frame .bar.hp,
   body.hud-painted #player-frame #pf-resource {
     position: absolute;
@@ -392,16 +410,16 @@
     pointer-events: auto;
   }
   body.hud-painted #player-frame .bar.hp {
-    left: var(--pt-hp-orb-x);
-    top: var(--pt-hp-orb-y);
-    width: var(--pt-hp-orb-w);
-    height: var(--pt-hp-orb-h);
+    left: calc(var(--pt-hp-orb-x) + (var(--pt-hp-orb-w) - var(--pt-hp-orb-h)) / 2);
+    top: calc(var(--pt-hp-orb-y) + (var(--pt-hp-orb-h) - var(--pt-hp-orb-w)) / 2);
+    width: var(--pt-hp-orb-h);
+    height: var(--pt-hp-orb-w);
   }
   body.hud-painted #player-frame #pf-resource {
-    left: var(--pt-res-orb-x);
-    top: var(--pt-res-orb-y);
-    width: var(--pt-res-orb-w);
-    height: var(--pt-res-orb-h);
+    left: calc(var(--pt-res-orb-x) + (var(--pt-res-orb-w) - var(--pt-res-orb-h)) / 2);
+    top: calc(var(--pt-res-orb-y) + (var(--pt-res-orb-h) - var(--pt-res-orb-w)) / 2);
+    width: var(--pt-res-orb-h);
+    height: var(--pt-res-orb-w);
   }
   /* The filled share is the painted glass itself, at full strength. WoC gives exactly one
      element and scales it to the filled share, so the fill cannot BE the glass - it takes the
