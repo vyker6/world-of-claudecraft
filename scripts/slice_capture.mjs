@@ -11,6 +11,7 @@
 //   HERO_URL=models/chars/players/<body>.glb  (default: the wired player_warrior body)
 //   WEAPON_ITEM=reaver_axe  ENEMY_TEMPLATE=vale_bandit  OUT=tmp/slice/hero_v1
 //   TP_X=8 TP_Z=-330 [TP_FACING=3.14]  (teleport to a zone before the shots)
+//   PAINTED_HUD=0  (seed the Painted HUD setting off; unset keeps its default)
 import fs from 'node:fs';
 import puppeteer from 'puppeteer-core';
 import { BROWSER_PATH } from './browser_path.mjs';
@@ -41,6 +42,10 @@ const ABILITIES = (process.env.ABILITIES ?? '')
   .split(',')
   .map((s) => s.trim())
   .filter(Boolean);
+// PAINTED_HUD=0 seeds the `paintedHud` setting off before the client boots, so a capture
+// can show WoC's own HUD for the theme's toggle check. Unset leaves the store alone and
+// the setting keeps its shipped default (on).
+const PAINTED_HUD_OFF = process.env.PAINTED_HUD === '0';
 const W = 1920;
 const H = 1080;
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -68,9 +73,17 @@ page.on('pageerror', (e) => console.log('PAGEERR', e.message.slice(0, 300)));
 page.on('console', (m) => {
   if (m.type() === 'error') console.log('CONSOLE', m.text().slice(0, 300));
 });
-await page.evaluateOnNewDocument(() => {
+await page.evaluateOnNewDocument((paintedHudOff) => {
   try {
     localStorage.setItem('woc_gpu_notice_dismissed', '1');
+    if (paintedHudOff) {
+      // Settings.load() reads a PARTIAL blob and fills every absent key from its default,
+      // so one merged key is enough and nothing else in the store is disturbed.
+      const raw = JSON.parse(localStorage.getItem('woc_settings') ?? 'null');
+      const blob = raw && typeof raw === 'object' ? raw : {};
+      blob.paintedHud = false;
+      localStorage.setItem('woc_settings', JSON.stringify(blob));
+    }
   } catch {}
   // Vite serves HMR-invalidated modules under "?t=<stamp>" URLs; a bare
   // import('/src/x.ts') would mint a SECOND instance. The harness looks the
@@ -83,7 +96,7 @@ await page.evaluateOnNewDocument(() => {
       .find((n) => n.endsWith(path) || n.includes(`${path}?`));
     return import(hit ?? path);
   };
-});
+}, PAINTED_HUD_OFF);
 
 await page.goto(`${URL}/?gfx=high`, { waitUntil: 'domcontentloaded', timeout: 60000 });
 await page.waitForSelector('#btn-offline', { timeout: 120000 });
