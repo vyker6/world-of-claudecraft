@@ -100,3 +100,17 @@ describe('painted target frame', () => {
     expect(css).toContain('var(--pt-tf-name-w)');
   });
 });
+
+describe('painted minimap, tracker and chat', () => {
+  it('seats the map in the measured window of the minimap chrome', () => {
+    expect(css).toContain('url("/ui/painted/minimap.webp")');
+    expect(css).toContain('width: var(--pt-map-w);');
+    expect(css).toContain('left: var(--pt-map-win-x);');
+    expect(css).toContain('top: calc(var(--pt-safe) + var(--pt-map-h) + var(--pt-gap) * 2);');
+  });
+  it('strips the chat frame to plain fading lines', () => {
+    expect(css).toContain('body.hud-painted #chatlog-frame {');
+    expect(css).toMatch(/#chatlog-tabs \{\s*display: none;/);
+    expect(css).toContain('mask-image: linear-gradient(to top, rgb(0 0 0) 60%, transparent);');
+  });
+});

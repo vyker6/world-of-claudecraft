@@ -698,11 +698,15 @@
     box-shadow: none;
     border-radius: 0;
   }
+  /* padding-bottom goes with the margin: hud.css reserves 13 px under the row for the
+     countdown that the chip now carries INSIDE its well, so the reserve is an empty band
+     that swallows clicks and pushes the party frames down a row for nothing. */
   body.hud-painted #target-frame #tf-debuffs {
     position: absolute;
     left: var(--pt-tf-field-x);
     top: calc(var(--pt-tf-rail) + var(--pt-gap) + var(--pt-cast-h) + var(--pt-gap));
     margin: 0;
+    padding-bottom: 0;
     gap: var(--pt-gap);
   }
   /* Target of target: a chip at the field's right end, level with the cast trough.
@@ -886,5 +890,237 @@
       var(--pt-cast-h) +
       var(--pt-chip)
     );
+  }
+  /* ---- Minimap in its chrome, the zone above, the tracker beneath ---- */
+  /* minimap.webp is the FITTED export (303 x 189 = --pt-map-w by --pt-map-h), so
+     `100% 100%` lays the painting on the box 1:1 and every window rect below IS the
+     painting's own pixel. position: absolute is restated because the wrap is the containing
+     block those rects resolve against; that is this rule's own load-bearing property, not
+     something to borrow from hud.css. overflow stays visible so the zone label, which hangs
+     above the wrap's box, is not clipped away. */
+  body.hud-painted #minimap-wrap {
+    position: absolute;
+    right: var(--pt-safe);
+    top: var(--pt-safe);
+    width: var(--pt-map-w);
+    height: var(--pt-map-h);
+    background: url("/ui/painted/minimap.webp") center / 100% 100% no-repeat;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  /* The measured opening is 281 x 148 - a LANDSCAPE recess, not a round one - so the disc
+     takes no radius: it is the window the map is seen through, and it crops. */
+  body.hud-painted #minimap-disc {
+    position: absolute;
+    left: var(--pt-map-win-x);
+    top: var(--pt-map-win-y);
+    width: var(--pt-map-win-w);
+    height: var(--pt-map-win-h);
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
+  }
+  /* hud.css hangs a hand-gilded ring on ::before behind the round canvas. The painted bezel
+     is the frame now, and the ring would show as a gold arc inside the recess. */
+  body.hud-painted #minimap-disc::before {
+    display: none;
+  }
+  /* The painter owns a 162 square and clips its draw to a circle inside it, so the canvas
+     takes the window's WIDTH as its side and centres on the window's height: one uniform
+     scale, never a stretch, with the window cropping the circle top and bottom. */
+  body.hud-painted #minimap {
+    position: absolute;
+    left: 0;
+    top: calc((var(--pt-map-win-h) - var(--pt-map-win-w)) / 2);
+    width: var(--pt-map-win-w);
+    height: var(--pt-map-win-w);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  /* The zone reads as a header over the map, ending on the chrome's right edge one gap above
+     it. hud.css leaves a 3px bottom margin under the label from when it sat in the wrap's
+     flow; absolutely positioned that would be a hand offset, so it goes.
+     It is the one label the composition sets on bare world rather than on chrome, so it
+     takes the mock's own reading for that case (build_hud_painted.top_right sets the zone
+     header in INK with outline=DARK): full ink and the hard --pt-outline edge. A dim fill
+     under a soft 2px drop shadow vanished into a pale noon sky. */
+  body.hud-painted #zone-label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(100% + var(--pt-gap));
+    top: auto;
+    margin: 0;
+    padding: 0;
+    text-align: right;
+    font: 400 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+    background: none;
+  }
+  /* Minimap widgets the mock's column has none of. The clock, the coordinate pill, the
+     compass strip and the zoom pill all seat themselves on WoC's ROUND rim - the rim the
+     painted bezel replaces - and the day/night dial is a satellite disc on that same rim,
+     so each would land on the painting rather than beside it. #community-hud is a sibling
+     of the wrap with no seat in the composition at all. */
+  body.hud-painted #minimap-clock,
+  body.hud-painted #minimap-coords,
+  body.hud-painted #compass,
+  body.hud-painted #minimap-zoom,
+  body.hud-painted #minimap-daynight,
+  body.hud-painted nav#community-hud {
+    display: none;
+  }
+  /* The stack, not #quest-tracker, is the positioned host: the trackers are its flow
+     children, and each one seating itself would stack them all on the same coordinate. The
+     seat is the map's own bottom edge plus two gaps, so it reads off the painting.
+     display: flex and the direction are restated because the gap below is a flex gap.
+     The top is the stylesheet seat, which is what stands whenever the minimap column is
+     hidden; while it is visible tracker_stack_anchor.ts re-measures the column on the slow
+     band and writes its own `style.top` INLINE, one gap under the same painting edge this
+     calc reads. See task-7-report.md: neutralising that write needs author-important, which
+     the pinned string cannot carry. */
+  body.hud-painted #right-tracker-stack {
+    position: absolute;
+    right: var(--pt-safe);
+    top: calc(var(--pt-safe) + var(--pt-map-h) + var(--pt-gap) * 2);
+    width: var(--pt-map-w);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pt-gap);
+  }
+  body.hud-painted #quest-tracker {
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+  /* Every tracker line takes the hard --pt-outline, not a soft drop shadow: the whole column
+     is set on bare world, and the mock reached the same conclusion for the same reason
+     (build_hud_painted.tracker stamps outline=DARK on all of them - "ours is lit stone").
+     A 2px drop shadow left the objectives washed out against a noon sky. */
+  body.hud-painted #quest-tracker .qt-header {
+    font: 700 var(--pt-size-dense) / 1.4 var(--pt-face-condensed);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pt-dim);
+    text-shadow: var(--pt-outline);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--pt-gilt);
+  }
+  body.hud-painted #quest-tracker .qt-title {
+    font: 700 var(--pt-size-body) / 1.3 var(--pt-face-display);
+    color: var(--pt-gold);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #quest-tracker .qt-obj {
+    font: 400 var(--pt-size-body) / 1.3 var(--pt-face-body);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #quest-tracker .qt-obj.done {
+    color: var(--pt-dim);
+  }
+
+  /* ---- Chat: the WoW composition, plain lines that fade, no frame ---- */
+  /* The chat column: the safe margin to a gap short of the centred cluster's left edge, so
+     the log never runs under the bar. Declared ON #ui, which is where metrics.ts writes the
+     --pt-* this reads: a token derived from them anywhere higher (body) resolves against a
+     scope that has none of them and computes to nothing. Named once because the log and the
+     composer that feeds it must share one column, and 50% inside a custom property is
+     resolved by the element that USES it - both children of #ui, so both get the same box. */
+  body.hud-painted #ui {
+    --pt-chat-w: calc(50% - var(--pt-bar-w) / 2 - var(--pt-safe) - var(--pt-gap) * 2);
+  }
+  /* position: absolute is WoC's own and is restated, not changed: the theme moves only the
+     anchors, so the interface-unlock drag still takes the box the moment the player drags it
+     (chat_geometry_controller.ts then writes left/top/width inline and wins). */
+  body.hud-painted #chatlog-wrap {
+    position: absolute;
+    left: var(--pt-safe);
+    bottom: calc(var(--pt-rail-bottom) + var(--pt-gap));
+    width: var(--pt-chat-w);
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+  /* The mock's chat is one unbroken run of lines with no tab strip over it, so the strip
+     goes rather than being restyled into a rule it is not. */
+  body.hud-painted #chatlog-tabs {
+    display: none;
+  }
+  /* The SE resize grip is drawn as a hatch in the frame's corner, and with the frame gone it
+     read as a loose scrap of another design system lying on the world under the last line.
+     Gated rather than hidden outright: in arrange mode the player is looking for the box's
+     handles, and hud.css bumps this one's size and opacity for exactly that. */
+  body.hud-painted:not(.interface-unlocked) .chat-resize-grip {
+    display: none;
+  }
+  /* No panel under the lines: they lie on the world and fade out of it upward, which is what
+     the mask does - opaque across the newest lines, gone by the top of the run. */
+  body.hud-painted #chatlog-frame {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    mask-image: linear-gradient(to top, rgb(0 0 0) 60%, transparent);
+  }
+  /* The ink is !important because hud.ts writes `div.style.color = chatChannelColor(chan)`
+     INLINE on every line it builds, and an author-important declaration is the only thing in
+     the cascade that wins a colour back from an inline write (the #tf-name precedent above).
+     The double shadow is what keeps an unplated line readable over lit ground. */
+  body.hud-painted #chatlog div[data-chan] {
+    font: 400 var(--pt-size-body) / 1.3 var(--pt-face-body);
+    color: var(--pt-dim) !important;
+    text-shadow:
+      0 1px 2px var(--pt-dark),
+      0 0 4px var(--pt-dark);
+    background: none;
+  }
+  /* The newest line reads brightest, the way the mock leads the run. */
+  body.hud-painted #chatlog div[data-chan]:last-child {
+    color: var(--pt-ink) !important;
+  }
+  /* One gold for every speaker: hud.css tints a sender by class through --class-color, a
+     second palette inside a composition that has one. No !important needed - the class
+     colour arrives as a custom property, not as an inline `color`. */
+  body.hud-painted #chatlog .chat-player-name {
+    color: var(--pt-gold);
+  }
+  /* The composer follows the log it feeds: WoC leaves it on the stock 12px/370px column that
+     the theme has just moved. JS owns only its `bottom` (anchorChatInput). */
+  body.hud-painted #chat-input {
+    left: var(--pt-safe);
+    width: var(--pt-chat-w);
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    outline: 0;
+    font: 400 var(--pt-size-body) / 1.3 var(--pt-face-body);
+    color: var(--pt-ink);
+  }
+
+  /* ---- WoC pieces the mock has none of ---- */
+  /* Proc frames: WoC paints a row of glowing ability icons straight onto the world beside
+     the cast column to announce a proc. The mock announces one on the chip strip and has no
+     second surface for it, so the overlay row stands down. */
+  body.hud-painted #aura-overlays {
+    display: none;
+  }
+  /* The three rim badges. Each is positioned against WoC's ROUND canvas box and so lands
+     INSIDE the painted recess, on the map: the lockout padlock at its bottom-left corner and
+     the mail and market pills at its bottom-right. The painted bezel has no measured seat to
+     move them to, and a badge from another design system lying on the map is worse than an
+     absent one, so they stand down with the rest of the rim furniture. */
+  body.hud-painted #raid-lockout,
+  body.hud-painted #mail-indicator,
+  body.hud-painted #market-indicator {
+    display: none;
   }
 }

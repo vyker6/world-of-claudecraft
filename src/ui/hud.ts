@@ -2502,6 +2502,10 @@ export class Hud {
       showError: (text) => this.showError(text),
     });
     this.chatWindow.init();
+    // Seat the Painted HUD chrome BEFORE the chat geometry controller, which measures
+    // #chatlog-wrap and freezes the rect inline: the theme's box is var()-derived and
+    // reads as `auto` until the --pt-* properties land on #ui.
+    this.syncPaintedChrome(this.sim.cfg.playerClass);
     this.chatGeometry.init();
     this.initFrameMovers();
     attachOverlayDrag(this.paladinDevotionFrameEl, 'paladinDevotionAnchor', {

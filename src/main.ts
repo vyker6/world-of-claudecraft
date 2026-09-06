@@ -2882,6 +2882,10 @@ async function startGame(
     }
   }
   // apply persisted settings to the freshly-built subsystems
+  // Before the loop, not inside it: its 'uiScale' case calls hud.reapplySavedGeometry(),
+  // which pins #chatlog-wrap at the rect it measures, and the painted chat column is
+  // var()-derived - unthemed it reads as WoC's own box and the pin makes that permanent.
+  document.body.classList.toggle('hud-painted', settings.get('paintedHud'));
   const saved = settings.all();
   for (const k of Object.keys(saved) as (keyof GameSettings)[]) applySetting(k, saved[k]);
   const captureGraphicsSettings = (): GraphicsSettingsSnapshot =>

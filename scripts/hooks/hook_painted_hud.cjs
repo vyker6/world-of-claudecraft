@@ -313,3 +313,42 @@ replaceLine(
   ],
   '    ).toEqual({ window: 46, chrome: 85, none: 17 });',
 );
+
+// 11. Boot order: the --pt-* properties have to be on #ui BEFORE any module measures a
+//     themed box. syncPaintedChrome is driven from update(), which first runs after the
+//     boot sequence, and ChatGeometryController.reapply() (attachStorePromoCard, main.ts)
+//     FREEZES #chatlog-wrap's measured rect inline. A theme whose left/width are var()
+//     references computes to `auto` until the properties land, so the box it froze was
+//     WoC's untethered one and the painted chat column never took effect. Syncing once in
+//     the constructor seats the properties first; update()'s own call then elides on the
+//     key it just memoized, so this costs one write per boot and nothing per frame.
+insertAfterLine(
+  'src/ui/hud.ts',
+  '    this.chatWindow.init();',
+  [
+    '    // Seat the Painted HUD chrome BEFORE the chat geometry controller, which measures',
+    "    // #chatlog-wrap and freezes the rect inline: the theme's box is var()-derived and",
+    '    // reads as `auto` until the --pt-* properties land on #ui.',
+    '    this.syncPaintedChrome(this.sim.cfg.playerClass);',
+  ],
+  '    this.syncPaintedChrome(this.sim.cfg.playerClass);',
+);
+
+// 12. The other half of the same boot order: the body class. The apply-all loop below runs
+//     applySetting for every key, and its 'uiScale' case calls hud.reapplySavedGeometry(),
+//     which measures #chatlog-wrap and pins the rect it finds INLINE for the session.
+//     'uiScale' is a numeric range and 'paintedHud' a boolean, so the loop always reaches
+//     the freeze first and pinned WoC's untethered box; the painted chat column then never
+//     took effect however correct its CSS. Toggling the class before the loop settles it.
+//     applySetting('paintedHud') still runs inside the loop and re-toggles idempotently.
+insertAfterLine(
+  'src/main.ts',
+  '  // apply persisted settings to the freshly-built subsystems',
+  [
+    "  // Before the loop, not inside it: its 'uiScale' case calls hud.reapplySavedGeometry(),",
+    '  // which pins #chatlog-wrap at the rect it measures, and the painted chat column is',
+    "  // var()-derived - unthemed it reads as WoC's own box and the pin makes that permanent.",
+    "  document.body.classList.toggle('hud-painted', settings.get('paintedHud'));",
+  ],
+  "  document.body.classList.toggle('hud-painted', settings.get('paintedHud'));",
+);
