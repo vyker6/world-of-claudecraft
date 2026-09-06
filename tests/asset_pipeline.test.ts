@@ -1500,7 +1500,7 @@ describe('asset library registry parsers', () => {
     const library = await libraryImport;
     const src = readFileSync(join(ROOT, 'src/render/characters/manifest.ts'), 'utf8');
     const map = library.parseVisualUrls(src);
-    expect(map.get('models/chars/players/knight.glb')).toContain('player_warrior');
+    expect(map.get('models/chars/players/hero_warrior_leather.glb')).toContain('player_warrior');
     expect(map.get('models/creatures/wolf_basic.glb')).toEqual(
       expect.arrayContaining(['form_cat', 'mob_wolf']),
     );
@@ -1546,7 +1546,7 @@ describe('asset library registry parsers', () => {
     const knight = assets.find(
       (a: { path: string }) => a.path === 'models/chars/players/knight.glb',
     );
-    expect(knight.registration.visualKeys).toContain('player_warrior');
+    expect(knight.registration.visualKeys).toContain('npc_knight');
     expect(knight.registration.referenced).toBe(true);
   });
 });

@@ -62,6 +62,9 @@ const bundled = await esbuild.build({
     // an unmatched member access on the now-empty stand-in object). esbuild matches the
     // FULL member path, so every VITE_* member those modules read needs its own entry.
     'import.meta.env.BASE_URL': '"/"',
+    // src/render/zone_build_pool.ts builds a Worker URL off import.meta.url at module scope;
+    // any absolute URL keeps that expression from throwing on the stills page (no zone builds).
+    'import.meta.url': '"http://127.0.0.1/stills/"',
     'import.meta.env.VITE_API_ORIGIN': '""',
     'import.meta.env.VITE_DESKTOP_API_ORIGIN': '""',
     'import.meta.env.VITE_DESKTOP_APP': '""',
@@ -80,7 +83,9 @@ const bundleJs = bundled.outputFiles[0].text;
 // SyntaxError in a classic script) and the current empty-object rewrite (import_meta = {} /
 // import_meta.env.X: a boot-time TypeError the __ready wait can only report as a timeout).
 if (bundleJs.includes('import.meta') || /\bimport_meta\b/.test(bundleJs)) {
+  const reads = [...new Set(bundleJs.match(/import(?:\.meta|_meta)(?:\.\w+)*/g) ?? [])];
   throw new Error(
+    `stills bundle reads ${reads.join(', ')}. ` +
     'stills bundle still reads an import.meta.env field with no define (esbuild rewrites ' +
       'import.meta to an empty object in an IIFE, so the page TypeErrors at boot). Add an ' +
       "'import.meta.env.<field>' define above; esbuild matches the full member path.",
