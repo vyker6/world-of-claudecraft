@@ -77,6 +77,23 @@ describe('painted cluster', () => {
       expect(css).toContain(`var(${p})`);
     }
   });
+  // The stance row stands on bare world in every default session, so its buttons cannot keep
+  // hud.css's olive bezel and gold active ring: they take the aura chip's square and gilt.
+  it('gives the stance row the chip skin instead of the WoC bezel', () => {
+    expect(css).toContain('body.hud-painted #stancebar .stance-btn {');
+    expect(css).toMatch(
+      /#stancebar \.stance-btn \{[^}]*width: var\(--pt-chip\);[^}]*border: 1px solid var\(--pt-gilt\);/,
+    );
+    expect(css).toMatch(/#stancebar \.stance-btn\.active \{[^}]*border-color: var\(--pt-gold\);/);
+  });
+  // hud.css sets the well's corner counts at 10px and 13px in the shell face, under the
+  // mock's smallest size; they read inside the well, so they take the chip count's reading.
+  it('sets the well corner counts in the theme face at the dense size', () => {
+    expect(css).toMatch(
+      /\.action-btn \.item-count \{[^}]*font: 700 var\(--pt-size-dense\) \/ 1 var\(--pt-face-condensed\);/,
+    );
+    expect(css).toMatch(/\.item-count\.charge-count \{[^}]*color: var\(--pt-gold\);/);
+  });
 });
 
 describe('painted target frame', () => {
@@ -99,6 +116,14 @@ describe('painted target frame', () => {
   it('places the level after the measured name', () => {
     expect(css).toContain('var(--pt-tf-name-w)');
   });
+  // SwingTimerPainter.paint writes an inline `display: block` every frame the timer is up,
+  // which beats an unflagged rule: the hide has to carry the flag or the bar comes back and
+  // lies across the cluster's crest.
+  it('hides the four swing bars against their painter inline write', () => {
+    expect(css).toMatch(
+      /#swingbar,\n\s*body\.hud-painted #swingbar-offhand,[\s\S]*?\{\s*display: none !important;/,
+    );
+  });
 });
 
 describe('painted minimap, tracker and chat', () => {
@@ -106,6 +131,9 @@ describe('painted minimap, tracker and chat', () => {
     expect(css).toContain('url("/ui/painted/minimap.webp")');
     expect(css).toContain('width: var(--pt-map-w);');
     expect(css).toContain('left: var(--pt-map-win-x);');
+    // The recess floor is OPAQUE. --pt-plate's 0.91 alpha is for sheets over art the mock
+    // composed itself; over a live world it drew the skyline through the map's frame.
+    expect(css).toMatch(/#minimap-disc \{[^}]*background: var\(--pt-dark\);/);
     // The tracker seats under the WHOLE column: the zone header's row, then the chrome, then
     // two gaps. !important because tracker_stack_anchor.ts writes an inline `top` of its own.
     expect(css).toContain(

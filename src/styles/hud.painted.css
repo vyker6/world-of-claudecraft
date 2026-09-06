@@ -269,6 +269,21 @@
     font: 700 var(--pt-size-body) / 1 var(--pt-face-condensed);
     color: var(--pt-ink);
   }
+  /* The stack and charge counts in the well's corner, which hud.css leaves at 10px and 13px
+     in the shell face - under the mock's smallest size, and the only type in the cluster set
+     in a face the composition never uses. They read the way a chip's count does, INSIDE the
+     well on painted art, so they take that same reading: the dense size, the condensed face
+     and the hard dark outline. Charges keep their gold, the mark WoC spends on "another use
+     is banked"; a plain stack count is ink like every other figure on the painting. */
+  body.hud-painted #actionbar .action-btn .item-count {
+    font: 700 var(--pt-size-dense) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #actionbar .action-btn .item-count.charge-count {
+    color: var(--pt-gold);
+    text-shadow: var(--pt-outline);
+  }
 
   /* The bars WoC stacks around the cluster have no seat in the painting, so they anchor
      above its top edge and keep their own internal layout. Each takes a lane one painted
@@ -303,6 +318,30 @@
     bottom: calc(100% + var(--pt-gap) + 3 * (var(--pt-well-1-h) + var(--pt-gap)));
     width: auto;
     padding: 0;
+  }
+  /* The stance row is the one lane that is on in every default session, so its buttons are
+     the only WoC chrome the composition leaves standing on bare world: hud.css gives each a
+     2px olive bezel on a 6px radius over a blue-grey radial, and the worn one a saturated
+     gold ring with two glows. The action bar's own buttons drop their bezel because the
+     painting is the chrome behind them; a stance button has no painted well under it, so it
+     cannot go bare. It takes the aura chip's reading instead - the same 40px square, the same
+     gilt hairline on the plate - because it is the same object: an icon that must carry its
+     own edge. The worn stance keeps its mark in the mock's gold rather than WoC's. */
+  body.hud-painted #stancebar .stance-btn {
+    width: var(--pt-chip);
+    height: var(--pt-chip);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    background: var(--pt-plate);
+    box-shadow: none;
+  }
+  body.hud-painted #stancebar .stance-btn .icon-label {
+    inset: 0;
+    border-radius: 0;
+  }
+  body.hud-painted #stancebar .stance-btn.active {
+    border-color: var(--pt-gold);
+    box-shadow: none;
   }
 
   /* The XP strip: level plate at its head, trough to the focus orb's first ink. The plate's
@@ -581,12 +620,17 @@
     display: none;
   }
   /* The four swing bars have no seat in the mock's composition, which carries one cast
-     trough per caster under the rail and nothing else. */
+     trough per caster under the rail and nothing else.
+     !important because SwingTimerPainter.paint writes an INLINE `display: block` onto the
+     bar on every frame the auto-attack timer is up, and an inline declaration beats a
+     stylesheet rule that carries no flag: without it the main-hand bar reappeared the moment
+     the first swing landed, lying across the cluster's crest with its seconds label on the
+     axe head. Same reason #right-tracker-stack flags its top against tracker_stack_anchor. */
   body.hud-painted #swingbar,
   body.hud-painted #swingbar-offhand,
   body.hud-painted #target-frame #swingbar-target,
   body.hud-painted #target-frame #swingbar-tot {
-    display: none;
+    display: none !important;
   }
   /* The hp fill grows to the seat so the field's lit lip is covered, not left as a moat.
      .uf-bars is `display: contents`, so the child combinator picks only the target's own
@@ -920,16 +964,22 @@
   }
   /* The measured opening is 281 x 148 - a LANDSCAPE recess, not a round one - so the disc
      takes no radius: it is the window the map is seen through, and it crops.
-     The plate is the recess's own field. The painter fills a circle, which cannot fill a
-     landscape rectangle, so the fields either side of it and the four corners read as chrome
-     rather than as a hole onto the world. */
+     The field is the recess's own floor. The painter fills a circle, which cannot fill a
+     landscape rectangle, so the fields either side of it and the four corners have to read
+     as chrome rather than as a hole onto the world.
+     --pt-dark, not --pt-plate: a plate is the mock's 0.91-alpha SHEET, which it lays over
+     art it composed itself, and here there is a live world behind it instead. At that alpha
+     the treeline and the skyline read straight through the recess - sampled across the run,
+     the same six points swing from 11 to 30 as the camera turns - which draws a horizon
+     inside the map frame. The floor of a recess is opaque; --pt-dark is the very colour the
+     plate is 91 percent of, so the field keeps the palette and stops being a window. */
   body.hud-painted #minimap-disc {
     position: absolute;
     left: var(--pt-map-win-x);
     top: var(--pt-map-win-y);
     width: var(--pt-map-win-w);
     height: var(--pt-map-win-h);
-    background: var(--pt-plate);
+    background: var(--pt-dark);
     border: 0;
     border-radius: 0;
     overflow: hidden;
