@@ -58,4 +58,399 @@
     --pt-size-display: 24px;
     --pt-size-wordmark: 42px;
   }
+
+  /* ---- The cluster: one painting hosts the orbs, the wells and the medallion ---- */
+  /* #bottom-bar is the cluster's ONE positioned host. Sized to the painting, it is the
+     containing block every rect below resolves against, which makes those rects the
+     painting's own pixels. hud.css centres it with a translate that would double the
+     calc, so the transform goes. */
+  body.hud-painted #bottom-bar {
+    position: absolute;
+    left: calc(50% - var(--pt-bar-w) / 2);
+    bottom: var(--pt-bar-bottom);
+    width: var(--pt-bar-w);
+    height: var(--pt-bar-h);
+    transform: none;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+    /* A stacking context of its own, so the XP band can sit BEHIND the painting the way
+       the mock stacks it (build_hud_painted.xp_strip: the crest and the rail ornament
+       stand in front of the band) without falling behind the world canvas. */
+    isolation: isolate;
+  }
+  body.hud-painted #bottom-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: center / 100% 100% no-repeat;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body.hud-painted[data-painted-chrome="arknight"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_arknight.webp");
+  }
+  body.hud-painted[data-painted-chrome="bard"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_bard.webp");
+  }
+  body.hud-painted[data-painted-chrome="blademaster"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_blademaster.webp");
+  }
+  body.hud-painted[data-painted-chrome="chronomancer"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_chronomancer.webp");
+  }
+  body.hud-painted[data-painted-chrome="elementalist"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_elementalist.webp");
+  }
+  body.hud-painted[data-painted-chrome="hero"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_hero.webp");
+  }
+  body.hud-painted[data-painted-chrome="reaver"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_reaver.webp");
+  }
+  body.hud-painted[data-painted-chrome="undying"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_undying.webp");
+  }
+  body.hud-painted[data-painted-chrome="warpriest"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_warpriest.webp");
+  }
+
+  /* Every wrapper between the host and the pieces carries WoC's flow layout, and the
+     stack carries a positioned box of its own. Neutralised, they add no geometry and
+     every rect below measures from #bottom-bar. */
+  body.hud-painted #actionbar-row,
+  body.hud-painted #actionbar-stack,
+  body.hud-painted #actionbar-group,
+  body.hud-painted #actionbar {
+    position: static;
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    /* .panel's keyline is an OUTLINE (base.css), which a border reset does not touch: the
+       collapsed bar drew it as a black rule along the painting's top edge. */
+    outline: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* The main action bar's first eight slots seat in the eight wells; the painting is the
+     chrome, so the slot's own bezel goes. The painting has eight wells and the bar builds
+     twelve slots, so a slot shows only where one of the eight rules below gives it a seat.
+     Addressing them by data-hotbar-slot (hud.ts buildActionBar) rather than by child index
+     is load-bearing: MovableFrame puts four nodes of its own in front of the slots, two of
+     them BUTTONs, so nth-child AND nth-of-type both count past the bar's real first slot. */
+  body.hud-painted #actionbar .action-btn {
+    position: absolute;
+    display: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+    z-index: 1;
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="0"] {
+    display: block;
+    left: var(--pt-well-1-x);
+    top: var(--pt-well-1-y);
+    width: var(--pt-well-1-w);
+    height: var(--pt-well-1-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="1"] {
+    display: block;
+    left: var(--pt-well-2-x);
+    top: var(--pt-well-2-y);
+    width: var(--pt-well-2-w);
+    height: var(--pt-well-2-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="2"] {
+    display: block;
+    left: var(--pt-well-3-x);
+    top: var(--pt-well-3-y);
+    width: var(--pt-well-3-w);
+    height: var(--pt-well-3-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="3"] {
+    display: block;
+    left: var(--pt-well-4-x);
+    top: var(--pt-well-4-y);
+    width: var(--pt-well-4-w);
+    height: var(--pt-well-4-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="4"] {
+    display: block;
+    left: var(--pt-well-5-x);
+    top: var(--pt-well-5-y);
+    width: var(--pt-well-5-w);
+    height: var(--pt-well-5-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="5"] {
+    display: block;
+    left: var(--pt-well-6-x);
+    top: var(--pt-well-6-y);
+    width: var(--pt-well-6-w);
+    height: var(--pt-well-6-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="6"] {
+    display: block;
+    left: var(--pt-well-7-x);
+    top: var(--pt-well-7-y);
+    width: var(--pt-well-7-w);
+    height: var(--pt-well-7-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="7"] {
+    display: block;
+    left: var(--pt-well-8-x);
+    top: var(--pt-well-8-y);
+    width: var(--pt-well-8-w);
+    height: var(--pt-well-8-h);
+  }
+  /* The optional-row toggle rides the end of the primary bar; the painting has no seat
+     for it, and the rows it switches on anchor above the art (further down). */
+  body.hud-painted #actionbar .bar-toggle {
+    display: none;
+  }
+  /* The icon is a background-image span (hud.ts buildActionBar), not an img: it fills the
+     well the painter left for it, edge to edge, with no inset of its own. */
+  body.hud-painted #actionbar .action-btn .icon-label,
+  body.hud-painted #actionbar .action-btn .cd-overlay,
+  body.hud-painted #actionbar .action-btn .recharge-overlay {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+  /* The keycap reads under its well, not inside it: the painted well is the icon's whole
+     area. One line under the slot run, centred on the well it belongs to. */
+  body.hud-painted #actionbar .action-btn .keybind {
+    left: 0;
+    right: 0;
+    top: calc(100% + var(--pt-gap));
+    bottom: auto;
+    text-align: center;
+    font: 700 var(--pt-size-dense) / 1 var(--pt-face-condensed);
+    color: var(--pt-dim);
+    /* The row under the wells is where the painting's foot thins out, so on two of the eight
+       the cap lands on the world. The mock sets the same label with a hard dark outline
+       (build_hud_painted.cluster, role="indicator", outline=DARK); this is that outline. */
+    text-shadow:
+      0 0 3px var(--pt-dark),
+      1px 1px 0 var(--pt-dark),
+      -1px -1px 0 var(--pt-dark),
+      1px -1px 0 var(--pt-dark),
+      -1px 1px 0 var(--pt-dark);
+    background: none;
+    padding: 0;
+  }
+  body.hud-painted #actionbar .action-btn .cdtext {
+    font: 700 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+  }
+
+  /* The bars WoC stacks around the cluster have no seat in the painting, so they anchor
+     above its top edge and keep their own internal layout. Each takes a lane one painted
+     slot deep plus the frame gap - the only measured row pitch the art carries - stacked
+     in WoC's own visual order, so two rows switched on at once never meet. */
+  body.hud-painted #actionbar2,
+  body.hud-painted #actionbar3,
+  body.hud-painted #stancebar,
+  body.hud-painted #pet-cluster {
+    position: absolute;
+    left: var(--pt-well-1-x);
+    margin: 0;
+    z-index: 1;
+  }
+  body.hud-painted #actionbar2 {
+    bottom: calc(100% + var(--pt-gap));
+  }
+  body.hud-painted #actionbar3 {
+    bottom: calc(100% + var(--pt-gap) + (var(--pt-well-1-h) + var(--pt-gap)));
+  }
+  body.hud-painted #stancebar {
+    bottom: calc(100% + var(--pt-gap) + 2 * (var(--pt-well-1-h) + var(--pt-gap)));
+  }
+  body.hud-painted #pet-cluster {
+    bottom: calc(100% + var(--pt-gap) + 3 * (var(--pt-well-1-h) + var(--pt-gap)));
+    width: auto;
+    padding: 0;
+  }
+
+  /* The XP strip: level plate at its head, trough to the focus orb's first ink. The plate's
+     width is the label's own (--pt-level-plate-w, a ResizeObserver in metrics.ts). The band
+     runs BEHIND the painting, so the crest and the rail ornament stand in front of it. */
+  body.hud-painted #xpbar {
+    position: absolute;
+    left: calc(var(--pt-strip-x0) + var(--pt-level-plate-w));
+    top: var(--pt-strip-top);
+    width: calc(var(--pt-strip-end) - var(--pt-strip-x0) - var(--pt-level-plate-w));
+    height: var(--pt-strip-h);
+    bottom: auto;
+    margin: 0;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    outline: 0;
+    z-index: -1;
+  }
+  body.hud-painted #xpbar .fill {
+    background: linear-gradient(rgb(214 200 170), rgb(166 148 112));
+    box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.18);
+    border-radius: 0;
+  }
+  body.hud-painted #xpbar .label {
+    font: 700 var(--pt-size-dense) / var(--pt-strip-h) var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+  }
+  /* WoC's always-on percent at the trough's tail was set for a 10px strip; on the painted
+     trough it takes the theme's dense face and the strip's own line box. */
+  body.hud-painted #xpbar::after {
+    padding-right: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-strip-h) var(--pt-face-condensed);
+    color: var(--pt-dim);
+    text-shadow: 0 1px 2px var(--pt-dark);
+  }
+
+  /* ---- The player frame rides the same painting: the two orbs and the level plate ---- */
+  /* The frame is not a sibling of #bottom-bar but a grandchild of it, so it fills the host
+     rather than seating itself against the viewport. It passes clicks through to the slots
+     underneath; the two orbs take their own back. The centre medallion stays as painted
+     art: the mock fills it from a third vessel (the class secondary) that WoC's player
+     frame has no bar for. */
+  body.hud-painted #player-frame {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* Both wrappers stay in the box tree and drop only their own boxes: #pf-level lives
+     inside the portrait wrap and the two bars inside .uf-bars, and each is seated below
+     against the host rather than against its wrapper. */
+  body.hud-painted #player-frame .portrait-wrap,
+  body.hud-painted #player-frame .uf-bars {
+    display: contents;
+  }
+  /* The chrome the painting replaces: the portrait ring, the heraldry seal and its motif,
+     the combat and rest crests, the name plaque, the combo row and the low-resource caption. */
+  body.hud-painted #player-frame .portrait,
+  body.hud-painted #player-frame .deed-heraldry-seal,
+  body.hud-painted #player-frame #pf-heraldry-seal-motif,
+  body.hud-painted #player-frame #pf-combat,
+  body.hud-painted #player-frame #pf-rest,
+  body.hud-painted #player-frame #pf-name-header,
+  body.hud-painted #player-frame #combo-row,
+  body.hud-painted #player-frame #pf-low-resource {
+    display: none;
+  }
+  /* The shield overlay scales to (hp + absorb) / maxHp (absorb_bar.ts), so at full health
+     with no shield at all it still spans the whole bar. On a flat bar that reads as a
+     highlight; inside a round orb it is a hatch over the entire vessel. The painted orb
+     has no shield lane of its own, so it stands down until one is drawn. */
+  body.hud-painted #player-frame #pf-absorb {
+    display: none;
+  }
+  /* MovableFrame's furniture: the drag toggle rides at 0.6 opacity on every unit frame,
+     which puts a WoC button over the painting's top corner, and the grip, label and edge
+     glow follow it. The painted cluster is seated by measured coordinates, not dragged. */
+  body.hud-painted #bottom-bar .tf-move-btn,
+  body.hud-painted #bottom-bar .mf-resize-grip,
+  body.hud-painted #bottom-bar .tf-frame-label,
+  body.hud-painted #bottom-bar .tf-edge-glow {
+    display: none;
+  }
+  /* An orb fill rises: the bar is turned a quarter so WoC's scaleX fill grows upward,
+     and the text turns back. A square rect turns onto itself, so the box is the orb's.
+     The quarter turn also turns every gradient below: local +x is screen UP, so a band
+     that runs rim-to-surface on screen is written `to right` here. */
+  body.hud-painted #player-frame .bar.hp,
+  body.hud-painted #player-frame #pf-resource {
+    position: absolute;
+    margin: 0;
+    border: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    /* The glass is already painted (painted_chrome reads the orb out of the art), so the
+       vessel is never repainted: the orb carries one flat veil for the spent share, exactly
+       as painted_combat.vessel darkens spent glass rather than covering it. */
+    background: rgb(4 3 6 / 0.66);
+    transform: rotate(-90deg);
+    pointer-events: auto;
+  }
+  body.hud-painted #player-frame .bar.hp {
+    left: var(--pt-hp-orb-x);
+    top: var(--pt-hp-orb-y);
+    width: var(--pt-hp-orb-w);
+    height: var(--pt-hp-orb-h);
+  }
+  body.hud-painted #player-frame #pf-resource {
+    left: var(--pt-res-orb-x);
+    top: var(--pt-res-orb-y);
+    width: var(--pt-res-orb-w);
+    height: var(--pt-res-orb-h);
+  }
+  /* The filled share is the painted glass itself, at full strength. WoC gives exactly one
+     element and scales it to the filled share, so the fill cannot BE the glass - it takes the
+     veil back OFF it: brightness() over the backdrop undoes the orb's veil where the vessel
+     is full, and a thin glaze tints the liquid its resource colour. At empty the fill is
+     zero-wide and the whole orb stays veiled, which is the state the reference draws.
+     -webkit- first: Lightning drops the standard twin the other way round
+     (scripts/check_backdrop_survival.mjs). */
+  body.hud-painted #player-frame .bar .bar-fill {
+    border-radius: 0;
+    -webkit-backdrop-filter: brightness(3) saturate(1.15);
+    backdrop-filter: brightness(3) saturate(1.15);
+    background: linear-gradient(to right, rgb(122 18 24 / 0.22), rgb(214 60 52 / 0.1));
+  }
+  body.hud-painted #player-frame #pf-resource .bar-fill {
+    background: linear-gradient(to right, rgb(20 44 122 / 0.22), rgb(72 132 228 / 0.1));
+  }
+  /* Centred by the flex box, not by a line height: the turned box is the orb's square, not
+     a bar's row, so hud.css's --uf-bar-height line box would strand the number at one rim. */
+  body.hud-painted #player-frame .bar .bar-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(90deg);
+    font: 700 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+  }
+  /* The level plate at the strip's head: the theme's word plus WoC's number. .level-chip is
+     a flex box, so the word carries its own hard space - a trailing normal space would be
+     trimmed off the ::before flex item and the two would read as one word. */
+  body.hud-painted #player-frame #pf-level {
+    position: absolute;
+    left: var(--pt-strip-x0);
+    top: var(--pt-strip-top);
+    right: auto;
+    bottom: auto;
+    width: auto;
+    height: var(--pt-strip-h);
+    padding: 0 var(--pt-gap);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    background: var(--pt-plate);
+    font: 700 var(--pt-size-display) / 1 var(--pt-face-display);
+    color: var(--pt-ink);
+    text-shadow: none;
+    white-space: nowrap;
+  }
+  body.hud-painted #player-frame #pf-level::before {
+    content: attr(data-pt-word) "\00a0";
+  }
 }

@@ -45,3 +45,36 @@ describe('painted hud theme layer', () => {
     expect(literal).toEqual([]);
   });
 });
+
+describe('painted cluster', () => {
+  it('seats the bar painting by the measured rail and picks it by class chrome', () => {
+    expect(css).toContain('bottom: var(--pt-bar-bottom);');
+    expect(css).toContain('width: var(--pt-bar-w);');
+    expect(css).toContain('body.hud-painted[data-painted-chrome="reaver"] #bottom-bar::before');
+    expect(css).toContain('body.hud-painted[data-painted-chrome="hero"] #bottom-bar::before');
+    expect(css).toContain('url("/ui/painted/bar_reaver.webp")');
+    expect(css).toContain('url("/ui/painted/bar_hero.webp")');
+  });
+  // The eight slots are addressed by data-hotbar-slot, not by child index: MovableFrame
+  // prepends four nodes of its own to #actionbar (two of them BUTTONs), so nth-child AND
+  // nth-of-type both count past the bar's real first slot and seated slot 1 in well 5.
+  it('seats each of the eight slots in its measured well', () => {
+    for (let n = 1; n <= 8; n++) {
+      expect(css).toContain(
+        `body.hud-painted #actionbar .action-btn[data-hotbar-slot="${n - 1}"] {`,
+      );
+      expect(css).toContain(`left: var(--pt-well-${n}-x);`);
+    }
+  });
+  it('fills the orbs and the strip from measured rects', () => {
+    for (const p of [
+      '--pt-hp-orb-x',
+      '--pt-res-orb-x',
+      '--pt-strip-top',
+      '--pt-strip-end',
+      '--pt-level-plate-w',
+    ]) {
+      expect(css).toContain(`var(${p})`);
+    }
+  });
+});
