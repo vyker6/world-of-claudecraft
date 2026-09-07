@@ -127,21 +127,28 @@ export const NAMEPLATE_IMAGE_RETRY_BASE_FRAMES = 30;
 const NAMEPLATE_IMAGE_RETRY_MAX_FRAMES = 600;
 
 const TITLE_FONT = 'Cinzel, Georgia, serif';
+// The mock sets the level figure in a condensed face so a three-digit level keeps the
+// name row narrow. Fira Sans is the shipped fallback, ahead of the generic sans.
+const LEVEL_FONT = '"Barlow Semi Condensed", "Fira Sans", sans-serif';
+/** The Painted HUD grade marks, written before a graded name (painted_combat.GRADE). */
+export const GRADE_MARK = { elite: '\u25c6', boss: '\u265b' } as const;
+/** The mock gold a graded name takes; plain names keep the ink. */
+export const GRADED_NAME_FILL = '#e2be6e';
 const NAME_STYLE: TextSpriteStyle = {
-  font: `700 12px ${TITLE_FONT}`,
-  fill: '#fff',
+  font: `700 14px ${TITLE_FONT}`,
+  fill: '#f0eadc',
   stroke: '#000',
   lineWidth: 3,
 };
 const TARGET_NAME_STYLE: TextSpriteStyle = {
-  font: `700 14px ${TITLE_FONT}`,
-  fill: '#fff',
+  font: `700 16px ${TITLE_FONT}`,
+  fill: '#f0eadc',
   stroke: '#000',
   lineWidth: 3,
 };
 const LEVEL_STYLE: TextSpriteStyle = {
-  font: `700 19px ${TITLE_FONT}`,
-  fill: '#fff',
+  font: `700 18px ${LEVEL_FONT}`,
+  fill: '#f0eadc',
   stroke: '#000',
   lineWidth: 3,
 };
@@ -550,7 +557,12 @@ export class NameplateCanvasSurface {
   private drawNameRow(state: NameplateCanvasState, screenX: number, bottomY: number): number {
     const rowHeight = this.nameRowHeight(state);
     const nameStyle = state.currentTarget ? this.targetNameStyle : this.nameStyle;
-    const nameColor = state.deadEnemy ? '#bbb' : state.hostile ? '#ff5555' : state.nameColor;
+    const graded = state.nameColor === GRADED_NAME_FILL;
+    const nameColor = state.deadEnemy
+      ? '#bbb'
+      : state.hostile && !graded
+        ? '#ff5555'
+        : state.nameColor;
     this.configureTextStyle(nameStyle, nameColor);
     this.configureTextStyle(this.levelStyle, state.levelColor);
     this.configureTextStyle(this.aiStyle, AI_STYLE.fill);

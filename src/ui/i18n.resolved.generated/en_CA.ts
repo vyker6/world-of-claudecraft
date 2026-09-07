@@ -1585,6 +1585,8 @@ export const en_CA: EnTranslations = {
       "showThirdActionBar": "Show Third Action Bar",
       "combineActionBars": "Combine Action Bars",
       "hideUnusedActionSlots": "Hide Unused Action Slots",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Lock Action Bars",
       "showTargetOfTarget": "Show Target of Target",
       "showTargetSwingTimer": "Show Target Swing Timer",

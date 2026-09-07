@@ -480,7 +480,7 @@ describe('batched canvas nameplate state', () => {
     expect(stateOf(painter, boss.id)).toMatchObject({ frame: 'boss', hpVisible: true });
     expect(stateOf(painter, elite.id)).toMatchObject({
       frame: 'elite',
-      marker: '◆',
+      marker: '',
       markerTone: 'none',
       hpVisible: true,
     });
@@ -491,6 +491,12 @@ describe('batched canvas nameplate state', () => {
       hpVisible: false,
     });
     expect(stateOf(painter, corpse.id).name).not.toBe(stateOf(painter, boss.id).name);
+    // The mark rides the NAME now, one line, ahead of it, and a graded living mob takes the
+    // mock gold with it. A corpse keeps the plain corpse name: death outranks grade.
+    expect(stateOf(painter, elite.id).name.startsWith('◆ ')).toBe(true);
+    expect(stateOf(painter, boss.id).name.startsWith('♛ ')).toBe(true);
+    expect(stateOf(painter, elite.id).nameColor).toBe('#e2be6e');
+    expect(stateOf(painter, corpse.id).name.startsWith('♛')).toBe(false);
   });
 
   it('forgets cached paint state when a view leaves interest', () => {

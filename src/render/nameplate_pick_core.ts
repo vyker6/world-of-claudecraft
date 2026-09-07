@@ -4,8 +4,8 @@
 // state. Keeping the draw dimensions here prevents the visible bar and its hit
 // target from drifting apart.
 
-export const NAMEPLATE_BASE_WIDTH = 80;
-export const NAMEPLATE_BOSS_WIDTH = 100;
+export const NAMEPLATE_BASE_WIDTH = 160;
+export const NAMEPLATE_BOSS_WIDTH = 200;
 export const NAMEPLATE_HEALTH_HEIGHT = 4;
 export const NAMEPLATE_HEALTH_PICK_PADDING_Y = 6;
 

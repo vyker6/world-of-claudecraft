@@ -1585,6 +1585,8 @@ export const de_DE: EnTranslations = {
       "showThirdActionBar": "Dritte Aktionsleiste anzeigen",
       "combineActionBars": "Aktionsleisten zusammenfassen",
       "hideUnusedActionSlots": "Ungenutzte Aktionsfelder ausblenden",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Aktionsleisten sperren",
       "showTargetOfTarget": "Ziel des Ziels anzeigen",
       "showTargetSwingTimer": "Zielschwungtimer anzeigen",

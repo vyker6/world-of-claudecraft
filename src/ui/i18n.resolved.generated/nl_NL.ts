@@ -1585,6 +1585,8 @@ export const nl_NL: EnTranslations = {
       "showThirdActionBar": "Derde actiebalk tonen",
       "combineActionBars": "Actiebalken Combineren",
       "hideUnusedActionSlots": "Ongebruikte actievakjes verbergen",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Actiebalken vergrendelen",
       "showTargetOfTarget": "Doelwit van doelwit tonen",
       "showTargetSwingTimer": "Aanvalstimer van doelwit tonen",

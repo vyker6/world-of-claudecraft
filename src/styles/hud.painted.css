@@ -1,0 +1,1282 @@
+/* The simpleMMO Painted HUD as a theme over WoC's HUD DOM. Lives in the `hud` cascade layer
+   (declared empty in index.css) so it wins every equal-specificity tie against hud.css and
+   components.css without editing them. Every rule is scoped under body.hud-painted; the
+   paintedHud setting removes the class and WoC's own HUD comes back untouched.
+
+   Geometry comes from --pt-* custom properties that src/ui/painted/metrics.ts writes onto #ui
+   from painted_hud.metrics.json (measured out of the paintings by simpleMMO's artgen). The
+   only literal numbers here are the mock's type scale. A hand offset is a defect. */
+@font-face {
+  font-family: "Cinzel";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/fonts/cinzel-400-700-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Fira Sans";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/fira-sans-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Fira Sans";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/fira-sans-700.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/barlow-semi-condensed-400.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Barlow Semi Condensed";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("/fonts/barlow-semi-condensed-700.ttf") format("truetype");
+}
+@layer hud {
+  body.hud-painted {
+    /* the mock's palette (painted_combat.py) and type scale (hud_kit.SIZES) */
+    --pt-dark: rgb(8 7 9);
+    --pt-ink: rgb(240 234 220);
+    --pt-dim: rgb(176 168 154);
+    --pt-gold: rgb(226 190 110);
+    --pt-gilt: rgb(198 168 108 / 0.7);
+    --pt-plate: rgb(10 8 11 / 0.91);
+    /* The tracker field's depth at its core: build_hud_painted.VEIL = 190 of 255, the D4
+       study's right-column value, over the mock's DARK. A palette value like --pt-plate, not
+       a position, so the alpha is written out rather than measured. */
+    --pt-veil: rgb(8 7 9 / 0.745);
+    --pt-face-display: "Cinzel", Georgia, serif;
+    --pt-face-body: "Fira Sans", "Alegreya Sans", sans-serif;
+    --pt-face-condensed: "Barlow Semi Condensed", "Fira Sans", sans-serif;
+    --pt-size-dense: 14px;
+    --pt-size-body: 18px;
+    --pt-size-display: 24px;
+    --pt-size-wordmark: 42px;
+    /* The mock's `outline=DARK`: a hard edge, not a soft drop shadow. Every label it sets
+       over a fill whose colour moves under it takes this - the cluster's keycaps, the two
+       cast troughs, the target plate's name, rank and figures, an aura chip's indicators. */
+    --pt-outline:
+      0 0 3px var(--pt-dark),
+      1px 1px 0 var(--pt-dark),
+      -1px -1px 0 var(--pt-dark),
+      1px -1px 0 var(--pt-dark),
+      -1px 1px 0 var(--pt-dark);
+  }
+
+  /* ---- The cluster: one painting hosts the orbs, the wells and the medallion ---- */
+  /* #bottom-bar is the cluster's ONE positioned host. Sized to the painting, it is the
+     containing block every rect below resolves against, which makes those rects the
+     painting's own pixels. hud.css centres it with a translate that would double the
+     calc, so the transform goes. */
+  body.hud-painted #bottom-bar {
+    position: absolute;
+    left: calc(50% - var(--pt-bar-w) / 2);
+    bottom: var(--pt-bar-bottom);
+    width: var(--pt-bar-w);
+    height: var(--pt-bar-h);
+    transform: none;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+    /* A stacking context of its own, so the XP band can sit BEHIND the painting the way
+       the mock stacks it (build_hud_painted.xp_strip: the crest and the rail ornament
+       stand in front of the band) without falling behind the world canvas. */
+    isolation: isolate;
+  }
+  body.hud-painted #bottom-bar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: center / 100% 100% no-repeat;
+    pointer-events: none;
+    z-index: 0;
+  }
+  body.hud-painted[data-painted-chrome="arknight"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_arknight.webp");
+  }
+  body.hud-painted[data-painted-chrome="bard"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_bard.webp");
+  }
+  body.hud-painted[data-painted-chrome="blademaster"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_blademaster.webp");
+  }
+  body.hud-painted[data-painted-chrome="chronomancer"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_chronomancer.webp");
+  }
+  body.hud-painted[data-painted-chrome="elementalist"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_elementalist.webp");
+  }
+  body.hud-painted[data-painted-chrome="hero"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_hero.webp");
+  }
+  body.hud-painted[data-painted-chrome="reaver"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_reaver.webp");
+  }
+  body.hud-painted[data-painted-chrome="undying"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_undying.webp");
+  }
+  body.hud-painted[data-painted-chrome="warpriest"] #bottom-bar::before {
+    background-image: url("/ui/painted/bar_warpriest.webp");
+  }
+
+  /* Every wrapper between the host and the pieces carries WoC's flow layout, and the
+     stack carries a positioned box of its own. Neutralised, they add no geometry and
+     every rect below measures from #bottom-bar. */
+  body.hud-painted #actionbar-row,
+  body.hud-painted #actionbar-stack,
+  body.hud-painted #actionbar-group,
+  body.hud-painted #actionbar {
+    position: static;
+    display: block;
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    /* .panel's keyline is an OUTLINE (base.css), which a border reset does not touch: the
+       collapsed bar drew it as a black rule along the painting's top edge. */
+    outline: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  /* The main action bar's first eight slots seat in the eight wells; the painting is the
+     chrome, so the slot's own bezel goes. The painting has eight wells and the bar builds
+     twelve slots, so a slot shows only where one of the eight rules below gives it a seat.
+     Addressing them by data-hotbar-slot (hud.ts buildActionBar) rather than by child index
+     is load-bearing: MovableFrame puts four nodes of its own in front of the slots, two of
+     them BUTTONs, so nth-child AND nth-of-type both count past the bar's real first slot. */
+  body.hud-painted #actionbar .action-btn {
+    position: absolute;
+    display: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    overflow: visible;
+    z-index: 1;
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="0"] {
+    display: block;
+    left: var(--pt-well-1-x);
+    top: var(--pt-well-1-y);
+    width: var(--pt-well-1-w);
+    height: var(--pt-well-1-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="1"] {
+    display: block;
+    left: var(--pt-well-2-x);
+    top: var(--pt-well-2-y);
+    width: var(--pt-well-2-w);
+    height: var(--pt-well-2-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="2"] {
+    display: block;
+    left: var(--pt-well-3-x);
+    top: var(--pt-well-3-y);
+    width: var(--pt-well-3-w);
+    height: var(--pt-well-3-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="3"] {
+    display: block;
+    left: var(--pt-well-4-x);
+    top: var(--pt-well-4-y);
+    width: var(--pt-well-4-w);
+    height: var(--pt-well-4-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="4"] {
+    display: block;
+    left: var(--pt-well-5-x);
+    top: var(--pt-well-5-y);
+    width: var(--pt-well-5-w);
+    height: var(--pt-well-5-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="5"] {
+    display: block;
+    left: var(--pt-well-6-x);
+    top: var(--pt-well-6-y);
+    width: var(--pt-well-6-w);
+    height: var(--pt-well-6-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="6"] {
+    display: block;
+    left: var(--pt-well-7-x);
+    top: var(--pt-well-7-y);
+    width: var(--pt-well-7-w);
+    height: var(--pt-well-7-h);
+  }
+  body.hud-painted #actionbar .action-btn[data-hotbar-slot="7"] {
+    display: block;
+    left: var(--pt-well-8-x);
+    top: var(--pt-well-8-y);
+    width: var(--pt-well-8-w);
+    height: var(--pt-well-8-h);
+  }
+  /* The optional-row toggle rides the end of the primary bar; the painting has no seat
+     for it, and the rows it switches on anchor above the art (further down). */
+  body.hud-painted #actionbar .bar-toggle {
+    display: none;
+  }
+  /* The icon is a background-image span (hud.ts buildActionBar), not an img: it fills the
+     well the painter left for it, edge to edge, with no inset of its own. */
+  body.hud-painted #actionbar .action-btn .icon-label,
+  body.hud-painted #actionbar .action-btn .cd-overlay {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+  }
+  /* The recharge veil is NOT in that group: hud.css anchors it left/right/bottom with a
+     height the painter writes inline per frame (action_bar_painter, rechargePercent), so it
+     rises from the foot of the slot. Adding `top` and a height of its own would over-constrain
+     the box, drop the `bottom`, and hang the veil from the top of the icon instead. Its own
+     left/right already span the well, because the well is the button. */
+  body.hud-painted #actionbar .action-btn .recharge-overlay {
+    border-radius: 0;
+  }
+  /* The keycap reads under its well, not inside it: the painted well is the icon's whole
+     area. One line under the slot run, centred on the well it belongs to. */
+  body.hud-painted #actionbar .action-btn .keybind {
+    left: 0;
+    right: 0;
+    top: calc(100% + var(--pt-gap));
+    bottom: auto;
+    text-align: center;
+    font: 700 var(--pt-size-dense) / 1 var(--pt-face-condensed);
+    color: var(--pt-dim);
+    /* The row under the wells is where the painting's foot thins out, so on two of the eight
+       the cap lands on the world. The mock sets the same label with a hard dark outline
+       (build_hud_painted.cluster, role="indicator", outline=DARK); this is that outline. */
+    text-shadow: var(--pt-outline);
+    background: none;
+    padding: 0;
+  }
+  body.hud-painted #actionbar .action-btn .cdtext {
+    font: 700 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+  }
+  /* The stack and charge counts in the well's corner, which hud.css leaves at 10px and 13px
+     in the shell face - under the mock's smallest size, and the only type in the cluster set
+     in a face the composition never uses. They read the way a chip's count does, INSIDE the
+     well on painted art, so they take that same reading: the dense size, the condensed face
+     and the hard dark outline. Charges keep their gold, the mark WoC spends on "another use
+     is banked"; a plain stack count is ink like every other figure on the painting. */
+  body.hud-painted #actionbar .action-btn .item-count {
+    font: 700 var(--pt-size-dense) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #actionbar .action-btn .item-count.charge-count {
+    color: var(--pt-gold);
+    text-shadow: var(--pt-outline);
+  }
+
+  /* The bars WoC stacks around the cluster have no seat in the painting, so they anchor
+     above its top edge and keep their own internal layout. Each takes a lane one painted
+     slot deep plus the frame gap - the only measured row pitch the art carries - so two
+     rows switched on at once can never meet.
+
+     The lane against the painting goes to the stance row, the only one of the four that is
+     on in the shipped default (the two optional action rows are off, and both pet frames are
+     hidden until the player has a pet). Ordering the lanes by WoC's own stacking instead
+     would leave the stance bar hanging two empty lanes clear of the cluster whenever the
+     optional rows are off, which is every default session. Above it the optional rows keep
+     WoC's order among themselves, bar 2 under bar 3, with the pet cluster topmost. */
+  body.hud-painted #actionbar2,
+  body.hud-painted #actionbar3,
+  body.hud-painted #stancebar,
+  body.hud-painted #pet-cluster {
+    position: absolute;
+    left: var(--pt-well-1-x);
+    margin: 0;
+    z-index: 1;
+  }
+  body.hud-painted #stancebar {
+    bottom: calc(100% + var(--pt-gap));
+  }
+  body.hud-painted #actionbar2 {
+    bottom: calc(100% + var(--pt-gap) + (var(--pt-well-1-h) + var(--pt-gap)));
+  }
+  body.hud-painted #actionbar3 {
+    bottom: calc(100% + var(--pt-gap) + 2 * (var(--pt-well-1-h) + var(--pt-gap)));
+  }
+  body.hud-painted #pet-cluster {
+    bottom: calc(100% + var(--pt-gap) + 3 * (var(--pt-well-1-h) + var(--pt-gap)));
+    width: auto;
+    padding: 0;
+  }
+  /* The stance row is the one lane that is on in every default session, so its buttons are
+     the only WoC chrome the composition leaves standing on bare world: hud.css gives each a
+     2px olive bezel on a 6px radius over a blue-grey radial, and the worn one a saturated
+     gold ring with two glows. The action bar's own buttons drop their bezel because the
+     painting is the chrome behind them; a stance button has no painted well under it, so it
+     cannot go bare. It takes the aura chip's reading instead - the same 40px square, the same
+     gilt hairline on the plate - because it is the same object: an icon that must carry its
+     own edge. The worn stance keeps its mark in the mock's gold rather than WoC's. */
+  body.hud-painted #stancebar .stance-btn {
+    width: var(--pt-chip);
+    height: var(--pt-chip);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    background: var(--pt-plate);
+    box-shadow: none;
+  }
+  body.hud-painted #stancebar .stance-btn .icon-label {
+    inset: 0;
+    border-radius: 0;
+  }
+  body.hud-painted #stancebar .stance-btn.active {
+    border-color: var(--pt-gold);
+    box-shadow: none;
+  }
+
+  /* The XP strip: level plate at its head, trough to the focus orb's first ink. The plate's
+     width is the label's own (--pt-level-plate-w, a ResizeObserver in metrics.ts). The band
+     runs BEHIND the painting, so the crest and the rail ornament stand in front of it. */
+  body.hud-painted #xpbar {
+    position: absolute;
+    left: calc(var(--pt-strip-x0) + var(--pt-level-plate-w));
+    top: var(--pt-strip-top);
+    width: calc(var(--pt-strip-end) - var(--pt-strip-x0) - var(--pt-level-plate-w));
+    height: var(--pt-strip-h);
+    bottom: auto;
+    margin: 0;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    outline: 0;
+    z-index: -1;
+  }
+  body.hud-painted #xpbar .fill {
+    background: linear-gradient(rgb(214 200 170), rgb(166 148 112));
+    box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.18);
+    border-radius: 0;
+  }
+  body.hud-painted #xpbar .label {
+    font: 700 var(--pt-size-dense) / var(--pt-strip-h) var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+  }
+  /* WoC's always-on percent at the trough's tail was set for a 10px strip; on the painted
+     trough it takes the theme's dense face and the strip's own line box. */
+  body.hud-painted #xpbar::after {
+    padding-right: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-strip-h) var(--pt-face-condensed);
+    color: var(--pt-dim);
+    text-shadow: 0 1px 2px var(--pt-dark);
+  }
+
+  /* ---- The player frame rides the same painting: the two orbs and the level plate ---- */
+  /* The frame is not a sibling of #bottom-bar but a grandchild of it, so it fills the host
+     rather than seating itself against the viewport. It passes clicks through to the slots
+     underneath; the two orbs take their own back. The centre medallion stays as painted
+     art: the mock fills it from a third vessel (the class secondary) that WoC's player
+     frame has no bar for. */
+  body.hud-painted #player-frame {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* Both wrappers stay in the box tree and drop only their own boxes: #pf-level lives
+     inside the portrait wrap and the two bars inside .uf-bars, and each is seated below
+     against the host rather than against its wrapper. */
+  body.hud-painted #player-frame .portrait-wrap,
+  body.hud-painted #player-frame .uf-bars {
+    display: contents;
+  }
+  /* The chrome the painting replaces: the portrait ring, the heraldry seal and its motif,
+     the combat and rest crests, the name plaque, the combo row and the low-resource caption. */
+  body.hud-painted #player-frame .portrait,
+  body.hud-painted #player-frame .deed-heraldry-seal,
+  body.hud-painted #player-frame #pf-heraldry-seal-motif,
+  body.hud-painted #player-frame #pf-combat,
+  body.hud-painted #player-frame #pf-rest,
+  body.hud-painted #player-frame #pf-name-header,
+  body.hud-painted #player-frame #pf-low-resource {
+    display: none;
+  }
+  /* The combo row is hidden with them but takes the flag, for the reason the swing bars do:
+     hud.ts paints it with an INLINE `display: flex` whenever the class has points on the
+     board. A warrior never shows it, so the unflagged hide read as working; a rogue would
+     have put WoC's pip row straight onto the painting's rail. */
+  body.hud-painted #player-frame #combo-row {
+    display: none !important;
+  }
+  /* The shield overlay scales to (hp + absorb) / maxHp (absorb_bar.ts), so at full health
+     with no shield at all it still spans the whole bar. On a flat bar that reads as a
+     highlight; inside a round orb it is a hatch over the entire vessel. The painted orb
+     has no shield lane of its own, so it stands down until one is drawn. */
+  body.hud-painted #player-frame #pf-absorb {
+    display: none;
+  }
+  /* MovableFrame's furniture: the drag toggle rides at 0.6 opacity on every unit frame,
+     which puts a WoC button over the painting's top corner, and the grip, label and edge
+     glow follow it. The painted cluster is seated by measured coordinates, not dragged. */
+  body.hud-painted #bottom-bar .tf-move-btn,
+  body.hud-painted #bottom-bar .mf-resize-grip,
+  body.hud-painted #bottom-bar .tf-frame-label,
+  body.hud-painted #bottom-bar .tf-edge-glow {
+    display: none;
+  }
+  /* An orb fill rises: the box is turned a quarter so WoC's scaleX fill grows upward, and the
+     readout turns back. No class's orb rect is square (reaver's health orb is 82x77, hero's
+     84x79), so a box cut to the orb's own rect would come out of the turn 5 to 7 px narrow
+     and as much too tall, leaving an unveiled sliver on each rim and a dark arc over the top.
+     Each orb therefore takes the orb's HEIGHT for its width and its WIDTH for its height,
+     seated so the two centres coincide, and the quarter turn lands its rendered box back on
+     the orb rect exactly. The turn also turns every gradient below: local +x is screen UP,
+     so a band that runs rim-to-surface on screen is written `to right` here. */
+  body.hud-painted #player-frame .bar.hp,
+  body.hud-painted #player-frame #pf-resource {
+    position: absolute;
+    margin: 0;
+    border: 0;
+    border-radius: 50%;
+    overflow: hidden;
+    /* The glass is already painted (painted_chrome reads the orb out of the art), so the
+       vessel is never repainted: the orb carries one flat veil for the spent share, exactly
+       as painted_combat.vessel darkens spent glass rather than covering it. */
+    background: rgb(4 3 6 / 0.66);
+    transform: rotate(-90deg);
+    pointer-events: auto;
+  }
+  body.hud-painted #player-frame .bar.hp {
+    left: calc(var(--pt-hp-orb-x) + (var(--pt-hp-orb-w) - var(--pt-hp-orb-h)) / 2);
+    top: calc(var(--pt-hp-orb-y) + (var(--pt-hp-orb-h) - var(--pt-hp-orb-w)) / 2);
+    width: var(--pt-hp-orb-h);
+    height: var(--pt-hp-orb-w);
+  }
+  body.hud-painted #player-frame #pf-resource {
+    left: calc(var(--pt-res-orb-x) + (var(--pt-res-orb-w) - var(--pt-res-orb-h)) / 2);
+    top: calc(var(--pt-res-orb-y) + (var(--pt-res-orb-h) - var(--pt-res-orb-w)) / 2);
+    width: var(--pt-res-orb-h);
+    height: var(--pt-res-orb-w);
+  }
+  /* The filled share is the painted glass itself, at full strength. WoC gives exactly one
+     element and scales it to the filled share, so the fill cannot BE the glass - it takes the
+     veil back OFF it: brightness() over the backdrop undoes the orb's veil where the vessel
+     is full, and a thin glaze tints the liquid its resource colour. At empty the fill is
+     zero-wide and the whole orb stays veiled, which is the state the reference draws.
+     -webkit- first: Lightning drops the standard twin the other way round
+     (scripts/check_backdrop_survival.mjs). */
+  body.hud-painted #player-frame .bar .bar-fill {
+    border-radius: 0;
+    -webkit-backdrop-filter: brightness(3) saturate(1.15);
+    backdrop-filter: brightness(3) saturate(1.15);
+    background: linear-gradient(to right, rgb(122 18 24 / 0.22), rgb(214 60 52 / 0.1));
+  }
+  body.hud-painted #player-frame #pf-resource .bar-fill {
+    background: linear-gradient(to right, rgb(20 44 122 / 0.22), rgb(72 132 228 / 0.1));
+  }
+  /* Centred by the flex box, not by a line height: the turned box is the orb's square, not
+     a bar's row, so hud.css's --uf-bar-height line box would strand the number at one rim. */
+  body.hud-painted #player-frame .bar .bar-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: rotate(90deg);
+    font: 700 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+  }
+  /* The level plate at the strip's head: the theme's word plus WoC's number. .level-chip is
+     a flex box, so the word carries its own hard space - a trailing normal space would be
+     trimmed off the ::before flex item and the two would read as one word. */
+  body.hud-painted #player-frame #pf-level {
+    position: absolute;
+    left: var(--pt-strip-x0);
+    top: var(--pt-strip-top);
+    right: auto;
+    bottom: auto;
+    width: auto;
+    height: var(--pt-strip-h);
+    padding: 0 var(--pt-gap);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    background: var(--pt-plate);
+    font: 700 var(--pt-size-display) / 1 var(--pt-face-display);
+    color: var(--pt-ink);
+    text-shadow: none;
+    white-space: nowrap;
+  }
+  body.hud-painted #player-frame #pf-level::before {
+    content: attr(data-pt-word) "\00a0";
+  }
+
+  /* ---- The target: the hybrid bar on its grade plate, top centre ---- */
+  /* The plate IS the frame, so WoC's portrait ring, name plaque and bar bezels come off and
+     every piece below seats against #target-frame itself. The plates are exported FITTED
+     (1210 wide by the grade's own height), so `100% 100%` maps the painting 1:1 onto the box
+     the metrics describe and every rect below is the painting's own pixels. The theme never
+     sets `display` here: hud.ts toggles the frame with the target. */
+  body.hud-painted #target-frame {
+    position: absolute;
+    left: calc(50% - var(--pt-tf-w) / 2);
+    top: var(--pt-safe);
+    width: var(--pt-tf-w);
+    height: var(--pt-tf-h);
+    background: var(--pt-tf-plate) center / 100% 100% no-repeat;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  /* One alias block per grade: hud.ts writes data-grade (plain/elite/boss) and every rule
+     below reads the unsuffixed --pt-tf-* names, so the whole region re-seats on one
+     attribute. #totarget-frame is a CHILD of the frame and inherits these aliases with it. */
+  body.hud-painted #target-frame[data-grade="plain"] {
+    --pt-tf-plate: url("/ui/painted/target_plain.webp");
+    --pt-tf-w: var(--pt-tf-plain-w);
+    --pt-tf-h: var(--pt-tf-plain-h);
+    --pt-tf-field-x: var(--pt-tf-plain-field-x);
+    --pt-tf-field-y: var(--pt-tf-plain-field-y);
+    --pt-tf-field-w: var(--pt-tf-plain-field-w);
+    --pt-tf-field-h: var(--pt-tf-plain-field-h);
+    --pt-tf-seat-l: var(--pt-tf-plain-seat-l);
+    --pt-tf-seat-t: var(--pt-tf-plain-seat-t);
+    --pt-tf-seat-r: var(--pt-tf-plain-seat-r);
+    --pt-tf-seat-b: var(--pt-tf-plain-seat-b);
+    --pt-tf-rail: var(--pt-tf-plain-rail);
+  }
+  body.hud-painted #target-frame[data-grade="elite"] {
+    --pt-tf-plate: url("/ui/painted/target_elite.webp");
+    --pt-tf-w: var(--pt-tf-elite-w);
+    --pt-tf-h: var(--pt-tf-elite-h);
+    --pt-tf-field-x: var(--pt-tf-elite-field-x);
+    --pt-tf-field-y: var(--pt-tf-elite-field-y);
+    --pt-tf-field-w: var(--pt-tf-elite-field-w);
+    --pt-tf-field-h: var(--pt-tf-elite-field-h);
+    --pt-tf-seat-l: var(--pt-tf-elite-seat-l);
+    --pt-tf-seat-t: var(--pt-tf-elite-seat-t);
+    --pt-tf-seat-r: var(--pt-tf-elite-seat-r);
+    --pt-tf-seat-b: var(--pt-tf-elite-seat-b);
+    --pt-tf-rail: var(--pt-tf-elite-rail);
+  }
+  body.hud-painted #target-frame[data-grade="boss"] {
+    --pt-tf-plate: url("/ui/painted/target_boss.webp");
+    --pt-tf-w: var(--pt-tf-boss-w);
+    --pt-tf-h: var(--pt-tf-boss-h);
+    --pt-tf-field-x: var(--pt-tf-boss-field-x);
+    --pt-tf-field-y: var(--pt-tf-boss-field-y);
+    --pt-tf-field-w: var(--pt-tf-boss-field-w);
+    --pt-tf-field-h: var(--pt-tf-boss-field-h);
+    --pt-tf-seat-l: var(--pt-tf-boss-seat-l);
+    --pt-tf-seat-t: var(--pt-tf-boss-seat-t);
+    --pt-tf-seat-r: var(--pt-tf-boss-seat-r);
+    --pt-tf-seat-b: var(--pt-tf-boss-seat-b);
+    --pt-tf-rail: var(--pt-tf-boss-rail);
+  }
+  /* Both wrappers stay in the box tree and drop only their own boxes: #tf-level lives inside
+     the portrait wrap and the name header and bars inside .uf-bars, and each is seated below
+     against the plate rather than against its wrapper. Addressed by id and by child
+     combinator so the nested #totarget-frame's own wrappers are not caught by them. */
+  body.hud-painted #tf-portrait-wrap,
+  body.hud-painted #target-frame > .uf-bars {
+    display: contents;
+  }
+  /* The chrome the painting replaces: the portrait, the heraldry seal, the name plaque's
+     watermark, the ELITE caption, the resource rail and the Discord line. .portrait-wrap's
+     pseudo-elements go with them - a `display: contents` element generates no box but its
+     ::before still paints, and the boss rank hangs its dragon emblem there. */
+  body.hud-painted #target-frame .portrait,
+  body.hud-painted #target-frame .deed-heraldry-seal,
+  body.hud-painted #target-frame .deed-heraldry-pattern,
+  body.hud-painted #target-frame .portrait-wrap::before,
+  body.hud-painted #target-frame .portrait-wrap::after,
+  body.hud-painted #target-frame #tf-elite-tag,
+  body.hud-painted #target-frame #tf-resource,
+  body.hud-painted #target-frame #tf-discord {
+    display: none;
+  }
+  /* The shield overlay scales to (hp + absorb) / maxHp (absorb_bar.ts, absorbFrac), so at
+     full health with no shield at all it lays its 0.42-alpha hatch over the entire field.
+     The painted plate has no shield lane, so it stands down until one is drawn - the same
+     decision the player frame's orbs took for #pf-absorb. */
+  body.hud-painted #target-frame #tf-absorb {
+    display: none;
+  }
+  /* MovableFrame's furniture, hidden the way the cluster hides the player frame's: the
+     painted plate is seated by measured coordinates, not dragged. */
+  body.hud-painted #target-frame .tf-move-btn,
+  body.hud-painted #target-frame .mf-resize-grip,
+  body.hud-painted #target-frame .tf-frame-label,
+  body.hud-painted #target-frame .tf-edge-glow {
+    display: none;
+  }
+  /* The four swing bars have no seat in the mock's composition, which carries one cast
+     trough per caster under the rail and nothing else.
+     !important because SwingTimerPainter.paint writes an INLINE `display: block` onto the
+     bar on every frame the auto-attack timer is up, and an inline declaration beats a
+     stylesheet rule that carries no flag: without it the main-hand bar reappeared the moment
+     the first swing landed, lying across the cluster's crest with its seconds label on the
+     axe head. Same reason #right-tracker-stack flags its top against tracker_stack_anchor. */
+  body.hud-painted #swingbar,
+  body.hud-painted #swingbar-offhand,
+  body.hud-painted #target-frame #swingbar-target,
+  body.hud-painted #target-frame #swingbar-tot {
+    display: none !important;
+  }
+  /* The hp fill grows to the seat so the field's lit lip is covered, not left as a moat.
+     .uf-bars is `display: contents`, so the child combinator picks only the target's own
+     health bar and never the nested target-of-target's. */
+  body.hud-painted #target-frame > .uf-bars > .bar.hp {
+    position: absolute;
+    left: calc(var(--pt-tf-field-x) - var(--pt-tf-seat-l));
+    top: calc(var(--pt-tf-field-y) - var(--pt-tf-seat-t));
+    width: calc(var(--pt-tf-field-w) + var(--pt-tf-seat-l) + var(--pt-tf-seat-r));
+    height: calc(var(--pt-tf-field-h) + var(--pt-tf-seat-t) + var(--pt-tf-seat-b));
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    overflow: hidden;
+  }
+  body.hud-painted #target-frame #tf-hp {
+    border-radius: 0;
+    background: linear-gradient(rgb(178 42 36), rgb(96 14 18));
+  }
+  /* The figures end a `tight` inside the field's right edge (painted_combat.hybrid). The
+     flex box does the vertical centring: .bar-text's line height is WoC's 15px bar rail,
+     which would strand the readout at the top of a field four times that deep. */
+  body.hud-painted #target-frame #tf-hp-text {
+    left: auto;
+    right: calc(var(--pt-gap) * 2);
+    display: flex;
+    align-items: center;
+    font: 700 var(--pt-size-body) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  /* The name a `tight` inside the field's left edge, centred on the field's height.
+     #tf-name-header carries WoC's heraldry plaque: a tinted, clipped bar whose rivet
+     courses paint as ::before/::after (components.css .deed-heraldry-plaque[data-border]),
+     so the plaque is stripped here, pseudo-elements and clip included. */
+  body.hud-painted #target-frame #tf-name-header {
+    position: absolute;
+    left: calc(var(--pt-tf-field-x) + var(--pt-gap) * 2);
+    top: var(--pt-tf-field-y);
+    width: auto;
+    min-width: 0;
+    height: var(--pt-tf-field-h);
+    margin: 0;
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+    clip-path: none;
+    z-index: 2;
+  }
+  body.hud-painted #target-frame #tf-name-header::before,
+  body.hud-painted #target-frame #tf-name-header::after {
+    display: none;
+  }
+  /* hud.ts writes --color-hostile / --color-friendly INLINE on this node every frame. The ink
+     is held with -webkit-text-fill-color rather than an important `color`: the fill property
+     is what actually paints a glyph, and it outranks `color` whatever the cascade says about
+     the latter, so an inline `color` with no flag cannot take the name back. `color` is still
+     set (unflagged) so anything reading currentColor off this node inherits the ink rather
+     than the affiliation red. The mock sets every grade's name in INK
+     (painted_combat.NAME_STYLES) and lets the field's fill carry the affiliation, and the
+     measurement agrees: the plate the name lands on IS the hostile red fill, so the hostile
+     red reads as red on red and only the drop shadow holds it apart. */
+  body.hud-painted #target-frame #tf-name {
+    font: 700 var(--pt-size-display) / var(--pt-tf-field-h) var(--pt-face-display);
+    color: var(--pt-ink);
+    -webkit-text-fill-color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+    white-space: nowrap;
+  }
+  /* The rank in gold a `tight` past the measured name: painted_combat.hybrid sets the name
+     one SP.tight in from the field and the rank another SP.tight past the name's ink, and
+     --pt-tf-name-w is the rendered name's own width (a ResizeObserver in metrics.ts).
+     .level-chip is a 24px round disc pinned to the portrait's corner, so all four of its
+     anchors and its whole disc treatment reset, the boss rank's centred restyle included. */
+  body.hud-painted #target-frame #tf-level {
+    position: absolute;
+    left: calc(var(--pt-tf-field-x) + var(--pt-gap) * 4 + var(--pt-tf-name-w));
+    right: auto;
+    top: var(--pt-tf-field-y);
+    bottom: auto;
+    width: auto;
+    height: var(--pt-tf-field-h);
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    transform: none;
+    font: 700 var(--pt-size-dense) / var(--pt-tf-field-h) var(--pt-face-body);
+    letter-spacing: 1px;
+    color: var(--pt-gold);
+    text-shadow: var(--pt-outline);
+    z-index: 2;
+  }
+  /* Under the plate's rail: the enemy cast bar at the field's left end, the debuff chips a
+     gap below it. --pt-tf-rail is the first row under the rail's foot, measured off the
+     painting, so the trough hangs from the art and not from the box. */
+  body.hud-painted #target-frame #tf-castbar {
+    position: absolute;
+    left: var(--pt-tf-field-x);
+    top: calc(var(--pt-tf-rail) + var(--pt-gap));
+    width: var(--pt-cast-w);
+    height: var(--pt-cast-h);
+    margin: 0;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    outline: 0;
+    border-radius: 0;
+  }
+  /* The caster's own colour ramped, the way the plate's health fill is: WoC's stock trough
+     is a glossy salmon that reads as a different design system a gap under the painted
+     plate. HOSTILE (painted_combat) is the top stop, its deep end the bottom. */
+  body.hud-painted #target-frame #tf-castbar .fill {
+    background: linear-gradient(rgb(217 69 63), rgb(122 22 20));
+    box-shadow: none;
+    border-radius: 0;
+  }
+  /* padding-bottom goes with the margin: hud.css reserves 13 px under the row for the
+     countdown that the chip now carries INSIDE its well, so the reserve is an empty band
+     that swallows clicks and pushes the party frames down a row for nothing. */
+  body.hud-painted #target-frame #tf-debuffs {
+    position: absolute;
+    left: var(--pt-tf-field-x);
+    top: calc(var(--pt-tf-rail) + var(--pt-gap) + var(--pt-cast-h) + var(--pt-gap));
+    margin: 0;
+    padding-bottom: 0;
+    gap: var(--pt-gap);
+  }
+  /* Target of target: a chip at the field's right end, level with the cast trough.
+     #totarget-frame is a CHILD of #target-frame, so its offsets resolve against the plate
+     and its right edge lands on the field's own right edge. hud.css zooms it to 0.74 (a
+     mini twin of the frame); that zoom goes, or it would scale every --pt-* length inside.
+     The theme never sets `display` here: the unit-frame painter toggles it. */
+  body.hud-painted #totarget-frame {
+    position: absolute;
+    left: auto;
+    right: calc(var(--pt-tf-w) - var(--pt-tf-field-x) - var(--pt-tf-field-w));
+    top: calc(var(--pt-tf-rail) + var(--pt-gap));
+    width: var(--pt-cast-w);
+    height: var(--pt-cast-h);
+    zoom: 1;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    padding: 0;
+  }
+  /* The mini's own wrappers: the portrait side goes entirely, and its .uf-bars drops its box
+     (WoC gives it a 132px bordered panel that would otherwise paint inside the chip). */
+  body.hud-painted #totarget-frame .uf-bars {
+    display: contents;
+  }
+  body.hud-painted #totarget-frame .portrait-wrap,
+  body.hud-painted #totarget-frame #totf-level {
+    display: none;
+  }
+  /* One gap in from each end, the same inset the cast trough beside it gives its own label:
+     the mock seats this name a `tight` in because a 4 px affiliation strip precedes it
+     (painted_combat.tot_chip), and without that strip a tight leaves the chip lopsided
+     against the figures at the other end. */
+  body.hud-painted #totarget-frame #totf-name {
+    position: absolute;
+    left: var(--pt-gap);
+    top: 0;
+    font: 400 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-body);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+    z-index: 1;
+  }
+  body.hud-painted #totarget-frame .bar.hp {
+    position: absolute;
+    inset: 0;
+    height: auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+  body.hud-painted #totarget-frame #totf-hp {
+    border-radius: 0;
+    background: rgb(178 42 36 / 0.55);
+  }
+  body.hud-painted #totarget-frame #totf-hp-text {
+    left: auto;
+    right: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: 0 1px 2px var(--pt-dark);
+    z-index: 1;
+  }
+
+  /* ---- Aura chips: one measured well per aura, gilt-edged ---- */
+  /* Scoped to the three strips the mock composes, never to `.buff` at large: the party
+     frames overlay their own 16px minis (.pfm-auras .buff) that the chip size would blow up.
+     background-COLOR, not the shorthand: the icon is a background-image the aura painter
+     writes inline over hud.css's `background-size: cover`, and the shorthand would reset that
+     sizing and tile the art at its natural size. */
+  body.hud-painted #buff-bar .buff,
+  body.hud-painted #debuff-bar .buff,
+  body.hud-painted #tf-debuffs .buff {
+    width: var(--pt-chip);
+    height: var(--pt-chip);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    background-color: var(--pt-plate);
+    box-shadow: none;
+  }
+  /* Both indicators read INSIDE the well, the way the mock sets a chip's count
+     (painted_combat.aura_chip). WoC hangs the countdown 13 px BELOW the icon and overhangs
+     the corner with the stack pill, which puts two labels on the bare world beside a chip
+     that is its own plate. The hard dark outline is the one the cluster's keycaps take: an
+     indicator that lands on painted art needs an edge, not a soft shadow. */
+  body.hud-painted #buff-bar .buff .dur,
+  body.hud-painted #debuff-bar .buff .dur,
+  body.hud-painted #tf-debuffs .buff .dur,
+  body.hud-painted #buff-bar .buff .stacks,
+  body.hud-painted #debuff-bar .buff .stacks,
+  body.hud-painted #tf-debuffs .buff .stacks {
+    font: 700 var(--pt-size-dense) / 1 var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #buff-bar .buff .dur,
+  body.hud-painted #debuff-bar .buff .dur,
+  body.hud-painted #tf-debuffs .buff .dur {
+    bottom: 0;
+  }
+  body.hud-painted #buff-bar .buff .stacks,
+  body.hud-painted #debuff-bar .buff .stacks,
+  body.hud-painted #tf-debuffs .buff .stacks {
+    top: 0;
+    right: 0;
+    min-width: 0;
+    height: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+
+  /* ---- The player's cast column, rising from the cluster's crest room ---- */
+  /* The crest stands proud of the rail, so the column starts a gap above the room the
+     painting reserves for it: cast trough, then buffs, then debuffs, nothing else.
+     hud.css centres the trough with a translate that would double the calc, so it goes. */
+  body.hud-painted #castbar {
+    position: absolute;
+    left: calc(50% - var(--pt-cast-w) / 2);
+    bottom: calc(var(--pt-rail-bottom) + var(--pt-crest-room) + var(--pt-gap));
+    width: var(--pt-cast-w);
+    height: var(--pt-cast-h);
+    transform: none;
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    outline: 0;
+    border-radius: 0;
+  }
+  body.hud-painted #castbar .fill {
+    background: linear-gradient(rgb(226 190 110), rgb(160 124 58));
+    border-radius: 0;
+  }
+  /* The mock sets the spell at the trough's left and the time remaining at its right
+     (painted_combat.cast_bar), not one centred over the other. Both troughs are exactly
+     --pt-cast-h deep, so the line box is the box and no flex centring is needed. */
+  body.hud-painted #castbar .label,
+  body.hud-painted #target-frame #tf-castbar .label {
+    text-align: left;
+    padding-left: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-body);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #castbar .timer,
+  body.hud-painted #target-frame #tf-castbar .timer {
+    right: var(--pt-gap);
+    font: 700 var(--pt-size-dense) / var(--pt-cast-h) var(--pt-face-condensed);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  /* Both aura rows centre on the cluster's own width. WoC anchors them beside the minimap
+     under a 320px cap, which would shrink the centred row to a third of the bar. */
+  body.hud-painted #buff-bar,
+  body.hud-painted #debuff-bar {
+    left: calc(50% - var(--pt-bar-w) / 2);
+    right: auto;
+    top: auto;
+    width: var(--pt-bar-w);
+    max-width: none;
+    justify-content: center;
+    gap: var(--pt-gap);
+  }
+  body.hud-painted #buff-bar {
+    bottom: calc(
+      var(--pt-rail-bottom) +
+      var(--pt-crest-room) +
+      var(--pt-gap) *
+      2 +
+      var(--pt-cast-h)
+    );
+  }
+  body.hud-painted #debuff-bar {
+    bottom: calc(
+      var(--pt-rail-bottom) +
+      var(--pt-crest-room) +
+      var(--pt-gap) *
+      3 +
+      var(--pt-cast-h) +
+      var(--pt-chip)
+    );
+  }
+  /* ---- Minimap in its chrome, the zone above, the tracker beneath ---- */
+  /* minimap.webp is the FITTED export (303 x 189 = --pt-map-w by --pt-map-h), so
+     `100% 100%` lays the painting on the box 1:1 and every window rect below IS the
+     painting's own pixel. position: absolute is restated because the wrap is the containing
+     block those rects resolve against; that is this rule's own load-bearing property, not
+     something to borrow from hud.css. overflow stays visible so the zone label, which hangs
+     above the wrap's box, is not clipped away.
+     The chrome starts one zone row below the safe line, not on it: the mock sets the header at
+     SAFE and the map at SAFE + SP["snug"] (build_hud_painted.top_right), and --pt-zone-h IS
+     that step, so the label's row occupies the safe line and the painting begins under it. */
+  body.hud-painted #minimap-wrap {
+    position: absolute;
+    right: var(--pt-safe);
+    top: calc(var(--pt-safe) + var(--pt-zone-h));
+    width: var(--pt-map-w);
+    height: var(--pt-map-h);
+    background: url("/ui/painted/minimap.webp") center / 100% 100% no-repeat;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    overflow: visible;
+  }
+  /* The measured opening is 281 x 148 - a LANDSCAPE recess, not a round one - so the disc
+     takes no radius: it is the window the map is seen through, and it crops.
+     The field is the recess's own floor. The painter fills a circle, which cannot fill a
+     landscape rectangle, so the fields either side of it and the four corners have to read
+     as chrome rather than as a hole onto the world.
+     --pt-dark, not --pt-plate: a plate is the mock's 0.91-alpha SHEET, which it lays over
+     art it composed itself, and here there is a live world behind it instead. At that alpha
+     the treeline and the skyline read straight through the recess - sampled across the run,
+     the same six points swing from 11 to 30 as the camera turns - which draws a horizon
+     inside the map frame. The floor of a recess is opaque; --pt-dark is the very colour the
+     plate is 91 percent of, so the field keeps the palette and stops being a window. */
+  body.hud-painted #minimap-disc {
+    position: absolute;
+    left: var(--pt-map-win-x);
+    top: var(--pt-map-win-y);
+    width: var(--pt-map-win-w);
+    height: var(--pt-map-win-h);
+    background: var(--pt-dark);
+    border: 0;
+    border-radius: 0;
+    overflow: hidden;
+  }
+  /* hud.css hangs a hand-gilded ring on ::before behind the round canvas. The painted bezel
+     is the frame now, and the ring would show as a gold arc inside the recess. */
+  body.hud-painted #minimap-disc::before {
+    display: none;
+  }
+  /* The painter owns a 162 square (index.html fixes the backing store, MINIMAP_SIZE) and clips
+     its draw to a circle inside it, so the canvas can only ever be square here. It takes the
+     window's HEIGHT as its side and centres on the window's width: 162 down to 148 is a
+     DOWNSCALE, so the raster stays crisp inside a crisp frame, where sizing to the window's
+     width upscaled it 1.73x and read soft. The fields it leaves either side are the disc's
+     plate. A map that actually fills a landscape recess needs the painter's arc clip and
+     square projection to change, which is not a theme layer's to do. */
+  body.hud-painted #minimap {
+    position: absolute;
+    left: calc((var(--pt-map-win-w) - var(--pt-map-win-h)) / 2);
+    top: 0;
+    width: var(--pt-map-win-h);
+    height: var(--pt-map-win-h);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  /* The zone reads as a header over the map, ending on the chrome's right edge. Its row is
+     --pt-zone-h deep and sits directly on the chrome's top edge, so with the wrap seated one
+     zone row below the safe line the row occupies exactly [safe, safe + zone_h) and nothing in
+     the composition crosses the safe margin. The row IS the line box, so the line-height rides
+     in the font shorthand the way the cast troughs' does. hud.css leaves a 3px bottom margin
+     under the label from when it sat in the wrap's flow; absolutely positioned that would be a
+     hand offset, so it goes.
+     It is the one label the composition sets on bare world rather than on chrome, so it takes
+     the mock's own reading for that case (build_hud_painted.top_right sets the zone header in
+     INK with outline=DARK): full ink and the hard --pt-outline edge. A dim fill under a soft
+     2px drop shadow vanished into a pale noon sky. The outline alone is not enough either -
+     what grounds this row in the mock is the world_layer vignette, whose top band the client
+     has no equivalent of, so the row carries the composition's other grounding device below.
+     isolation: isolate so the veil's negative z-index stays inside this row and cannot fall
+     behind the world canvas, exactly as #bottom-bar and the tracker stack do. */
+  body.hud-painted #zone-label {
+    isolation: isolate;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    top: auto;
+    height: var(--pt-zone-h);
+    margin: 0;
+    padding: 0;
+    text-align: right;
+    font: 400 var(--pt-size-body) / var(--pt-zone-h) var(--pt-face-condensed);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+    background: none;
+  }
+  /* The zone row's ground, built the way the tracker's is, because it is the same problem:
+     ink on lit world. The mock gets away with an unplated header only because world_layer
+     lays a vignette under the whole top band first; the client has no vignette, so at noon
+     the row was cream ink on a cream sky with nothing but its outline holding it together.
+     A fill sampled from the sky would be right for one day phase and wrong for the next, so
+     this is the composition's own device instead: --pt-veil at --pt-veil-spread overhang,
+     closest-side so the field reaches alpha 0 at every EDGE rather than staying part opaque
+     where a farthest-corner ellipse meets an edge midpoint, and opaque to 60% because the
+     mock's feather of 0.2 is a fraction of the FULL height while a radial stop is a fraction
+     of the RADIUS, which is half of it. Identical to #right-tracker-stack::before, so the
+     header and the column under it read as one field. */
+  body.hud-painted #zone-label::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--pt-veil-spread));
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse closest-side at center,
+      var(--pt-veil) 0%,
+      var(--pt-veil) 60%,
+      transparent 100%
+    );
+  }
+  /* Minimap widgets the mock's column has none of. The clock, the coordinate pill, the
+     compass strip and the zoom pill all seat themselves on WoC's ROUND rim - the rim the
+     painted bezel replaces - and the day/night dial is a satellite disc on that same rim,
+     so each would land on the painting rather than beside it. #community-hud is a sibling
+     of the wrap with no seat in the composition at all. */
+  body.hud-painted #minimap-clock,
+  body.hud-painted #minimap-coords,
+  body.hud-painted #compass,
+  body.hud-painted #minimap-zoom,
+  body.hud-painted #minimap-daynight,
+  body.hud-painted nav#community-hud {
+    display: none;
+  }
+  /* The stack, not #quest-tracker, is the positioned host: the trackers are its flow
+     children, and each one seating itself would stack them all on the same coordinate. The
+     seat is the map's own bottom edge plus two gaps, so it reads off the painting.
+     display: flex and the direction are restated because the gap below is a flex gap, and
+     isolation because the veil below hangs on a negative z-index and has to stay inside the
+     stack's own stacking context rather than fall behind the world canvas.
+     The seat reads the whole column off the painting: the safe line, the zone header's row,
+     the chrome, then two gaps (the mock's SP["tight"] under the map). !important because
+     tracker_stack_anchor.ts re-measures the column on the slow band and writes its own
+     `style.top` INLINE - a compensation for a content-driven column height that a fixed-size
+     painting does not have, and an author-important declaration is the only thing in the
+     cascade that outranks an inline write (the #tf-name precedent above). */
+  body.hud-painted #right-tracker-stack {
+    position: absolute;
+    right: var(--pt-safe);
+    top: calc(var(--pt-safe) + var(--pt-zone-h) + var(--pt-map-h) + var(--pt-gap) * 2) !important;
+    width: var(--pt-map-w);
+    display: flex;
+    flex-direction: column;
+    gap: var(--pt-gap);
+    isolation: isolate;
+  }
+  /* The tracker's ground. The mock never sets this column on bare world: build_hud_painted
+     .tracker lays a feathered field first, because "ours is lit stone, where outlined ink
+     alone reads as a stroke". --pt-veil-spread is the mock's own SP["loose"] overhang on every
+     side; the feather is its feather=(0.2, 0.2), a fraction of the field rather than a length,
+     so it stays a percentage here too.
+     closest-side, not the default farthest-corner: the mock's field reaches alpha 0 at every
+     EDGE (hud_kit.veil ramps from each side independently), and a farthest-corner ellipse is
+     still part opaque where it meets an edge midpoint, so the box clipped it into a hard line
+     across the chrome above. closest-side lands the transparent stop on each edge.
+     Opaque to 60%, not 80%: the mock's 0.2 is a fraction of the FULL height, while a radial
+     stop is a fraction of the RADIUS, which is half of it. 0.2 of the height is 0.4 of the
+     radius, so the ramp starts at 60% and reaches transparent at 100%. */
+  body.hud-painted #right-tracker-stack::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--pt-veil-spread));
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse closest-side at center,
+      var(--pt-veil) 0%,
+      var(--pt-veil) 60%,
+      transparent 100%
+    );
+  }
+  body.hud-painted #quest-tracker {
+    background: none;
+    border: 0;
+    padding: 0;
+  }
+  /* Every tracker line takes the hard --pt-outline, not a soft drop shadow: the whole column
+     is set on bare world, and the mock reached the same conclusion for the same reason
+     (build_hud_painted.tracker stamps outline=DARK on all of them - "ours is lit stone").
+     A 2px drop shadow left the objectives washed out against a noon sky. */
+  body.hud-painted #quest-tracker .qt-header {
+    font: 700 var(--pt-size-dense) / 1.4 var(--pt-face-condensed);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--pt-dim);
+    text-shadow: var(--pt-outline);
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--pt-gilt);
+  }
+  body.hud-painted #quest-tracker .qt-title {
+    font: 700 var(--pt-size-body) / 1.3 var(--pt-face-display);
+    color: var(--pt-gold);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #quest-tracker .qt-obj {
+    font: 400 var(--pt-size-body) / 1.3 var(--pt-face-body);
+    color: var(--pt-ink);
+    text-shadow: var(--pt-outline);
+  }
+  body.hud-painted #quest-tracker .qt-obj.done {
+    color: var(--pt-dim);
+  }
+
+  /* ---- Chat: the WoW composition, plain lines that fade, no frame ---- */
+  /* The chat column: the safe margin to a gap short of the centred cluster's left edge, so
+     the log never runs under the bar. Declared ON #ui, which is where metrics.ts writes the
+     --pt-* this reads: a token derived from them anywhere higher (body) resolves against a
+     scope that has none of them and computes to nothing. Named once because the log and the
+     composer that feeds it must share one column, and 50% inside a custom property is
+     resolved by the element that USES it - both children of #ui, so both get the same box. */
+  body.hud-painted #ui {
+    --pt-chat-w: calc(50% - var(--pt-bar-w) / 2 - var(--pt-safe) - var(--pt-gap) * 2);
+  }
+  /* position: absolute is WoC's own and is restated, not changed: the theme moves only the
+     anchors, so the interface-unlock drag still takes the box the moment the player drags it
+     (chat_geometry_controller.ts then writes left/top/width inline and wins). */
+  body.hud-painted #chatlog-wrap {
+    position: absolute;
+    left: var(--pt-safe);
+    bottom: calc(var(--pt-rail-bottom) + var(--pt-gap));
+    width: var(--pt-chat-w);
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+  /* The mock's chat is one unbroken run of lines with no tab strip over it, so the strip
+     goes rather than being restyled into a rule it is not. */
+  body.hud-painted #chatlog-tabs {
+    display: none;
+  }
+  /* The SE resize grip is drawn as a hatch in the frame's corner, and with the frame gone it
+     read as a loose scrap of another design system lying on the world under the last line.
+     Gated rather than hidden outright: in arrange mode the player is looking for the box's
+     handles, and hud.css bumps this one's size and opacity for exactly that. */
+  body.hud-painted:not(.interface-unlocked) .chat-resize-grip {
+    display: none;
+  }
+  /* No panel under the lines: they lie on the world and fade out of it upward, which is what
+     the mask does - opaque across the newest lines, gone by the top of the run. */
+  body.hud-painted #chatlog-frame {
+    background: none;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    mask-image: linear-gradient(to top, rgb(0 0 0) 60%, transparent);
+  }
+  /* WoC insets the pane 7px by 10px inside its panel. With the panel gone that inset is a hand
+     offset that pushed the run of lines off the safe margin the composer's plate sits on, so
+     the text column and the plate's left edge disagreed by 10px. Zeroed, both start on
+     --pt-safe. */
+  body.hud-painted #chatlog {
+    padding: 0;
+  }
+  /* hud.ts writes `div.style.color = chatChannelColor(chan)` INLINE on every line it builds,
+     so the ink is held with -webkit-text-fill-color, the property that paints the glyph and
+     outranks `color` (the #tf-name precedent above). `color` is set unflagged beside it so a
+     child that reads currentColor inherits the theme's ink, not the channel tint.
+     The double shadow is what keeps an unplated line readable over lit ground. */
+  body.hud-painted #chatlog div[data-chan] {
+    font: 400 var(--pt-size-body) / 1.3 var(--pt-face-body);
+    color: var(--pt-dim);
+    -webkit-text-fill-color: var(--pt-dim);
+    text-shadow:
+      0 1px 2px var(--pt-dark),
+      0 0 4px var(--pt-dark);
+    background: none;
+  }
+  /* The newest line reads brightest, the way the mock leads the run. Same pair as the run
+     above: the fill property carries it past the inline channel tint, `color` follows it. */
+  body.hud-painted #chatlog div[data-chan]:last-child {
+    color: var(--pt-ink);
+    -webkit-text-fill-color: var(--pt-ink);
+  }
+  /* -webkit-text-fill-color INHERITS, and it beats a descendant's own `color`. Left alone, the
+     line's ink would have flattened every tinted child inside it - the gold speaker below, a
+     deed link, a whispered name - into the run's dim. Handing each child currentColor puts it
+     back on its own `color`, so the override reaches the line's text and stops there. */
+  body.hud-painted #chatlog div[data-chan] * {
+    -webkit-text-fill-color: currentColor;
+  }
+  /* One gold for every speaker: hud.css tints a sender by class through --class-color, a
+     second palette inside a composition that has one. No flag needed - the class colour
+     arrives as a custom property, not as an inline `color`. */
+  body.hud-painted #chatlog .chat-player-name {
+    color: var(--pt-gold);
+  }
+  /* The composer follows the log it feeds: WoC leaves it on the stock 12px/370px column that
+     the theme has just moved. JS owns only its `bottom` (anchorChatInput). */
+  body.hud-painted #chat-input {
+    left: var(--pt-safe);
+    width: var(--pt-chat-w);
+    background: var(--pt-plate);
+    border: 1px solid var(--pt-gilt);
+    border-radius: 0;
+    outline: 0;
+    font: 400 var(--pt-size-body) / 1.3 var(--pt-face-body);
+    color: var(--pt-ink);
+  }
+
+  /* ---- WoC pieces the mock has none of ---- */
+  /* Proc frames: WoC paints a row of glowing ability icons straight onto the world beside
+     the cast column to announce a proc. The mock announces one on the chip strip and has no
+     second surface for it, so the overlay row stands down. */
+  body.hud-painted #aura-overlays {
+    display: none;
+  }
+  /* The three rim badges. Each is positioned against WoC's ROUND canvas box and so lands
+     INSIDE the painted recess, on the map: the lockout padlock at its bottom-left corner and
+     the mail and market pills at its bottom-right. The painted bezel has no measured seat to
+     move them to, and a badge from another design system lying on the map is worse than an
+     absent one, so they stand down with the rest of the rim furniture. */
+  body.hud-painted #raid-lockout,
+  body.hud-painted #mail-indicator,
+  body.hud-painted #market-indicator {
+    display: none;
+  }
+}

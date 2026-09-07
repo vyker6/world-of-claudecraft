@@ -1585,6 +1585,8 @@ export const pt_BR: EnTranslations = {
       "showThirdActionBar": "Mostrar terceira barra de ação",
       "combineActionBars": "Combinar Barras de Ação",
       "hideUnusedActionSlots": "Ocultar Espaços de Ação Não Utilizados",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Travar barras de ação",
       "showTargetOfTarget": "Mostrar Alvo do Alvo",
       "showTargetSwingTimer": "Mostrar temporizador de ataque do alvo",

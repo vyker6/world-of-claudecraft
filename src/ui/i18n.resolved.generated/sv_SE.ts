@@ -1585,6 +1585,8 @@ export const sv_SE: EnTranslations = {
       "showThirdActionBar": "Visa tredje åtgärdsfältet",
       "combineActionBars": "Slå ihop handlingsfält",
       "hideUnusedActionSlots": "Dölj oanvända åtgärdsrutor",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Lås åtgärdsfälten",
       "showTargetOfTarget": "Visa målets mål",
       "showTargetSwingTimer": "Visa målets svingtimer",

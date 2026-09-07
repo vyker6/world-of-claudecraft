@@ -1585,6 +1585,8 @@ export const da_DK: EnTranslations = {
       "showThirdActionBar": "Vis tredje handlingslinje",
       "combineActionBars": "Kombiner handlingsbjælker",
       "hideUnusedActionSlots": "Skjul ubrugte handlingsfelter",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Lås handlingsbjælker",
       "showTargetOfTarget": "Vis målets mål",
       "showTargetSwingTimer": "Vis målets svingtimer",

@@ -24,7 +24,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "es_ES": [
     "entities.items.reaver_axe.name",
@@ -41,7 +43,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "fr_FR": [
     "entities.items.reaver_axe.name",
@@ -58,7 +62,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "fr_CA": [
     "entities.items.reaver_axe.name",
@@ -75,7 +81,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "en_CA": [],
   "it_IT": [
@@ -93,7 +101,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "de_DE": [
     "entities.items.reaver_axe.name",
@@ -110,7 +120,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "zh_CN": [],
   "zh_TW": [],
@@ -131,7 +143,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "ru_RU": [],
   "cs_CZ": [
@@ -149,7 +163,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "nl_NL": [
     "entities.items.reaver_axe.name",
@@ -166,7 +182,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "pl_PL": [
     "entities.items.reaver_axe.name",
@@ -183,7 +201,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "id_ID": [
     "entities.items.reaver_axe.name",
@@ -200,7 +220,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "tr_TR": [
     "entities.items.reaver_axe.name",
@@ -217,7 +239,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "sv_SE": [
     "entities.items.reaver_axe.name",
@@ -234,7 +258,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "vi_VN": [
     "entities.items.reaver_axe.name",
@@ -251,7 +277,9 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ],
   "da_DK": [
     "entities.items.reaver_axe.name",
@@ -268,6 +296,8 @@ export const pending: Record<string, readonly string[]> = {
     "guide.worldPage.ninebendBlurb",
     "guide.worldPage.ninebendGreeter",
     "guide.worldPage.ninebendGreeting",
-    "guide.worldPage.ninebendPlaceNotes"
+    "guide.worldPage.ninebendPlaceNotes",
+    "hudChrome.options.paintedHud",
+    "hudChrome.options.paintedLevelWord"
   ]
 };

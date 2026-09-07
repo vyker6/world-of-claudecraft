@@ -36,6 +36,7 @@ export interface FramesMenuSelectRange {
 const BOOL_TOGGLE_ROWS = [
   ['combineActionBars', 'hudChrome.options.combineActionBars'],
   ['hideUnusedActionSlots', 'hudChrome.options.hideUnusedActionSlots'],
+  ['paintedHud', 'hudChrome.options.paintedHud'],
   ['mouseoverCast', 'hudChrome.options.mouseoverCast'],
   ['lockActionBars', 'hudChrome.options.lockActionBars'],
   ['buffsLeftToRight', 'hudChrome.interfaceUnlock.buffsLeftToRight'],

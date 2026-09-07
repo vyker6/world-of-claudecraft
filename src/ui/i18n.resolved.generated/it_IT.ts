@@ -1585,6 +1585,8 @@ export const it_IT: EnTranslations = {
       "showThirdActionBar": "Mostra la terza barra delle azioni",
       "combineActionBars": "Unisci le barre delle azioni",
       "hideUnusedActionSlots": "Nascondi gli slot azione inutilizzati",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Blocca le barre azione",
       "showTargetOfTarget": "Mostra il bersaglio del bersaglio",
       "showTargetSwingTimer": "Mostra timer degli attacchi del bersaglio",

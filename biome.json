@@ -13,6 +13,7 @@
       "!dist",
       "!dist-*",
       "!public",
+      "!src/ui/painted/painted_hud.metrics.json",
       "!**/*.generated.ts",
       "!src/ui/i18n.resolved.generated",
       "!src/admin/i18n.resolved.generated",

@@ -1585,6 +1585,8 @@ export const pl_PL: EnTranslations = {
       "showThirdActionBar": "Pokaż trzeci pasek akcji",
       "combineActionBars": "Połącz paski akcji",
       "hideUnusedActionSlots": "Ukryj nieużywane pola akcji",
+      "paintedHud": "Painted HUD",
+      "paintedLevelWord": "LEVEL",
       "lockActionBars": "Zablokuj paski akcji",
       "showTargetOfTarget": "Pokaż cel celu",
       "showTargetSwingTimer": "Pokaż licznik zamachu celu",

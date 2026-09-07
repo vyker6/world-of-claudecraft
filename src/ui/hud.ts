@@ -647,6 +647,8 @@ import { type FrameDimension, MovableFrame } from './movable_frame';
 import { NoticeboardPopup } from './noticeboard_popup';
 import { NPC_WINDOW_CLOSE_RANGE } from './npc_service_range';
 import { OptionsWindow } from './options_window';
+import { paintedChromeFor, paintedGradeFor } from './painted/class_chrome';
+import { applyPaintedMetrics, type PaintedChromeKey } from './painted/metrics';
 import {
   makeWriterFacet,
   type PainterHostPresentation,
@@ -2500,6 +2502,10 @@ export class Hud {
       showError: (text) => this.showError(text),
     });
     this.chatWindow.init();
+    // Seat the Painted HUD chrome BEFORE the chat geometry controller, which measures
+    // #chatlog-wrap and freezes the rect inline: the theme's box is var()-derived and
+    // reads as `auto` until the --pt-* properties land on #ui.
+    this.syncPaintedChrome(this.sim.cfg.playerClass);
     this.chatGeometry.init();
     this.initFrameMovers();
     attachOverlayDrag(this.paladinDevotionFrameEl, 'paladinDevotionAnchor', {
@@ -3197,6 +3203,22 @@ export class Hud {
     slots.set(prop, value);
     this.hotDomWrites++;
     el.style.setProperty(prop, value);
+  }
+
+  private paintedChrome: PaintedChromeKey | null = null;
+  /** The painted class chrome (hud.painted.css): a data attribute the theme picks the bar
+   *  painting by, and the measured --pt-* properties for that bar, written once per change
+   *  of class rather than per frame. The bar painting is picked off the body because
+   *  #bottom-bar precedes #player-frame in index.html. */
+  private syncPaintedChrome(cls: PlayerClass): void {
+    const key = paintedChromeFor(cls);
+    if (key === this.paintedChrome) return;
+    this.paintedChrome = key;
+    this.playerFrameEl.dataset.chrome = key;
+    document.body.dataset.paintedChrome = key;
+    const ui = document.getElementById('ui');
+    if (ui) applyPaintedMetrics(ui.style, key);
+    this.pfLevelEl.dataset.ptWord = t('hudChrome.options.paintedLevelWord');
   }
 
   private toggleClass(el: HTMLElement, cls: string, on: boolean): void {
@@ -9027,6 +9049,7 @@ export class Hud {
       playerFrame.levelText = String(p.level);
     }
     playerFrame.name = p.name;
+    this.syncPaintedChrome(sim.cfg.playerClass);
     // SELF reads its worn border from the deeds facet, not the entity wire
     // (the wire carries other players' borders). One guarded record lookup per
     // frame, cheap enough that a signature cache would only add state.
@@ -9189,6 +9212,8 @@ export class Hud {
       // original writers cannot express, hence the toggleClass / setStyleProp).
       this.toggleClass(this.targetFrameEl, 'elite', targetUsesEliteFrame(targetRank));
       this.toggleClass(this.targetFrameEl, 'boss', targetRank === 'boss');
+      const grade = paintedGradeFor(targetRank);
+      if (this.targetFrameEl.dataset.grade !== grade) this.targetFrameEl.dataset.grade = grade;
       this.setText(
         this.targetEliteTagEl,
         targetRank === 'boss' ? t('hud.core.boss') : t('hud.core.elite'),

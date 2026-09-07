@@ -519,6 +519,16 @@ describe('Interface & Comfort settings pack', () => {
     expect(b.get('hideUnusedActionSlots')).toBe(true);
   });
 
+  // The Painted HUD theme layer ships on: a new player sees the painted HUD, and
+  // turning it off has to survive the reload that a theme swap invites.
+  it('defaults paintedHud on and persists disabling it across instances', () => {
+    const a = new Settings();
+    expect(a.get('paintedHud')).toBe(true);
+    a.set('paintedHud', false);
+    const b = new Settings();
+    expect(b.get('paintedHud')).toBe(false);
+  });
+
   it('clamps the comfort sliders to their documented bounds', () => {
     const s = new Settings();
     expect(s.set('hudOpacity', 0)).toBe(SETTING_RANGES.hudOpacity.min);

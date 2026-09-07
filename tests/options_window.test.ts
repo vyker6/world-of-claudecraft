@@ -851,6 +851,7 @@ describe('options_window: off-menu reset keys are pinned per tab', () => {
       'frameSnapToGrid',
       'combineActionBars',
       'hideUnusedActionSlots',
+      'paintedHud',
       'mouseoverCast',
       'lockActionBars',
     ]);

@@ -383,6 +383,13 @@ const HUD_UPDATE_DRIVES: readonly DriveRow[] = [
     why: 'in-window craft-cast progress strip: full rebuild only when the activity signature moves, fill-only ticks while casting',
   },
   {
+    call: 'this.syncPaintedChrome',
+    band: 'frame',
+    gate: '',
+    surface: 'chrome',
+    why: 'the painted class chrome: the data attributes the theme picks its bar painting by plus the measured --pt-* properties, written only when the class key changes',
+  },
+  {
     call: 'this.playerFramePainter.paint',
     band: 'frame',
     gate: '',
@@ -1680,7 +1687,10 @@ describe('Hud.update() drives exactly the registered set, on the registered band
       // window 44 -> 46: the crucible vendor's out-of-range close (the third
       // #vendor-window tenant, on the heroic vendor's exact row shape).
       // Both deltas apply on the merged tree.
-    ).toEqual({ window: 46, chrome: 84, none: 17 });
+      // chrome 84 -> 85: the Painted HUD class chrome sync (painted/class_chrome.ts
+      // and painted/metrics.ts), which writes the data attributes and the --pt-*
+      // properties only when the class key changes.
+    ).toEqual({ window: 46, chrome: 85, none: 17 });
     const windows = HUD_UPDATE_DRIVES.filter((r) => r.surface === 'window');
     expect(windows.map((r) => r.call)).toContain('this.spellbookWindow.tickOpen');
     expect(windows.map((r) => r.call)).toContain('this.refreshOpenTownFocusIfChanged');

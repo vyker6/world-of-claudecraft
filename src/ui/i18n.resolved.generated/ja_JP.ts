@@ -1585,6 +1585,8 @@ export const ja_JP: EnTranslations = {
       "showThirdActionBar": "3本目のアクションバーを表示",
       "combineActionBars": "アクションバーをまとめる",
       "hideUnusedActionSlots": "未使用のアクションスロットを非表示",
+      "paintedHud": "ペイントHUD",
+      "paintedLevelWord": "レベル",
       "lockActionBars": "アクションバーをロック",
       "showTargetOfTarget": "ターゲットのターゲットを表示",
       "showTargetSwingTimer": "ターゲットの攻撃タイマーを表示",
