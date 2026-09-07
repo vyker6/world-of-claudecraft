@@ -47,6 +47,12 @@ function replaceBlock(file, openLine, newLines) {
   const doc = readLines(file);
   const at = only(doc.lines, (l) => l === openLine, `${file} "${openLine.trim()}"`);
   const close = doc.lines.findIndex((l, i) => i > at && l === '};');
+  // Without this the -1 flows into `splice(at, close - at + 1, ...)` as a NEGATIVE delete
+  // count, which splice reads as zero: the block would be inserted and the old one left
+  // beneath it. Throw the way only() does instead.
+  if (close < 0) {
+    throw new Error(`${file} "${openLine.trim()}": no "};" closes the block`);
+  }
   const current = doc.lines.slice(at, close + 1);
   if (current.length === newLines.length && current.every((l, i) => l === newLines[i])) {
     return console.log(`${file}: ${openLine.trim()} present`);

@@ -96,12 +96,14 @@ export function applyPaintedMetrics(sink: PropertySink, chrome: PaintedChromeKey
   px('--pt-bar-h', c.height);
   px('--pt-bar-bottom', m.frame.rail_bottom - (c.height - c.rail_foot));
   for (const [i, w] of c.wells.entries()) rect(`--pt-well-${i + 1}`, w);
+  // Reserved for the medallion plate (phase 2); no phase 1 CSS rule reads it.
   rect('--pt-medallion', c.medallion);
   rect('--pt-hp-orb', c.hp_orb);
   rect('--pt-res-orb', c.res_orb);
   px('--pt-strip-top', c.strip_top);
   px('--pt-strip-x0', (c.wells[0]?.[0] ?? 0) - m.frame.gap);
   px('--pt-strip-end', c.strip_end);
+  // Reserved for the crest ornament (phase 2); no phase 1 CSS rule reads it.
   px('--pt-crest-top', c.crest_top);
   for (const g of GRADES) {
     const t = m.targets[g];

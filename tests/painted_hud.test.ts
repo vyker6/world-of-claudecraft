@@ -13,6 +13,14 @@ const css = read('src/styles/hud.painted.css');
 const index = read('src/styles/index.css');
 const main = read('src/main.ts');
 
+const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// A pin over ONE rule: the selector, then each declaration in the order it is written, with
+// `[^}]*` between so nothing can leave the rule's body. Two loose substring checks (a
+// selector here, a declaration there) pass on a SHUFFLED mapping because every string is
+// still somewhere in the file; this form is the only one that bites.
+const rulePin = (selector: string, ...decls: string[]) =>
+  new RegExp(`${escapeRe(selector)} \\{${decls.map((d) => `[^}]*${escapeRe(d)}`).join('')}`);
+
 describe('painted hud theme layer', () => {
   it('is imported into the hud layer after components', () => {
     const at = index.indexOf('@import "./hud.painted.css" layer(hud);');
@@ -58,13 +66,30 @@ describe('painted cluster', () => {
   // The eight slots are addressed by data-hotbar-slot, not by child index: MovableFrame
   // prepends four nodes of its own to #actionbar (two of them BUTTONs), so nth-child AND
   // nth-of-type both count past the bar's real first slot and seated slot 1 in well 5.
+  // One pin per slot, over that slot's rule body: slot n takes well n's four lengths and no
+  // other's, so a mapping shuffled by one well is red rather than green.
   it('seats each of the eight slots in its measured well', () => {
     for (let n = 1; n <= 8; n++) {
-      expect(css).toContain(
-        `body.hud-painted #actionbar .action-btn[data-hotbar-slot="${n - 1}"] {`,
+      const pin = rulePin(
+        `body.hud-painted #actionbar .action-btn[data-hotbar-slot="${n - 1}"]`,
+        `left: var(--pt-well-${n}-x);`,
+        `top: var(--pt-well-${n}-y);`,
+        `width: var(--pt-well-${n}-w);`,
+        `height: var(--pt-well-${n}-h);`,
       );
-      expect(css).toContain(`left: var(--pt-well-${n}-x);`);
+      expect(css, `well ${n}`).toMatch(pin);
     }
+  });
+  // The cast column rises out of the crest room the bar painting reserves. hud.css centres
+  // the trough with a translate that would double the calc, so the theme cancels it.
+  it('stands the cast trough on the crest room without hud.css transform', () => {
+    expect(css).toMatch(
+      rulePin(
+        'body.hud-painted #castbar',
+        'left: calc(50% - var(--pt-cast-w) / 2);',
+        'transform: none;',
+      ),
+    );
   });
   it('fills the orbs and the strip from measured rects', () => {
     for (const p of [
@@ -109,9 +134,29 @@ describe('painted target frame', () => {
   });
   it('seats the hp fill flush to the field and hangs the cast bar under the rail', () => {
     expect(css).toContain('left: calc(var(--pt-tf-field-x) - var(--pt-tf-seat-l));');
-    expect(css).toContain('top: calc(var(--pt-tf-rail) + var(--pt-gap));');
+    // The rail row is shared with the target-of-target chip below, so the pin names its rule.
+    expect(css).toMatch(
+      rulePin(
+        'body.hud-painted #target-frame #tf-castbar',
+        'left: var(--pt-tf-field-x);',
+        'top: calc(var(--pt-tf-rail) + var(--pt-gap));',
+      ),
+    );
     expect(css).toContain('width: var(--pt-cast-w);');
     expect(css).toContain('width: var(--pt-chip);');
+  });
+  // The mini chip hangs off the field's RIGHT edge, level with the cast trough. Its right
+  // offset resolves against the plate (it is a child of #target-frame), and hud.css's 0.74
+  // zoom has to go or it would scale every --pt-* length inside the chip.
+  it('hangs the target-of-target chip on the field right edge under the rail', () => {
+    expect(css).toMatch(
+      rulePin(
+        'body.hud-painted #totarget-frame',
+        'right: calc(var(--pt-tf-w) - var(--pt-tf-field-x) - var(--pt-tf-field-w));',
+        'top: calc(var(--pt-tf-rail) + var(--pt-gap));',
+        'zoom: 1;',
+      ),
+    );
   });
   it('places the level after the measured name', () => {
     expect(css).toContain('var(--pt-tf-name-w)');
@@ -120,9 +165,14 @@ describe('painted target frame', () => {
   // which beats an unflagged rule: the hide has to carry the flag or the bar comes back and
   // lies across the cluster's crest.
   it('hides the four swing bars against their painter inline write', () => {
-    expect(css).toMatch(
-      /#swingbar,\n\s*body\.hud-painted #swingbar-offhand,[\s\S]*?\{\s*display: none !important;/,
-    );
+    const bars = [
+      '#swingbar',
+      '#swingbar-offhand',
+      '#target-frame #swingbar-target',
+      '#target-frame #swingbar-tot',
+    ];
+    const group = bars.map((s) => `body\\.hud-painted ${escapeRe(s)}`).join(',\\n\\s*');
+    expect(css).toMatch(new RegExp(`${group} \\{\\s*display: none !important;`));
   });
   // Same leak, different painter: hud.ts writes an inline `display: flex` onto the combo row
   // whenever the class has points on the board, so its hide carries the flag too. A warrior
@@ -135,7 +185,8 @@ describe('painted target frame', () => {
 describe('painted minimap, tracker and chat', () => {
   it('seats the map in the measured window of the minimap chrome', () => {
     expect(css).toContain('url("/ui/painted/minimap.webp")');
-    expect(css).toContain('width: var(--pt-map-w);');
+    // The tracker column below takes the same width, so this pin names the chrome's rule.
+    expect(css).toMatch(rulePin('body.hud-painted #minimap-wrap', 'width: var(--pt-map-w);'));
     expect(css).toContain('left: var(--pt-map-win-x);');
     // The recess floor is OPAQUE. --pt-plate's 0.91 alpha is for sheets over art the mock
     // composed itself; over a live world it drew the skyline through the map's frame.
