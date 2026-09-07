@@ -1,8 +1,21 @@
 // The five armour looks, dressed once per gender onto the accepted human body plates with the
 // image edits endpoint. The dress prompt pins the identical figure and changes only the
-// attire; two gates hold it there: framing (the whole figure still inside the frame) and the
-// head diff (the top fifth of the figure unchanged, so the look can be cut into slot parts
-// for the body it was drawn on). Looks are class-neutral and race-neutral by design.
+// attire; framing (the whole figure still inside the frame) is the gate that holds it there.
+// Looks are class-neutral and race-neutral by design.
+//
+// There was a second gate here, a head diff, and it was deleted rather than retuned: it
+// measured registration, not identity, so it could not do the job its name claimed. Three
+// things were wrong with it. Its band was the top fifth of the figure, but on these T-poses the
+// neck sits at 0.135 of the figure height (male) and 0.156 (female), so the band took in both
+// shoulders and the inner arms, which every one of the five looks dresses by design. It
+// compared raw pixels, and the source body plates are barefoot while every look adds boots, so
+// the dressed figure is rescaled and shifted and no booted look can ever register against its
+// own source. And the repairs measured worse than the disease: normalising the band over the
+// bbox scored 1.4% for a genuinely different face against 1.2% for the same face dressed, which
+// is blind, while a head-tight band overlapped (5.9 to 8.3% same, 8.2% different). Eight paid
+// edits failed it with the message "the face or hair changed" and not one of them had changed.
+// Face identity is checked by eye instead: the dress prompt's KEEP_FIGURE clause pins it, and
+// the head is cut at 3x from the dressed plate and its source and the two are read side by side.
 //
 //   node scripts/asset_pipeline/concept_race_looks.mjs --out tmp/asset_pipeline/races/looks
 //        [--bodies tmp/asset_pipeline/races/bodies/full] [--only <id substring>] [--parallel 2]
@@ -12,7 +25,6 @@ import { writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkConceptFraming, describeFraming } from './lib/concept_frame.mjs';
-import { checkHeadDiff } from './lib/concept_headdiff.mjs';
 import { makeLedger, makeLogger, writeWebCopy } from './lib/concept_ledger.mjs';
 import { buildRaceLookJobs, LOOKS, lookPrompt, styleNamed } from './lib/concept_races.mjs';
 import { priceOpenAiUsage } from './lib/cost.mjs';
@@ -56,20 +68,13 @@ async function renderLook(job, ctx) {
       background: job.background,
     });
     usd += priceOpenAiUsage(usage);
-    const [framing, head] = await Promise.all([
-      checkConceptFraming(tryPath),
-      checkHeadDiff(source, tryPath),
-    ]);
-    tries.push({ n: attempt, framing: framing.problems, head: head.problems });
+    const framing = await checkConceptFraming(tryPath);
+    tries.push({ n: attempt, framing: framing.problems });
     ctx.log(
-      `${job.id} try ${attempt}: framing ${framing.ok ? 'ok' : 'FAIL'}, ` +
-        `head ${head.ok ? 'ok' : 'FAIL'} (diff ${(head.measure.meanDiff * 100).toFixed(1)}%); ` +
+      `${job.id} try ${attempt}: framing ${framing.ok ? 'ok' : 'FAIL'}; ` +
         describeFraming(framing.measure),
     );
-    for (const [gate, result] of Object.entries({ framing, head })) {
-      for (const problem of result.problems)
-        ctx.log(`${job.id} try ${attempt} ${gate}: ${problem}`);
-    }
+    for (const problem of framing.problems) ctx.log(`${job.id} try ${attempt} framing: ${problem}`);
     await ctx.prompts.upsert({
       id: job.id,
       kind: job.kind,
@@ -79,7 +84,7 @@ async function renderLook(job, ctx) {
       background: job.background,
       prompt,
     });
-    if (framing.ok && head.ok) {
+    if (framing.ok) {
       const full = join(ctx.fullDir, `${job.id}.png`);
       copyFileSync(tryPath, full);
       const webBytes = await writeWebCopy(full, join(ctx.webDir, `${job.id}.webp`), WEB);
@@ -97,10 +102,7 @@ async function renderLook(job, ctx) {
         web_bytes: webBytes,
         usd: rounded,
         attempts: attempt,
-        gates: {
-          framing: describeFraming(framing.measure),
-          head: { meanDiff: head.measure.meanDiff, topShift: head.measure.topShift },
-        },
+        gates: { framing: describeFraming(framing.measure) },
       });
       ctx.log(
         `${job.id} done in ${((Date.now() - started) / 1000).toFixed(0)}s, ` +
