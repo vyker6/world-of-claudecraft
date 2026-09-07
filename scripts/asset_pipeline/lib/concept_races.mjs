@@ -50,7 +50,9 @@ export const RACES = Object.freeze([
     cues:
       'a Faithless elf of the Risen, elves who never worshipped: long pointed ears, sharp ' +
       'fine features, pale cool ash-toned skin, a wary bearing, the elf reads in the head ' +
-      'and the face and not in the limbs',
+      'and the face and not in the limbs, the body is the ordinary human build of this game ' +
+      'with a human head-to-body ratio, arms and legs no longer and shoulders no narrower ' +
+      'than a human of the same height, never willowy, never elongated',
     marks: 'the long pointed ears, sharp cheekbones',
     base: { skin: '#b9b3c2', hair: '#3b3f5c', accent: '#c9d3e6' },
     presets: {
