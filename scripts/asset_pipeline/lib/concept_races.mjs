@@ -23,6 +23,16 @@ export const UNDERLAYER =
   'hanging, the garment exactly the flat colour ' +
   GARMENT_HEX;
 
+// Every plate in the first body round failed the framing gate on attempt 1 with 2 to 3.5% of
+// clearance against the 4% the gate wants, top and bottom alike: the shared margin rule says
+// "the top of the head", and the render reads that as the skull rather than the hair, the ears
+// or a pair of horns standing above it. Naming the tall features, and the soles, is what moves
+// the figure off the edge.
+export const BODY_MARGIN_CLAUSE =
+  'with clear background above the top of the head, the hair, the ears and any horns, and ' +
+  'clear background below the soles of both feet, so the tallest and lowest points of the ' +
+  'figure each sit at least one tenth of the image height inside the frame';
+
 export const FIGURE_RULES =
   'standard human proportions shared by every race in this game, an adult of average ' +
   'height and build, no weapon, no shield, no armour, no cloak, no prop, nothing held in ' +
@@ -69,7 +79,11 @@ export const RACES = Object.freeze([
       'sweeping back from the temples, ash-dark skin, ember-lit eyes with dark sclera, old ' +
       'pale scars across the forearms and collarbone, otherwise a human face and frame',
     marks: 'the ram horns, the pale scars, the ember eyes',
-    base: { skin: '#6b5a58', hair: '#2a2222', accent: '#d0642a' },
+    // Hair is dark oxblood, not the soot #2a2222 the presets still open with: soot sits only
+    // 0.13 of saturation from the garment #404044, so a render landing 4 of RGB distance from
+    // its declared colour still closed the tint gate's 0.12 separability window and no prompt
+    // wording can hold a centroid that tightly. Oxblood clears it by 0.37.
+    base: { skin: '#6b5a58', hair: '#4a2a2a', accent: '#d0642a' },
     presets: {
       skin: ['#9a8380', '#7f6b68', '#6b5a58', '#574645', '#433433', '#2f2323'],
       hair: ['#2a2222', '#4a2a2a', '#6b3a2a', '#1a1416', '#7a5a3a', '#8a2a2a'],
@@ -205,7 +219,8 @@ export function bodyPrompt(race, gender, style, attempt = 1, corrective = '') {
   return (
     `Art direction: ${style.fusion}. Render technique: ${style.technique}. ` +
     `Character: ${figure}. Design language: ${style.design}. ` +
-    `Composition: ${LAYOUT_CHARACTER}, ${MARGIN_RULE}. Mood: ${GRIMDARK_CORE}. ` +
+    `Composition: ${LAYOUT_CHARACTER}, ${MARGIN_RULE}, ${BODY_MARGIN_CLAUSE}. ` +
+    `Mood: ${GRIMDARK_CORE}. ` +
     `Must not look like: ${style.avoid}.` +
     (attempt > 1 && corrective ? ` ${corrective}` : '')
   );
