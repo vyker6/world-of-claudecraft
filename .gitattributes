@@ -16,3 +16,8 @@ src/ui/i18n.catalog/translation_keys.generated.ts linguist-generated
 # enough for git's heuristic, so an autocrlf checkout rewrote their RLE payload and the
 # media manifest hashed corrupt bytes. Pin every .hdr as binary.
 *.hdr binary
+
+# The asset-pipeline scripts carry backslash-continued string literals, which a CRLF
+# working copy turns into a syntax error under Node and vitest; pin them to LF on every
+# checkout (Windows clones use core.autocrlf=true).
+scripts/asset_pipeline/**/*.mjs text eol=lf
