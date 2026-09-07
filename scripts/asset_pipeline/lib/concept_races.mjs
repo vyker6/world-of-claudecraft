@@ -33,6 +33,14 @@ export const BODY_MARGIN_CLAUSE =
   'clear background below the soles of both feet, so the tallest and lowest points of the ' +
   'figure each sit at least one tenth of the image height inside the frame';
 
+// Naming the tall features was not enough on its own: twelve of twelve plates still lost their
+// first attempt to the 4% margin, and what recovered every one of them was the framing
+// corrective's own sentence. So attempt 1 now asks for the same thing the corrective asks for,
+// rather than waiting to be told twice and paying for a render to find out.
+export const FRAME_SCALE_CLAUSE =
+  'the camera pulled back so the figure occupies about three quarters of the image height, ' +
+  'centered in the frame';
+
 export const FIGURE_RULES =
   'standard human proportions shared by every race in this game, an adult of average ' +
   'height and build, no weapon, no shield, no armour, no cloak, no prop, nothing held in ' +
@@ -76,8 +84,9 @@ export const RACES = Object.freeze([
     name: 'the Horned',
     cues:
       'a Horned of the Risen, the people the faithful called demons: two curved ram horns ' +
-      'sweeping back from the temples, ash-dark skin, ember-lit eyes with dark sclera, old ' +
-      'pale scars across the forearms and collarbone, otherwise a human face and frame',
+      'sweeping back from the temples, ordinary rounded human ears and never pointed ones, ' +
+      'ash-dark skin, ember-lit eyes with dark sclera, old pale scars across the forearms ' +
+      'and collarbone, otherwise a human face and frame',
     marks: 'the ram horns, the pale scars, the ember eyes',
     // Hair is dark oxblood, not the soot #2a2222 the presets still open with: soot sits only
     // 0.13 of saturation from the garment #404044, so a render landing 4 of RGB distance from
@@ -197,8 +206,9 @@ export function zonesFor(race) {
 function baseColourClause(race) {
   return (
     `skin exactly the flat colour ${race.base.skin} with its marks drawn as a darker band of ` +
-    `the same hue, hair exactly the flat colour ${race.base.hair}, eyes and the race accent ` +
-    `exactly the flat colour ${race.base.accent}`
+    `the same hue, hair exactly the flat colour ${race.base.hair}, eyes exactly the flat ` +
+    `colour ${race.base.accent}, and no other markings, tattoos or painted patterns on the ` +
+    'skin beyond those the description names'
   );
 }
 
@@ -219,7 +229,8 @@ export function bodyPrompt(race, gender, style, attempt = 1, corrective = '') {
   return (
     `Art direction: ${style.fusion}. Render technique: ${style.technique}. ` +
     `Character: ${figure}. Design language: ${style.design}. ` +
-    `Composition: ${LAYOUT_CHARACTER}, ${MARGIN_RULE}, ${BODY_MARGIN_CLAUSE}. ` +
+    `Composition: ${LAYOUT_CHARACTER}, ${FRAME_SCALE_CLAUSE}, ${MARGIN_RULE}, ` +
+    `${BODY_MARGIN_CLAUSE}. ` +
     `Mood: ${GRIMDARK_CORE}. ` +
     `Must not look like: ${style.avoid}.` +
     (attempt > 1 && corrective ? ` ${corrective}` : '')
