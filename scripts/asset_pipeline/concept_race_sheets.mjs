@@ -135,7 +135,10 @@ async function main() {
   const worker = async () => {
     for (let job = queue.shift(); job; job = queue.shift()) {
       try {
-        total += await renderSheet(job, ctx);
+        // Read `total` after the await: `total += await ...` reads it before, so two
+        // workers finishing over one another lose an update and under-report the spend.
+        const usd = await renderSheet(job, ctx);
+        total += usd;
       } catch (err) {
         failed++;
         ctx.log(`${job.id} FAILED: ${err.message}`);
