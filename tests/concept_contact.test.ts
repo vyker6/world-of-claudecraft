@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import {
   buildContactSheet,
@@ -8,6 +9,19 @@ import {
 import { syntheticPlate, tposeFigure } from './helpers/synthetic_plate';
 
 const Z = { skin: '#c8956b', hair: '#5a3a24', garment: '#404044', accent: '#7a6a3a' };
+
+// The crotch guide line's stroke, #7fb8ff. Counting exact RGB matches ignores the antialiased
+// fringe and answers the only question the option raises: was the line drawn at all?
+const CROTCH_BLUE = { r: 0x7f, g: 0xb8, b: 0xff };
+
+async function countExact(path: string, c: { r: number; g: number; b: number }): Promise<number> {
+  const { data } = await sharp(path).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  let n = 0;
+  for (let i = 0; i < data.length; i += 4) {
+    if (data[i] === c.r && data[i + 1] === c.g && data[i + 2] === c.b) n++;
+  }
+  return n;
+}
 
 describe('concept_contact: proportions across bodies', () => {
   it('measures the shoulder and crotch lines as fractions of the figure height', async () => {
@@ -54,5 +68,19 @@ describe('concept_contact: proportions across bodies', () => {
     );
     expect(existsSync(out)).toBe(true);
     expect(r.rows.map((x) => x.id)).toEqual(['one', 'two']);
+  });
+  it('draws only the lines the caller asked for: no crotch line under lines: [shoulder]', async () => {
+    const p1 = await syntheticPlate('l1', 256, tposeFigure(256, Z));
+    const both = p1.replace(/l1\.png$/, 'both.png');
+    const shoulderOnly = p1.replace(/l1\.png$/, 'shoulder.png');
+    const plates = [{ id: 'one', path: p1 }];
+    await buildContactSheet(plates, both, { columns: 1, cellHeight: 200 });
+    await buildContactSheet(plates, shoulderOnly, {
+      columns: 1,
+      cellHeight: 200,
+      lines: ['shoulder'],
+    });
+    expect(await countExact(both, CROTCH_BLUE)).toBeGreaterThan(0);
+    expect(await countExact(shoulderOnly, CROTCH_BLUE)).toBe(0);
   });
 });

@@ -98,7 +98,7 @@ export const RACES = Object.freeze([
     base: { skin: '#6b5a58', hair: '#7a2a2a', accent: '#d0642a' },
     presets: {
       skin: ['#9a8380', '#7f6b68', '#6b5a58', '#574645', '#433433', '#2f2323'],
-      hair: ['#2a2222', '#4a2a2a', '#6b3a2a', '#1a1416', '#7a5a3a', '#8a2a2a'],
+      hair: ['#2a2222', '#4a2a2a', '#6b3a2a', '#1a1416', '#7a5a3a', '#7a2a2a'],
     },
   },
   {

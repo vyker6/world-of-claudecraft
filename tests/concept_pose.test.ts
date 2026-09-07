@@ -25,7 +25,20 @@ describe('concept_pose: the T-pose gate', () => {
     const path = await syntheticPlate('hips', 256, rects);
     const r = await checkConceptPose(path);
     expect(r.ok).toBe(false);
-    expect(r.problems.join(' ')).toMatch(/widest row/);
+    expect(r.problems.join(' ')).toMatch(/widest row at .* upper third/);
+  });
+  it('fails a figure with one arm out and the other raised: the widest row is one arm short', async () => {
+    const u = 256 / 32;
+    const rects = tposeFigure(256, C);
+    // The raised arm has to clear the rows the out-stretched arm occupies (7.5u to 9.1u). A bar
+    // that reaches down into them puts both arms on one row, and the widest row then spans the
+    // whole bbox: the measure reads 100% and the defect this case exists to inject disappears.
+    rects[5] = { x: 27 * u, y: 2 * u, w: 1.6 * u, h: 5 * u, fill: C.skin }; // right arm straight up
+    const path = await syntheticPlate('onearm', 256, rects);
+    const r = await checkConceptPose(path);
+    expect(r.ok).toBe(false);
+    expect(r.measure.aspect).toBeGreaterThan(POSE_RULES.minAspect); // the bbox is still wide
+    expect(r.problems.join(' ')).toMatch(/one arm is down or bent/);
   });
   it('reports an empty plate as having no subject', async () => {
     const path = await syntheticPlate('empty', 64, []);

@@ -16,5 +16,10 @@ export function proportionProblems(rows: ProportionRow[], tolerance?: number): s
 export function buildContactSheet(
   plates: { id: string; path: string }[],
   outPath: string,
-  options?: { columns?: number; cellHeight?: number; label?: boolean },
+  options?: {
+    columns?: number;
+    cellHeight?: number;
+    label?: boolean;
+    lines?: ('shoulder' | 'crotch')[];
+  },
 ): Promise<{ rows: ProportionRow[]; outPath: string }>;

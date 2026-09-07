@@ -25,7 +25,7 @@ import { writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkConceptFraming, describeFraming } from './lib/concept_frame.mjs';
-import { makeLedger, makeLogger, writeWebCopy } from './lib/concept_ledger.mjs';
+import { makeLedger, makeLogger, positiveInt, writeWebCopy } from './lib/concept_ledger.mjs';
 import { buildRaceLookJobs, LOOKS, lookPrompt, styleNamed } from './lib/concept_races.mjs';
 import { priceOpenAiUsage } from './lib/cost.mjs';
 import { hasOpenAi } from './lib/env.mjs';
@@ -126,8 +126,8 @@ async function main() {
   if (!out) throw new Error('--out <dir> is required');
   const bodiesDir = resolve(REPO_ROOT, opt('bodies', 'tmp/asset_pipeline/races/bodies/full'));
   const only = opt('only', '');
-  const parallel = Number(opt('parallel', '2'));
-  const attempts = Number(opt('attempts', '3'));
+  const parallel = positiveInt('parallel', opt('parallel', '2'));
+  const attempts = positiveInt('attempts', opt('attempts', '3'));
   const jobs = buildRaceLookJobs().filter((j) => !only || j.id.includes(only));
   if (!jobs.length) throw new Error(`--only ${only} matched no look`);
   if (flag('dry-run')) {

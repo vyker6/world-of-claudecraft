@@ -13,7 +13,7 @@ import { writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { checkConceptFraming, describeFraming, FRAME_RULES } from './lib/concept_frame.mjs';
-import { makeLedger, makeLogger, writeWebCopy } from './lib/concept_ledger.mjs';
+import { makeLedger, makeLogger, positiveInt, writeWebCopy } from './lib/concept_ledger.mjs';
 import { checkConceptPose } from './lib/concept_pose.mjs';
 import {
   bodyPrompt,
@@ -172,8 +172,8 @@ async function main() {
   const out = opt('out');
   if (!out) throw new Error('--out <dir> is required');
   const only = opt('only', '');
-  const parallel = Number(opt('parallel', '2'));
-  const attempts = Number(opt('attempts', '3'));
+  const parallel = positiveInt('parallel', opt('parallel', '2'));
+  const attempts = positiveInt('attempts', opt('attempts', '3'));
   const jobs = buildRaceBodyJobs().filter((j) => !only || j.id.includes(only));
   if (!jobs.length) throw new Error(`--only ${only} matched no body plate`);
   if (flag('dry-run')) {

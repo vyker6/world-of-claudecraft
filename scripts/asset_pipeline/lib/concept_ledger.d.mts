@@ -16,3 +16,4 @@ export function writeWebCopy(
   webPath: string,
   box: { width: number; height: number },
 ): Promise<number>;
+export function positiveInt(name: string, value: unknown): number;

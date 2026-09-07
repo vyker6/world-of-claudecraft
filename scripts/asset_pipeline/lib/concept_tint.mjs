@@ -115,12 +115,15 @@ export function tintProblems(m, zones, rules = TINT_RULES) {
   for (const [name, need] of Object.entries(rules.minShare)) {
     const z = m.zones[name];
     if (!z) continue;
+    // The centroid guard on the distance branch: a zone with a floor of 0 and no pixels at all
+    // clears the share test, and its distance to base is Infinity by construction. There is no
+    // observed colour to be wrong about, so the accent must never print "Infinity from its base".
     if (z.share < need) {
       out.push(
         `${name} zone covers ${(z.share * 100).toFixed(1)}% of the figure < ${need * 100}% ` +
           `(the ${name} was not painted in its base colour)`,
       );
-    } else if (z.distanceToBase > rules.maxBaseDistance) {
+    } else if (z.centroid && z.distanceToBase > rules.maxBaseDistance) {
       out.push(
         `${name} zone sits ${z.distanceToBase.toFixed(0)} from its base ${zones[name]} > ` +
           `${rules.maxBaseDistance} (the plate did not use the declared colour)`,

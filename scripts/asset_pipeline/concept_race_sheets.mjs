@@ -12,7 +12,7 @@ import { writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
-import { makeLedger, makeLogger, writeWebCopy } from './lib/concept_ledger.mjs';
+import { makeLedger, makeLogger, positiveInt, writeWebCopy } from './lib/concept_ledger.mjs';
 import { buildRaceSheetJobs, presetsJson, RACES } from './lib/concept_races.mjs';
 import { priceOpenAiUsage } from './lib/cost.mjs';
 import { hasOpenAi } from './lib/env.mjs';
@@ -101,7 +101,7 @@ async function main() {
   const out = opt('out');
   if (!out) throw new Error('--out <dir> is required');
   const only = opt('only', '');
-  const parallel = Number(opt('parallel', '2'));
+  const parallel = positiveInt('parallel', opt('parallel', '2'));
   const jobs = buildRaceSheetJobs().filter((j) => !only || j.id.includes(only));
   if (!jobs.length) throw new Error(`--only ${only} matched no sheet`);
   if (flag('dry-run')) {

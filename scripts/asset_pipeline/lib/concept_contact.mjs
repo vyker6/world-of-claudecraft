@@ -2,8 +2,18 @@
 // shoulder line (the widest row, the arms in a T-pose) and the crotch line (where the
 // silhouette first splits into two legs from the bottom) must sit at the same fraction of
 // the figure height on every plate. The contact sheet lays the plates at one figure height
-// with those two lines drawn, so drift is seen rather than inferred; proportionProblems
-// turns the same numbers into a gate.
+// with those lines drawn, so drift is seen rather than inferred; proportionProblems turns
+// the same numbers into a gate.
+//
+// Which lines to draw is the caller's choice. The crotch line is meaningless under a robe or
+// a skirt, where the silhouette never splits and the reading lands on the hem, so callers
+// pass `lines: ['shoulder']` for dressed plates and keep both for bare bodies.
+//
+// proportionProblems reads a group of rows, and the amended rule is that callers group them
+// by gender (the female body is built to different proportions, so a mixed group reports a
+// difference that is not drift) and leave tailed races out of the crotch reading (a tail
+// hanging between the legs is opaque in the band the crotch scan walks). The 3% default
+// tolerance is what the accepted twelve body plates actually hold to within a gender.
 import sharp from 'sharp';
 import { measurePose } from './concept_pose.mjs';
 import { ALPHA_SUBJECT, readRaw } from './concept_silhouette.mjs';
@@ -36,7 +46,7 @@ export async function measureProportions(path) {
   return { bbox: pose.bbox, shoulderFrac: pose.widestRowFrac, crotchFrac: (crotchRow - top) / h };
 }
 
-export function proportionProblems(rows, tolerance = 0.02) {
+export function proportionProblems(rows, tolerance = 0.03) {
   const out = [];
   for (const key of ['shoulderFrac', 'crotchFrac']) {
     const vals = rows.filter((r) => r[key] != null).map((r) => r[key]);
@@ -57,7 +67,7 @@ export function proportionProblems(rows, tolerance = 0.02) {
 export async function buildContactSheet(
   plates,
   outPath,
-  { columns = 6, cellHeight = 480, label = true } = {},
+  { columns = 6, cellHeight = 480, label = true, lines = ['shoulder', 'crotch'] } = {},
 ) {
   const rows = [];
   const cells = [];
@@ -105,8 +115,10 @@ export async function buildContactSheet(
     const y0 = row * (cellHeight + 64) + 16;
     composites.push({ input: c.buffer, left: x0, top: y0 });
     const lx = col * cellW;
-    svg += `<line x1="${lx}" y1="${y0 + c.shoulderY}" x2="${lx + cellW}" y2="${y0 + c.shoulderY}" stroke="#e2be6e" stroke-width="2"/>`;
-    svg += `<line x1="${lx}" y1="${y0 + c.crotchY}" x2="${lx + cellW}" y2="${y0 + c.crotchY}" stroke="#7fb8ff" stroke-width="2"/>`;
+    if (lines.includes('shoulder'))
+      svg += `<line x1="${lx}" y1="${y0 + c.shoulderY}" x2="${lx + cellW}" y2="${y0 + c.shoulderY}" stroke="#e2be6e" stroke-width="2"/>`;
+    if (lines.includes('crotch'))
+      svg += `<line x1="${lx}" y1="${y0 + c.crotchY}" x2="${lx + cellW}" y2="${y0 + c.crotchY}" stroke="#7fb8ff" stroke-width="2"/>`;
     if (label)
       svg += `<text x="${lx + 8}" y="${y0 + cellHeight + 36}" font-family="sans-serif" font-size="20" fill="#f0eadc">${c.id}</text>`;
   });

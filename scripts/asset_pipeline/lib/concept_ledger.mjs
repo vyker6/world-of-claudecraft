@@ -19,6 +19,9 @@ export function makeLedger(path) {
   const has = (id) => rows.some((r) => r.id === id);
   const get = (id) => rows.find((r) => r.id === id);
   const upsert = (row) => {
+    // An updated row keeps its position. The matrix runner used to drop and push, which moved a
+    // rerun cell to the end and made every reread of the ledger a different file; a stable order
+    // across reruns is deliberate.
     const at = rows.findIndex((r) => r.id === row.id);
     if (at >= 0) rows[at] = row;
     else rows.push(row);
@@ -34,4 +37,13 @@ export async function writeWebCopy(fullPath, webPath, { width, height }) {
     .webp({ quality: 80 })
     .toFile(webPath);
   return (await stat(webPath)).size;
+}
+
+/** A CLI count that must be a whole number of at least one: --parallel, --attempts. */
+export function positiveInt(name, value) {
+  const n = Number(value);
+  if (!Number.isInteger(n) || n < 1) {
+    throw new Error(`--${name} must be a positive integer, got ${JSON.stringify(value)}`);
+  }
+  return n;
 }

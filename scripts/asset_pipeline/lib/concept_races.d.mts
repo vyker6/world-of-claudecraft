@@ -42,6 +42,8 @@ export const CHOSEN_STYLE_ID: 'osrs_genshin';
 export const GENDERS: readonly Gender[];
 export const GARMENT_HEX: string;
 export const UNDERLAYER: string;
+export const BODY_MARGIN_CLAUSE: string;
+export const FRAME_SCALE_CLAUSE: string;
 export const FIGURE_RULES: string;
 export const RACES: readonly ConceptRace[];
 export const LOOKS: readonly ConceptLook[];
