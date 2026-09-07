@@ -12,7 +12,7 @@ import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import { writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { checkConceptFraming, describeFraming } from './lib/concept_frame.mjs';
+import { checkConceptFraming, describeFraming, FRAME_RULES } from './lib/concept_frame.mjs';
 import { makeLedger, makeLogger, writeWebCopy } from './lib/concept_ledger.mjs';
 import { checkConceptPose } from './lib/concept_pose.mjs';
 import {
@@ -52,9 +52,15 @@ function opt(name, fallback) {
 }
 const flag = (name) => process.argv.includes(`--${name}`);
 
+// Body plates clear the edge at 2%, not the shared 4%. A positive margin already means nothing
+// is clipped, which is all the reconstruction needs; the 4% floor was tuned for plates carrying
+// weapon tips, and against a bare T-pose it rejected renders at 2.3 to 3.8% with nothing touching
+// an edge, costing an attempt on plate after plate. concept_frame.mjs itself is left alone.
+const BODY_FRAME_RULES = { ...FRAME_RULES, minMargin: 0.02 };
+
 async function gates(path, race) {
   const [framing, pose, tint] = await Promise.all([
-    checkConceptFraming(path),
+    checkConceptFraming(path, BODY_FRAME_RULES),
     checkConceptPose(path),
     checkConceptTint(path, zonesFor(race)),
   ]);

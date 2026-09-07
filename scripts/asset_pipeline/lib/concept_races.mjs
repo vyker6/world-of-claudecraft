@@ -85,14 +85,17 @@ export const RACES = Object.freeze([
     cues:
       'a Horned of the Risen, the people the faithful called demons: two curved ram horns ' +
       'sweeping back from the temples, ordinary rounded human ears and never pointed ones, ' +
-      'ash-dark skin, ember-lit eyes with dark sclera, old pale scars across the forearms ' +
-      'and collarbone, otherwise a human face and frame',
+      'ash-dark skin, deep red hair, ember-lit eyes with dark sclera, old pale scars across ' +
+      'the forearms and collarbone, otherwise a human face and frame',
     marks: 'the ram horns, the pale scars, the ember eyes',
-    // Hair is dark oxblood, not the soot #2a2222 the presets still open with: soot sits only
-    // 0.13 of saturation from the garment #404044, so a render landing 4 of RGB distance from
-    // its declared colour still closed the tint gate's 0.12 separability window and no prompt
-    // wording can hold a centroid that tightly. Oxblood clears it by 0.37.
-    base: { skin: '#6b5a58', hair: '#4a2a2a', accent: '#d0642a' },
+    // Hair is deep red, not the soot #2a2222 the presets still open with: soot sits only 0.13 of
+    // saturation from the garment #404044, inside the tint gate's 0.12 separability window, and
+    // no prompt wording holds a rendered centroid that tightly. Oxblood #4a2a2a cleared the
+    // declared window but the render kept pulling the hair back to near-black (#2c2627 observed),
+    // so the pair closed again. #7a2a2a clears the garment by 0.60 of saturation and stays
+    // separable even at the near-black the model drifts to; the cues name the colour as well, so
+    // it survives rendering. Soot and oxblood both remain in the presets.
+    base: { skin: '#6b5a58', hair: '#7a2a2a', accent: '#d0642a' },
     presets: {
       skin: ['#9a8380', '#7f6b68', '#6b5a58', '#574645', '#433433', '#2f2323'],
       hair: ['#2a2222', '#4a2a2a', '#6b3a2a', '#1a1416', '#7a5a3a', '#8a2a2a'],

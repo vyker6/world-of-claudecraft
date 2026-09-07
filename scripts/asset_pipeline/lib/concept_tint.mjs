@@ -7,7 +7,12 @@ import sharp from 'sharp';
 import { ALPHA_SUBJECT } from './concept_silhouette.mjs';
 
 export const TINT_RULES = Object.freeze({
-  minShare: { skin: 0.08, hair: 0.02, garment: 0.05, accent: 0.001 }, // of the opaque pixels
+  // Of the opaque pixels. The accent is not share-gated: once the body prompt names the accent
+  // for the eyes alone, it covers about 0.05% of a figure (measured: 39 px of 121841 on a
+  // Faithless, 62 px of 142708 on a Horned), so any positive floor fails every attempt for a
+  // race whose accent has no other home. The accent zone is still measured, and still takes
+  // part in separability and base distance wherever it has pixels.
+  minShare: { skin: 0.08, hair: 0.02, garment: 0.05, accent: 0 },
   maxBaseDistance: 70, // RGB distance from a zone's observed centroid to its declared base
   hueGap: 12, // degrees, only meaningful when both zones are saturated enough
   satGap: 0.12,
