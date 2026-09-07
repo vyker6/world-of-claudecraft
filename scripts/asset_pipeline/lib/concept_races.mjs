@@ -185,8 +185,8 @@ export const LOOKS = Object.freeze([
     name: 'Heavy Plate',
     brief:
       'a full heavy harness: a thick cuirass with a high gorget, massive layered pauldrons, ' +
-      'full gauntlets, cuisses, poleyns and sabatons, a closed helm with the visor raised so ' +
-      'the face stays visible',
+      'full gauntlets, cuisses, poleyns and sabatons, a closed helm seated fully on the head ' +
+      'and covering the hair, the visor raised so the face stays visible',
   },
 ]);
 
