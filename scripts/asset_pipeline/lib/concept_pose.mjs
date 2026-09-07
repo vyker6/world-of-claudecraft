@@ -5,14 +5,13 @@
 // widest row sitting in the upper third (the arms, not the hips or a wide stance), and that
 // row spanning nearly the whole figure width (both arms out, not one).
 import sharp from 'sharp';
+import { ALPHA_SUBJECT } from './concept_silhouette.mjs';
 
 export const POSE_RULES = Object.freeze({
   minAspect: 0.75, // arm span / figure height; a real T-pose is close to 1.0
   maxWidestRowFrac: 0.34, // the widest row must sit in the upper third of the figure
   minWidestSpan: 0.8, // and span at least this fraction of the figure width
 });
-
-const ALPHA_SUBJECT = 128;
 
 export async function measurePose(path) {
   const { data, info } = await sharp(path)

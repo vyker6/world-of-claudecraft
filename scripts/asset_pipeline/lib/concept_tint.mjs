@@ -4,6 +4,7 @@
 // AND the plate actually used the declared base colours. Both are checked here, on the flat
 // fills the locked style produces, before any paid downstream step.
 import sharp from 'sharp';
+import { ALPHA_SUBJECT } from './concept_silhouette.mjs';
 
 export const TINT_RULES = Object.freeze({
   minShare: { skin: 0.08, hair: 0.02, garment: 0.05, accent: 0.001 }, // of the opaque pixels
@@ -13,8 +14,6 @@ export const TINT_RULES = Object.freeze({
   valGap: 0.12,
   minSatForHue: 0.15,
 });
-
-const ALPHA_SUBJECT = 128;
 
 export function hexToRgb(hex) {
   const n = Number.parseInt(hex.slice(1), 16);
