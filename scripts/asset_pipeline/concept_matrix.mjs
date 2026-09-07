@@ -14,11 +14,11 @@
 // copy <out>/web/<id>.webp, prompts.json (what was asked, per cell), manifest.json
 // (what came back: sizes, cost, framing verdict) and run.log.
 import { existsSync } from 'node:fs';
-import { appendFile, copyFile, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import sharp from 'sharp';
 import { checkConceptFraming, describeFraming } from './lib/concept_frame.mjs';
+import { makeLedger, makeLogger, writeWebCopy } from './lib/concept_ledger.mjs';
 import {
   buildMatrix,
   conceptMatrixPrompt,
@@ -31,7 +31,6 @@ import { priceOpenAiUsage } from './lib/cost.mjs';
 import { generateConceptImage, IMAGE_MODEL } from './lib/openai_image.mjs';
 
 const QUALITY = 'high';
-const WEB_QUALITY = 80;
 
 function opt(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
@@ -52,37 +51,6 @@ function byId(list, id) {
   const hit = list.find((x) => x.id === id);
   if (!hit) throw new Error(`no entry ${id}`);
   return hit;
-}
-
-/** Append-only run log: file plus stdout, timestamped. */
-function makeLogger(path) {
-  return async (line) => {
-    const stamped = `${new Date().toISOString()} ${line}`;
-    console.log(stamped);
-    await appendFile(path, `${stamped}\n`);
-  };
-}
-
-/** JSON array files rewritten whole after every change, serialized through one chain so
- *  parallel workers never interleave a write. */
-function makeLedger(path) {
-  let rows = [];
-  let chain = Promise.resolve();
-  return {
-    async load() {
-      if (existsSync(path)) rows = JSON.parse(await readFile(path, 'utf8'));
-      return rows;
-    },
-    has(id) {
-      return rows.some((r) => r.id === id);
-    },
-    upsert(row) {
-      rows = [...rows.filter((r) => r.id !== row.id), row];
-      chain = chain.then(() => writeFile(path, `${JSON.stringify(rows, null, 2)}\n`));
-      return chain;
-    },
-    rows: () => rows,
-  };
 }
 
 /** One character cell: generate, measure, retry with the pull-back clause; every attempt is
@@ -125,20 +93,14 @@ async function renderScene(job, ctx) {
   return { usd: priceOpenAiUsage(usage) ?? 0, attempts: 1, prompt: job.prompt, framing: null };
 }
 
-async function writeWebCopy(job, ctx) {
-  const { width, height } = webSizeFor(job.kind);
-  const webPath = join(ctx.webDir, `${job.id}.webp`);
-  await sharp(join(ctx.fullDir, `${job.id}.png`))
-    .resize(width, height, { fit: 'inside' })
-    .webp({ quality: WEB_QUALITY })
-    .toFile(webPath);
-  return { webPath, bytes: (await stat(webPath)).size };
-}
-
 async function runJob(job, ctx) {
   const result =
     job.kind === 'character' ? await renderCharacter(job, ctx) : await renderScene(job, ctx);
-  const web = await writeWebCopy(job, ctx);
+  const webBytes = await writeWebCopy(
+    join(ctx.fullDir, `${job.id}.png`),
+    join(ctx.webDir, `${job.id}.webp`),
+    webSizeFor(job.kind),
+  );
   await ctx.prompts.upsert({
     id: job.id,
     kind: job.kind,
@@ -155,7 +117,7 @@ async function runJob(job, ctx) {
     kind: job.kind,
     full: `full/${job.id}.png`,
     web: `web/${job.id}.webp`,
-    web_bytes: web.bytes,
+    web_bytes: webBytes,
     usd: +result.usd.toFixed(4),
     attempts: result.attempts,
     framing: result.framing
@@ -223,8 +185,6 @@ async function main() {
   };
   await mkdir(ctx.fullDir, { recursive: true });
   await mkdir(ctx.webDir, { recursive: true });
-  await ctx.prompts.load();
-  await ctx.manifest.load();
   const pending = jobs.filter(
     (j) => !(ctx.manifest.has(j.id) && existsSync(join(ctx.fullDir, `${j.id}.png`))),
   );

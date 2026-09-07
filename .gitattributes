@@ -16,3 +16,7 @@ src/ui/i18n.catalog/translation_keys.generated.ts linguist-generated
 # enough for git's heuristic, so an autocrlf checkout rewrote their RLE payload and the
 # media manifest hashed corrupt bytes. Pin every .hdr as binary.
 *.hdr binary
+
+# A CRLF working copy of these shebang scripts failed under vitest on a Windows clone;
+# pinned to LF.
+scripts/asset_pipeline/**/*.mjs text eol=lf
