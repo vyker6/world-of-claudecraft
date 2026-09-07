@@ -692,15 +692,19 @@
   body.hud-painted #target-frame #tf-name-header::after {
     display: none;
   }
-  /* The ink is !important because hud.ts writes --color-hostile / --color-friendly INLINE on
-     this node every frame, and an author-important declaration is the only thing in the
-     cascade that outranks a normal inline style. The mock sets every grade's name in INK
+  /* hud.ts writes --color-hostile / --color-friendly INLINE on this node every frame. The ink
+     is held with -webkit-text-fill-color rather than an important `color`: the fill property
+     is what actually paints a glyph, and it outranks `color` whatever the cascade says about
+     the latter, so an inline `color` with no flag cannot take the name back. `color` is still
+     set (unflagged) so anything reading currentColor off this node inherits the ink rather
+     than the affiliation red. The mock sets every grade's name in INK
      (painted_combat.NAME_STYLES) and lets the field's fill carry the affiliation, and the
      measurement agrees: the plate the name lands on IS the hostile red fill, so the hostile
      red reads as red on red and only the drop shadow holds it apart. */
   body.hud-painted #target-frame #tf-name {
     font: 700 var(--pt-size-display) / var(--pt-tf-field-h) var(--pt-face-display);
-    color: var(--pt-ink) !important;
+    color: var(--pt-ink);
+    -webkit-text-fill-color: var(--pt-ink);
     text-shadow: var(--pt-outline);
     white-space: nowrap;
   }
@@ -1019,11 +1023,16 @@
      in the font shorthand the way the cast troughs' does. hud.css leaves a 3px bottom margin
      under the label from when it sat in the wrap's flow; absolutely positioned that would be a
      hand offset, so it goes.
-     It is the one label the composition sets on bare world rather than on chrome, so it
-     takes the mock's own reading for that case (build_hud_painted.top_right sets the zone
-     header in INK with outline=DARK): full ink and the hard --pt-outline edge. A dim fill
-     under a soft 2px drop shadow vanished into a pale noon sky. */
+     It is the one label the composition sets on bare world rather than on chrome, so it takes
+     the mock's own reading for that case (build_hud_painted.top_right sets the zone header in
+     INK with outline=DARK): full ink and the hard --pt-outline edge. A dim fill under a soft
+     2px drop shadow vanished into a pale noon sky. The outline alone is not enough either -
+     what grounds this row in the mock is the world_layer vignette, whose top band the client
+     has no equivalent of, so the row carries the composition's other grounding device below.
+     isolation: isolate so the veil's negative z-index stays inside this row and cannot fall
+     behind the world canvas, exactly as #bottom-bar and the tracker stack do. */
   body.hud-painted #zone-label {
+    isolation: isolate;
     position: absolute;
     left: 0;
     right: 0;
@@ -1039,6 +1048,30 @@
     color: var(--pt-ink);
     text-shadow: var(--pt-outline);
     background: none;
+  }
+  /* The zone row's ground, built the way the tracker's is, because it is the same problem:
+     ink on lit world. The mock gets away with an unplated header only because world_layer
+     lays a vignette under the whole top band first; the client has no vignette, so at noon
+     the row was cream ink on a cream sky with nothing but its outline holding it together.
+     A fill sampled from the sky would be right for one day phase and wrong for the next, so
+     this is the composition's own device instead: --pt-veil at --pt-veil-spread overhang,
+     closest-side so the field reaches alpha 0 at every EDGE rather than staying part opaque
+     where a farthest-corner ellipse meets an edge midpoint, and opaque to 60% because the
+     mock's feather of 0.2 is a fraction of the FULL height while a radial stop is a fraction
+     of the RADIUS, which is half of it. Identical to #right-tracker-stack::before, so the
+     header and the column under it read as one field. */
+  body.hud-painted #zone-label::before {
+    content: "";
+    position: absolute;
+    inset: calc(-1 * var(--pt-veil-spread));
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse closest-side at center,
+      var(--pt-veil) 0%,
+      var(--pt-veil) 60%,
+      transparent 100%
+    );
   }
   /* Minimap widgets the mock's column has none of. The clock, the coordinate pill, the
      compass strip and the zoom pill all seat themselves on WoC's ROUND rim - the rim the
@@ -1183,25 +1216,36 @@
   body.hud-painted #chatlog {
     padding: 0;
   }
-  /* The ink is !important because hud.ts writes `div.style.color = chatChannelColor(chan)`
-     INLINE on every line it builds, and an author-important declaration is the only thing in
-     the cascade that wins a colour back from an inline write (the #tf-name precedent above).
+  /* hud.ts writes `div.style.color = chatChannelColor(chan)` INLINE on every line it builds,
+     so the ink is held with -webkit-text-fill-color, the property that paints the glyph and
+     outranks `color` (the #tf-name precedent above). `color` is set unflagged beside it so a
+     child that reads currentColor inherits the theme's ink, not the channel tint.
      The double shadow is what keeps an unplated line readable over lit ground. */
   body.hud-painted #chatlog div[data-chan] {
     font: 400 var(--pt-size-body) / 1.3 var(--pt-face-body);
-    color: var(--pt-dim) !important;
+    color: var(--pt-dim);
+    -webkit-text-fill-color: var(--pt-dim);
     text-shadow:
       0 1px 2px var(--pt-dark),
       0 0 4px var(--pt-dark);
     background: none;
   }
-  /* The newest line reads brightest, the way the mock leads the run. */
+  /* The newest line reads brightest, the way the mock leads the run. Same pair as the run
+     above: the fill property carries it past the inline channel tint, `color` follows it. */
   body.hud-painted #chatlog div[data-chan]:last-child {
-    color: var(--pt-ink) !important;
+    color: var(--pt-ink);
+    -webkit-text-fill-color: var(--pt-ink);
+  }
+  /* -webkit-text-fill-color INHERITS, and it beats a descendant's own `color`. Left alone, the
+     line's ink would have flattened every tinted child inside it - the gold speaker below, a
+     deed link, a whispered name - into the run's dim. Handing each child currentColor puts it
+     back on its own `color`, so the override reaches the line's text and stops there. */
+  body.hud-painted #chatlog div[data-chan] * {
+    -webkit-text-fill-color: currentColor;
   }
   /* One gold for every speaker: hud.css tints a sender by class through --class-color, a
-     second palette inside a composition that has one. No !important needed - the class
-     colour arrives as a custom property, not as an inline `color`. */
+     second palette inside a composition that has one. No flag needed - the class colour
+     arrives as a custom property, not as an inline `color`. */
   body.hud-painted #chatlog .chat-player-name {
     color: var(--pt-gold);
   }

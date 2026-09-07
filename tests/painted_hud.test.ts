@@ -146,6 +146,15 @@ describe('painted minimap, tracker and chat', () => {
       'top: calc(var(--pt-safe) + var(--pt-zone-h) + var(--pt-map-h) + var(--pt-gap) * 2) !important;',
     );
   });
+  // The zone row is the one label the composition sets on bare world. The mock grounds it with
+  // world_layer's vignette, which the client has no equivalent of, so it carries the
+  // composition's other grounding device: the same veil the tracker column lays under itself.
+  it('grounds the zone row on the tracker veil', () => {
+    expect(css).toMatch(
+      /#zone-label::before \{[^}]*inset: calc\(-1 \* var\(--pt-veil-spread\)\);[^}]*var\(--pt-veil\)/,
+    );
+    expect(css).toMatch(/#zone-label \{[^}]*isolation: isolate;/);
+  });
   it('strips the chat frame to plain fading lines', () => {
     expect(css).toContain('body.hud-painted #chatlog-frame {');
     expect(css).toMatch(/#chatlog-tabs \{\s*display: none;/);

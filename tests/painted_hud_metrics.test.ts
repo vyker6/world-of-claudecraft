@@ -2,7 +2,11 @@
 // class_chrome.ts is the one table mapping WoC classes and target ranks onto painted chrome.
 import { describe, expect, it } from 'vitest';
 import { paintedChromeFor, paintedGradeFor } from '../src/ui/painted/class_chrome';
-import { applyPaintedMetrics, PAINTED_METRICS } from '../src/ui/painted/metrics';
+import {
+  applyPaintedMetrics,
+  PAINTED_METRICS,
+  PAINTED_PROPERTIES,
+} from '../src/ui/painted/metrics';
 
 function collect(chrome: 'reaver' | 'hero'): Map<string, string> {
   const out = new Map<string, string>();
@@ -47,6 +51,18 @@ describe('painted metrics properties', () => {
   });
   it('never writes a property without a px unit', () => {
     for (const [k, v] of collect('reaver')) expect(v, k).toMatch(/^-?\d+px$/);
+  });
+  // PAINTED_PROPERTIES exists so css_token_resolution can SEE these names: every one of them
+  // is built from a template at runtime, and that test collects declared names by scanning
+  // for literal `--name` text. A hand-kept list rots, so this pins it to the code it
+  // describes - the applier's own output plus the two widths armPaintedWidthProbes measures.
+  // The probe names are written literally here because PROBES is module-private; if that
+  // table grows, this fails until both sides are updated.
+  it('declares exactly the properties the applier and the probes write', () => {
+    const written = new Set(collect('reaver').keys());
+    for (const probe of ['--pt-level-plate-w', '--pt-tf-name-w']) written.add(probe);
+    expect(new Set(PAINTED_PROPERTIES)).toEqual(written);
+    expect(PAINTED_PROPERTIES).toHaveLength(new Set(PAINTED_PROPERTIES).size);
   });
 });
 
