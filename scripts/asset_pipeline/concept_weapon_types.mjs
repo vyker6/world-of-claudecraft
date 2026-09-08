@@ -182,15 +182,31 @@ async function renderPlate(job, ctx, standing = '') {
   return { usd, ok: false, measure: null };
 }
 
-/** A type's three base plates: render what is missing, reuse what is already on disk. */
-async function renderTypeBaseline(jobs, ctx) {
+/** A resumed plate: re-run the three gates against the current rules and keep it only when
+ *  they still pass, so a plate that cleared a gate setting this run has since moved past is
+ *  not carried forward on the strength of `measureShape` alone. Falls through to `renderPlate`
+ *  exactly as an unrendered job does when the gates now fail. */
+async function resumePlate(job, ctx, type) {
+  const full = join(ctx.fullDir, `${job.id}.png`);
+  const g = await gates(full, type);
+  if (g.ok) {
+    ctx.log(`${job.id} resumed: gates ok`);
+    return { usd: 0, ok: true, measure: g.aspect.measure };
+  }
+  ctx.log(`${job.id} resumed but fails the current gates, regenerating`);
+  return renderPlate(job, { ...ctx, tryBase: 0 }, '');
+}
+
+/** A type's three base plates: render what is missing, re-gate and reuse what already passes,
+ *  regenerate what no longer does. */
+async function renderTypeBaseline(jobs, ctx, type) {
   let usd = 0;
   let failed = 0;
   const rows = [];
   for (const job of jobs) {
     const done = ctx.manifest.has(job.id) && existsSync(join(ctx.fullDir, `${job.id}.png`));
     const r = done
-      ? { usd: 0, ok: true, measure: await measureShape(join(ctx.fullDir, `${job.id}.png`)) }
+      ? await resumePlate(job, ctx, type)
       : await renderPlate(job, { ...ctx, tryBase: 0 }, '');
     usd += r.usd;
     if (r.ok) rows.push({ id: job.id, job, measure: r.measure });
@@ -257,7 +273,7 @@ async function recordDistances(rows, ctx) {
 /** A type's three plates, then the within-type distinctness gate over the ones that passed. */
 async function renderType(typeId, jobs, ctx) {
   const type = typeNamed(typeId);
-  const baseline = await renderTypeBaseline(jobs, ctx);
+  const baseline = await renderTypeBaseline(jobs, ctx, type);
   const distinct = await enforceDistinctness(type, typeId, baseline.rows, ctx);
   const usd = baseline.usd + distinct.usd;
   const failed = baseline.failed + distinct.failed;

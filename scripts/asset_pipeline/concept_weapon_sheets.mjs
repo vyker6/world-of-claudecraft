@@ -14,7 +14,7 @@ import { measureFraming } from './lib/concept_frame.mjs';
 import { tierStrip } from './lib/concept_recolor.mjs';
 import { measureShape, shapeDistance } from './lib/concept_shape.mjs';
 import { TIER_LADDER } from './lib/concept_tiers.mjs';
-import { WEAPON_TYPES, zonesFor } from './lib/concept_weapons.mjs';
+import { tintRulesFor, WEAPON_TYPES, zonesFor } from './lib/concept_weapons.mjs';
 
 const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const STYLE = 'osrs_genshin';
@@ -155,6 +155,7 @@ async function buildTypeSheets(type, dir, outDir) {
     zone: type.tierZone,
     ladder: TIER_LADDER,
     dest: join(outDir, 'tiers', `${type.id}.png`),
+    assign: tintRulesFor(type).assign,
   });
   console.log(`tiers/${type.id}.png`);
 }

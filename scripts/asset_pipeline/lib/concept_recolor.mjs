@@ -2,15 +2,17 @@
 // declared zone (the tint gate's own assignment), and each pixel of the chosen zone keeps its
 // CIELAB lightness offset from the zone's mean while taking the tier hex's chroma and mean
 // lightness. Shading survives, the tier's lightness carries through, no other pixel changes.
-// This is a preview of the engine's zone remap, not the engine's code. The assignment is the
-// tint gate's hsv rule, so the strip recolours exactly the pixels the gate counted.
+// This is a preview of the engine's zone remap, not the engine's code. The caller supplies the
+// gate's own assignment strategy, so the strip recolours exactly the pixels that gate counted.
 import sharp from 'sharp';
 import { ALPHA_SUBJECT } from './concept_silhouette.mjs';
 import { hexToLab, labToRgb, rgbToLab, TIER_LADDER } from './concept_tiers.mjs';
 import { assignZone, zoneBases } from './concept_tint.mjs';
 
-/** The plate with one zone recoloured to a hex, as a PNG buffer. */
-export async function recolorZone({ path, zones, zone, hex }) {
+/** The plate with one zone recoloured to a hex, as a PNG buffer. `assign` must match the
+ *  strategy the tint gate used on this plate (`tintRulesFor(type).assign`), so the pixels this
+ *  recolours are exactly the pixels the gate counted. */
+export async function recolorZone({ path, zones, zone, hex, assign = 'hsv' }) {
   const names = Object.keys(zones);
   const zi = names.indexOf(zone);
   if (zi < 0) throw new Error(`zone ${zone} is not declared; zones are ${names.join(', ')}`);
@@ -26,7 +28,7 @@ export async function recolorZone({ path, zones, zone, hex }) {
   for (let i = 0; i < count; i++) {
     if (data[i * 4 + 3] < ALPHA_SUBJECT) continue;
     const px = { r: data[i * 4], g: data[i * 4 + 1], b: data[i * 4 + 2] };
-    if (assignZone(px, bases, 'hsv') !== zi) continue;
+    if (assignZone(px, bases, assign) !== zi) continue;
     member[i] = 1;
     sumL += rgbToLab(px).L;
     n++;
@@ -49,10 +51,18 @@ export async function recolorZone({ path, zones, zone, hex }) {
 }
 
 /** Shape a recoloured through the ladder, T1 to T8 left to right, labelled. */
-export async function tierStrip({ path, zones, zone, ladder = TIER_LADDER, dest, cell = 256 }) {
+export async function tierStrip({
+  path,
+  zones,
+  zone,
+  ladder = TIER_LADDER,
+  dest,
+  cell = 256,
+  assign = 'hsv',
+}) {
   const cells = [];
   for (const tier of ladder) {
-    const buf = await recolorZone({ path, zones, zone, hex: tier.hex });
+    const buf = await recolorZone({ path, zones, zone, hex: tier.hex, assign });
     cells.push(await sharp(buf).resize(cell, cell, { fit: 'inside' }).png().toBuffer());
   }
   const labelH = 40;

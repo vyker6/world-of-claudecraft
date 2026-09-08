@@ -106,6 +106,16 @@ export const STYLES = Object.freeze([
   },
 ]);
 
+/** The style named `styleId`, or throws when it is not one of STYLES. */
+export function styleNamed(styleId) {
+  const style = STYLES.find((s) => s.id === styleId);
+  if (!style)
+    throw new Error(`unknown style ${styleId}; one of ${STYLES.map((s) => s.id).join(', ')}`);
+  return style;
+}
+
+export const CHOSEN_STYLE_ID = 'osrs_genshin';
+
 export const SUBJECTS = Object.freeze([
   {
     id: 'hero_arknight',

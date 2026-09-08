@@ -1,3 +1,7 @@
+import { mkdtempSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 import {
   checkConceptAspect,
@@ -23,6 +27,33 @@ const M = '#8a8f96';
 const S = 512;
 const measureOf = async (name: string, rects: ReturnType<typeof barShape>) =>
   measureShape(await syntheticPlate(name, S, rects));
+
+// A silhouette 3px wide and 800px tall with its only two opaque pixels at the top-left and
+// bottom-right corners: the bbox is real (left 0, top 0, right 2, bottom 799), but the icon-scale
+// resize collapses the 3px width to a single sampled column that lands on the blank middle
+// column, so every resized row measures zero width. This is the zero-maxWidth case
+// measureShape's guard exists for, reproduced with raw pixels rather than relying on an SVG
+// render's antialiasing.
+async function collapsedSilhouette(): Promise<string> {
+  const w = 3;
+  const h = 800;
+  const buf = Buffer.alloc(w * h * 4, 0);
+  const setOpaque = (x: number, y: number) => {
+    const i = (y * w + x) * 4;
+    buf[i] = 200;
+    buf[i + 1] = 200;
+    buf[i + 2] = 200;
+    buf[i + 3] = 255;
+  };
+  setOpaque(0, 0);
+  setOpaque(w - 1, h - 1);
+  const dir = mkdtempSync(join(tmpdir(), 'collapsed-'));
+  const path = join(dir, 'collapsed.png');
+  await sharp(buf, { raw: { width: w, height: h, channels: 4 } })
+    .png()
+    .toFile(path);
+  return path;
+}
 
 describe('concept_shape: the measure', () => {
   it('reports the bounding box, aspect and two 128-row profiles', async () => {
@@ -117,5 +148,40 @@ describe('concept_shape: the aspect band', () => {
     const r = await checkConceptAspect(await syntheticPlate('empty2', 64, []), [1, 2], 'Tome');
     expect(r.ok).toBe(false);
     expect(r.problems[0]).toMatch(/no subject/);
+  });
+});
+
+describe('concept_shape: the zero-maxWidth guard', () => {
+  it('measures a real bbox with no measurable width instead of NaN profiles', async () => {
+    const m = await measureShape(await collapsedSilhouette());
+    expect(m.bbox).not.toBeNull();
+    expect(Number.isNaN(m.aspect)).toBe(false);
+    expect(m.width).toEqual([]);
+    expect(m.offset).toEqual([]);
+  });
+  it('names the row instead of silently passing it, next to a shape that does measure', async () => {
+    const empty = await measureShape(await collapsedSilhouette());
+    const real = await measureOf('real-for-guard', barShape(S, M));
+    expect(Number.isNaN(shapeDistance(empty, real))).toBe(false);
+    const problems = distinctnessProblems([
+      { id: 'empty', measure: empty },
+      { id: 'real', measure: real },
+    ]);
+    expect(problems).toEqual(['empty has no measurable silhouette at icon scale']);
+  });
+  it('measures distance between two such rows as 0 (they read the same), not NaN', async () => {
+    const path = await collapsedSilhouette();
+    const a = await measureShape(path);
+    const b = await measureShape(path);
+    expect(shapeDistance(a, b)).toBe(0);
+    const problems = distinctnessProblems([
+      { id: 'a', measure: a },
+      { id: 'b', measure: b },
+    ]);
+    expect(problems).toEqual([
+      'a has no measurable silhouette at icon scale',
+      'b has no measurable silhouette at icon scale',
+      'a and b are 0.000 apart at icon scale < 0.07 (the two shapes read the same)',
+    ]);
   });
 });

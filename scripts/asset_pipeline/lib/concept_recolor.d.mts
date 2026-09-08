@@ -5,6 +5,7 @@ export function recolorZone(args: {
   zones: Record<string, string>;
   zone: string;
   hex: string;
+  assign?: 'rgb' | 'hsv';
 }): Promise<Buffer>;
 export function tierStrip(args: {
   path: string;
@@ -13,4 +14,5 @@ export function tierStrip(args: {
   ladder?: readonly TierRow[];
   dest: string;
   cell?: number;
+  assign?: 'rgb' | 'hsv';
 }): Promise<string>;

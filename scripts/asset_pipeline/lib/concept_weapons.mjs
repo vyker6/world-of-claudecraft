@@ -8,8 +8,7 @@
 // Every plate names its zone colours as exact flat fills because the tier is a recolour of one
 // zone downstream; a plate whose grip drifts into the blade's colour cannot carry a tier.
 // Shape briefs are form words only: material and colour belong to the zones and the tier.
-import { GRIMDARK_CORE } from './concept_matrix.mjs';
-import { CHOSEN_STYLE_ID, styleNamed } from './concept_races.mjs';
+import { CHOSEN_STYLE_ID, GRIMDARK_CORE, styleNamed } from './concept_matrix.mjs';
 import { TINT_RULES } from './concept_tint.mjs';
 
 export { CHOSEN_STYLE_ID, styleNamed };
@@ -43,7 +42,7 @@ const HAFTED_ZONES = Object.freeze(['metal', 'wood', 'fittings']);
 const BOW_ZONES = Object.freeze(['wood', 'fittings', 'cloth']);
 const CASTER_ZONES = Object.freeze(['wood', 'fittings', 'accent']);
 const SHIELD_ZONES = Object.freeze(['metal', 'wood', 'fittings']); // the grip is on the back of
-// a face-on shield; hide is dropped so wood and hide never share a type
+// a face-on shield; no type's zone list pairs wood with hide, since the two share a hue
 
 const side = (t) => ({ view: 'side', poseNote: '', materialNote: '', ...t });
 const face = (t) => ({ view: 'face', poseNote: '', materialNote: '', ...t });

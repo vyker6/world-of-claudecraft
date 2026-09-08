@@ -66,6 +66,11 @@ export async function measureShape(path) {
     rowCentre[top + y] = n ? sx / n : 0;
     if (n > maxWidth) maxWidth = n;
   }
+  // A gate that decides whether a paid render is kept must not have a silent-pass branch: a
+  // silhouette this narrow relative to its length can resize to nothing at icon scale even
+  // though its bbox is real, and dividing by a zero maxWidth would turn every profile entry
+  // into NaN rather than a measured (and therefore gated) zero.
+  if (!maxWidth) return { bbox, aspect: h / w, width: [], offset: [] };
   const centre = (iw - 1) / 2;
   const width = rowWidth.map((n) => n / maxWidth);
   const offset = rowWidth.map((n, i) => (n ? Math.abs(rowCentre[i] - centre) / maxWidth : 0));
@@ -110,9 +115,16 @@ export async function checkConceptAspect(path, band, label) {
   return { ok: problems.length === 0, problems, measure };
 }
 
-/** One line per pair of rows closer than the floor; empty when every pair is distinct. */
+/** One line per pair of rows closer than the floor, plus one line per row with no measurable
+ *  silhouette at icon scale (the zero-maxWidth guard in measureShape); empty when every row
+ *  measured something and every pair is distinct. */
 export function distinctnessProblems(rows, rules = SHAPE_RULES) {
   const out = [];
+  for (const row of rows) {
+    if (row.measure.width.length === 0) {
+      out.push(`${row.id} has no measurable silhouette at icon scale`);
+    }
+  }
   for (let i = 0; i < rows.length; i++) {
     for (let j = i + 1; j < rows.length; j++) {
       const d = shapeDistance(rows[i].measure, rows[j].measure);

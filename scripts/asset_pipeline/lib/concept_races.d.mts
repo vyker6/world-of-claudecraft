@@ -38,7 +38,7 @@ export interface TintZones {
   accent: string;
 }
 
-export const CHOSEN_STYLE_ID: 'osrs_genshin';
+export { CHOSEN_STYLE_ID, styleNamed } from './concept_matrix.d.mts';
 export const GENDERS: readonly Gender[];
 export const GARMENT_HEX: string;
 export const UNDERLAYER: string;
@@ -48,7 +48,6 @@ export const FIGURE_RULES: string;
 export const RACES: readonly ConceptRace[];
 export const LOOKS: readonly ConceptLook[];
 export const CHARACTER_SIZE: string;
-export function styleNamed(styleId: string): ConceptStyle;
 export function zonesFor(race: ConceptRace): TintZones;
 export function sheetPrompt(race: ConceptRace, style: ConceptStyle): string;
 export function bodyPrompt(
