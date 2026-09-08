@@ -2,7 +2,7 @@
 // four legibility constraints that section states, so a changed hex is a failing test and not
 // a review opinion. Value is CIELAB L*, the space the dE rule already uses; hue is HSV hue,
 // measured on every consecutive pair. Pure: no I/O.
-import { hexToHsv, hexToRgb } from './concept_tint.mjs';
+import { hexToHsv, hexToRgb, hueDistance } from './concept_tint.mjs';
 
 export const TIER_LADDER = Object.freeze([
   { tier: 1, hex: '#363432', read: 'dark iron grey' },
@@ -70,16 +70,8 @@ export function deltaE(p, q) {
   return Math.hypot(p.L - q.L, p.a - q.a, p.b - q.b);
 }
 
-function hueDistance(a, b) {
-  const d = Math.abs(a - b) % 360;
-  return d > 180 ? 360 - d : d;
-}
-
-/** Every constraint the ladder breaks, one line each; empty when it passes. */
-export function tierProblems(ladder = TIER_LADDER, rules = TIER_RULES) {
+function consecutiveProblems(rows, rules) {
   const out = [];
-  if (ladder.length !== 8) out.push(`ladder has ${ladder.length} tiers, not 8`);
-  const rows = ladder.map((t) => ({ ...t, hsv: hexToHsv(t.hex), lab: hexToLab(t.hex) }));
   for (let i = 1; i < rows.length; i++) {
     const a = rows[i - 1];
     const b = rows[i];
@@ -87,33 +79,55 @@ export function tierProblems(ladder = TIER_LADDER, rules = TIER_RULES) {
     const dL = b.lab.L - a.lab.L;
     if (dh < rules.hueGap && Math.abs(dL) < rules.lightnessGap) {
       out.push(
-        `constraint 1: T${a.tier} to T${b.tier} differ by ${dh.toFixed(0)} degrees of hue and ` +
-          `${Math.abs(dL).toFixed(0)} of L*, need ${rules.hueGap} degrees or ${rules.lightnessGap} L*`,
+        `constraint 1: T${a.tier} to T${b.tier} differ by ${dh.toFixed(0)} ` +
+          `degrees of hue and ${Math.abs(dL).toFixed(0)} of L*, need ` +
+          `${rules.hueGap} degrees or ${rules.lightnessGap} L*`,
       );
     }
     if (dL <= 0) {
       out.push(
-        `constraint 2: L* does not rise from T${a.tier} (${a.lab.L.toFixed(1)}) to ` +
-          `T${b.tier} (${b.lab.L.toFixed(1)})`,
+        `constraint 2: L* does not rise from T${a.tier} ` +
+          `(${a.lab.L.toFixed(1)}) to T${b.tier} (${b.lab.L.toFixed(1)})`,
       );
     }
   }
+  return out;
+}
+
+function saturationProblems(rows, rules) {
+  const out = [];
   for (const r of rows) {
     if (r.tier <= 2 && r.hsv.s > rules.lowSatMax)
       out.push(`constraint 3: T${r.tier} saturation ${r.hsv.s.toFixed(2)} > ${rules.lowSatMax}`);
     if (r.tier >= 6 && r.hsv.s < rules.highSatMin)
       out.push(`constraint 3: T${r.tier} saturation ${r.hsv.s.toFixed(2)} < ${rules.highSatMin}`);
   }
+  return out;
+}
+
+function pairwiseProblems(rows, rules) {
+  const out = [];
   for (let i = 0; i < rows.length; i++) {
     for (let j = i + 1; j < rows.length; j++) {
       const d = deltaE(rows[i].lab, rows[j].lab);
       if (d < rules.minDeltaE) {
         out.push(
-          `constraint 4: T${rows[i].tier} and T${rows[j].tier} are dE ${d.toFixed(1)} apart ` +
-            `< ${rules.minDeltaE}`,
+          `constraint 4: T${rows[i].tier} and T${rows[j].tier} are dE ` +
+            `${d.toFixed(1)} apart < ${rules.minDeltaE}`,
         );
       }
     }
   }
+  return out;
+}
+
+/** Every constraint the ladder breaks, one line each; empty when it passes. */
+export function tierProblems(ladder = TIER_LADDER, rules = TIER_RULES) {
+  const out = [];
+  if (ladder.length !== 8) out.push(`ladder has ${ladder.length} tiers, not 8`);
+  const rows = ladder.map((t) => ({ ...t, hsv: hexToHsv(t.hex), lab: hexToLab(t.hex) }));
+  out.push(...consecutiveProblems(rows, rules));
+  out.push(...saturationProblems(rows, rules));
+  out.push(...pairwiseProblems(rows, rules));
   return out;
 }

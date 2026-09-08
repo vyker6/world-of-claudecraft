@@ -27,6 +27,7 @@ export const TINT_RULES: TintRules;
 export function hexToRgb(hex: string): Rgb;
 export function rgbToHsv(rgb: Rgb): Hsv;
 export function hexToHsv(hex: string): Hsv;
+export function hueDistance(a: number, b: number): number;
 export function zonesSeparable(hexA: string, hexB: string, rules?: TintRules): boolean;
 export function measureTintZones(path: string, zones: Record<string, string>): Promise<TintMeasure>;
 export function tintProblems(

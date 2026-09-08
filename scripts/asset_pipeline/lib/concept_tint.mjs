@@ -46,7 +46,7 @@ export function hexToHsv(hex) {
   return rgbToHsv(hexToRgb(hex));
 }
 
-function hueDistance(a, b) {
+export function hueDistance(a, b) {
   const d = Math.abs(a - b) % 360;
   return d > 180 ? 360 - d : d;
 }
