@@ -34,11 +34,11 @@ const ZONE_WORDS = Object.freeze({
 
 export const PILOT_TYPES = Object.freeze(['longblade', 'round_shield', 'longbow']);
 
-const BLADE_ZONES = ['metal', 'fittings', 'hide'];
-const HAFTED_ZONES = ['metal', 'wood', 'fittings'];
-const BOW_ZONES = ['wood', 'fittings', 'cloth'];
-const CASTER_ZONES = ['wood', 'fittings', 'accent'];
-const SHIELD_ZONES = ['metal', 'wood', 'hide'];
+const BLADE_ZONES = Object.freeze(['metal', 'fittings', 'hide']);
+const HAFTED_ZONES = Object.freeze(['metal', 'wood', 'fittings']);
+const BOW_ZONES = Object.freeze(['wood', 'fittings', 'cloth']);
+const CASTER_ZONES = Object.freeze(['wood', 'fittings', 'accent']);
+const SHIELD_ZONES = Object.freeze(['metal', 'wood', 'hide']);
 
 const side = (t) => ({ view: 'side', poseNote: '', ...t });
 const face = (t) => ({ view: 'face', poseNote: '', ...t });
@@ -67,7 +67,8 @@ export const WEAPON_TYPES = Object.freeze([
       {
         id: 'leaf',
         brief:
-          'a broad leaf-shaped blade widest a third from the tip, a short ricasso and a disc pommel',
+          'a broad leaf-shaped blade widest a third from the tip, a short ricasso and a ' +
+          'disc pommel',
       },
     ],
   }),
@@ -111,7 +112,8 @@ export const WEAPON_TYPES = Object.freeze([
       {
         id: 'straight',
         brief:
-          'a long straight two-hander with a long two-hand grip, a wide crossguard with a side ring and a scent-stopper pommel',
+          'a long straight two-hander with a long two-hand grip, a wide crossguard with a ' +
+          'side ring and a scent-stopper pommel',
       },
       {
         id: 'curved',
@@ -317,7 +319,7 @@ export const WEAPON_TYPES = Object.freeze([
     subject: 'spellbook',
     hands: 'OH',
     tierZone: 'cloth',
-    zones: ['cloth', 'fittings', 'accent'],
+    zones: Object.freeze(['cloth', 'fittings', 'accent']),
     length: 0.18,
     aspect: [1.0, 1.6],
     tierShare: 0.35,
@@ -333,7 +335,7 @@ export const WEAPON_TYPES = Object.freeze([
     subject: 'hand lantern',
     hands: 'OH',
     tierZone: 'metal',
-    zones: ['metal', 'accent', 'hide'],
+    zones: Object.freeze(['metal', 'accent', 'hide']),
     length: 0.22,
     aspect: [1.3, 2.4],
     tierShare: 0.3,
@@ -349,7 +351,7 @@ export const WEAPON_TYPES = Object.freeze([
     subject: 'musical instrument',
     hands: 'OH',
     tierZone: 'wood',
-    zones: ['wood', 'fittings', 'cloth'],
+    zones: Object.freeze(['wood', 'fittings', 'cloth']),
     length: 0.42,
     aspect: [1.2, 3.2],
     tierShare: 0.35,
@@ -361,6 +363,7 @@ export const WEAPON_TYPES = Object.freeze([
   }),
 ]);
 
+/** The declared type for a slug, or throws when the slug is not one of the 17. */
 export function typeNamed(id) {
   const t = WEAPON_TYPES.find((w) => w.id === id);
   if (!t)
@@ -403,13 +406,15 @@ function colourClause(type) {
   );
 }
 
+/** The full concept plate prompt for one type, shape and style, with an optional corrective. */
 export function weaponPrompt(type, shape, style, corrective = '') {
   const pose = [type.view === 'side' ? SIDE_POSE : FACE_POSE, type.poseNote]
     .filter(Boolean)
     .join(', ');
   return (
     `Art direction: ${style.fusion}. Render technique: ${style.technique}. ` +
-    `Object: one ${type.subject} for a fantasy game, ${shape.brief}; ${pose}; ${colourClause(type)}. ` +
+    `Object: one ${type.subject} for a fantasy game, ${shape.brief}; ${pose}; ` +
+    `${colourClause(type)}. ` +
     `Composition: ${OBJECT_LAYOUT}, ${OBJECT_SCALE}. Design language: ${style.design}. ` +
     `Mood: ${GRIMDARK_CORE}. Must not look like: ${style.avoid}.` +
     (corrective ? ` ${corrective}` : '')
@@ -426,6 +431,7 @@ export const CORRECTIVE = Object.freeze({
     'distinct colour.',
 });
 
+/** A retry corrective naming the type's locked aspect band, for the wrong proportions. */
 export function aspectCorrective(type) {
   const [lo, hi] = type.aspect;
   return (
@@ -434,6 +440,7 @@ export function aspectCorrective(type) {
   );
 }
 
+/** A retry corrective naming the sibling shape a render was confused with, for a redo. */
 export function distinctCorrective(type, shape, sibling) {
   return (
     `The previous render looked the same in outline as this ${type.subject}'s ${sibling.id} ` +
@@ -442,10 +449,12 @@ export function distinctCorrective(type, shape, sibling) {
   );
 }
 
+/** The stable id a plate's file and manifest entry are keyed by. */
 export function weaponJobId(type, shape, style) {
   return `${type.id}__${shape.id}__${style.id}`;
 }
 
+/** Every plate job for a style, optionally filtered by id substring or narrowed to the pilot. */
 export function buildWeaponJobs(styleId = CHOSEN_STYLE_ID, { only = '', pilot = false } = {}) {
   const style = styleNamed(styleId);
   const types = pilot ? WEAPON_TYPES.filter((t) => PILOT_TYPES.includes(t.id)) : WEAPON_TYPES;

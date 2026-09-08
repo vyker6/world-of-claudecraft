@@ -31,7 +31,7 @@ export interface WeaponType {
   view: 'side' | 'face';
   poseNote: string;
   tierZone: WeaponZone;
-  zones: WeaponZone[];
+  zones: readonly WeaponZone[];
   length: number;
   aspect: [number, number];
   tierShare: number;
