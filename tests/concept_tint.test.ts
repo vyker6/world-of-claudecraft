@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import type { TintRules } from '../scripts/asset_pipeline/lib/concept_tint.d.mts';
 import {
   checkConceptTint,
   hexToHsv,
@@ -88,5 +89,71 @@ describe('concept_tint: the hsv assignment keeps shading inside its zone', () =>
   });
   it('leaves the default rule as rgb so the race gates measure what they measured', () => {
     expect(TINT_RULES.assign).toBe('rgb');
+  });
+  it('keeps a cool-shaded grey with the grey zone (cel-shaded metal picks up a blue tint in shadow)', async () => {
+    const Z3 = { metal: '#8a8f96', wood: '#8a6a48', fittings: '#4f5a33' };
+    const rects = [
+      { x: 20, y: 20, w: 60, h: 200, fill: '#8a8f96' }, // metal
+      { x: 80, y: 20, w: 60, h: 200, fill: '#5c6470' }, // metal shadow, cool tint
+      { x: 140, y: 20, w: 40, h: 200, fill: '#8a6a48' }, // wood
+      { x: 180, y: 20, w: 20, h: 200, fill: '#4f5a33' }, // fittings
+    ];
+    const path = await syntheticPlate('tint-cool-shadow', 256, rects);
+    const hsv = await measureTintZones(path, Z3, { ...TINT_RULES, assign: 'hsv' });
+    expect(hsv.zones.metal.share).toBeCloseTo(120 / 180, 2);
+    expect(hsv.zones.fittings.share).toBeCloseTo(20 / 180, 2);
+    expect(hsv.zones.wood.share).toBeCloseTo(40 / 180, 2);
+  });
+});
+
+describe('concept_tint: gateBaseDistance', () => {
+  // The grip is painted far from its declared hide base but still in the hide hue band; the blade
+  // is on its base. Share floors: metal gated, hide not.
+  const Z2 = { metal: '#8a8f96', hide: '#b09a80' };
+  const rects = [
+    { x: 60, y: 20, w: 80, h: 180, fill: '#8a8f96' },
+    { x: 80, y: 200, w: 40, h: 40, fill: '#d8c8a8' }, // hide, 60 from its base
+  ];
+  it('under all, a far fixed zone fails the plate (the race behaviour)', async () => {
+    const path = await syntheticPlate('gbd-all', 256, rects);
+    const rules: TintRules = {
+      ...TINT_RULES,
+      assign: 'hsv',
+      minShare: { metal: 0.3, hide: 0 },
+      maxBaseDistance: 50,
+    };
+    const r = await checkConceptTint(path, Z2, rules);
+    expect(r.ok).toBe(false);
+    expect(r.problems.join(' ')).toMatch(/hide zone sits \d+ from its base/);
+  });
+  it('under floored, only zones with a share floor are held to their base', async () => {
+    const path = await syntheticPlate('gbd-floored', 256, rects);
+    const rules: TintRules = {
+      ...TINT_RULES,
+      assign: 'hsv',
+      minShare: { metal: 0.3, hide: 0 },
+      maxBaseDistance: 50,
+      gateBaseDistance: 'floored',
+    };
+    const r = await checkConceptTint(path, Z2, rules);
+    expect(r.ok).toBe(true);
+    expect(r.measure.zones.hide.distanceToBase).toBeGreaterThan(50); // measured, not gated
+  });
+  it('under floored, the tier zone is still held to its base', async () => {
+    const drifted = [{ ...rects[0], fill: '#b0b8c4' }, rects[1]]; // metal 60 from its base
+    const path = await syntheticPlate('gbd-tier', 256, drifted);
+    const rules: TintRules = {
+      ...TINT_RULES,
+      assign: 'hsv',
+      minShare: { metal: 0.3, hide: 0 },
+      maxBaseDistance: 50,
+      gateBaseDistance: 'floored',
+    };
+    const r = await checkConceptTint(path, Z2, rules);
+    expect(r.ok).toBe(false);
+    expect(r.problems.join(' ')).toMatch(/metal zone sits \d+ from its base/);
+  });
+  it('defaults to all', () => {
+    expect(TINT_RULES.gateBaseDistance).toBe('all');
   });
 });

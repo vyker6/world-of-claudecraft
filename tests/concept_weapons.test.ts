@@ -97,11 +97,11 @@ describe('concept_weapons: zones and tint rules', () => {
     expect(zonesFor(typeNamed('spear'))).toEqual({
       metal: '#8a8f96',
       wood: '#8a6a48',
-      fittings: '#3c4658',
+      fittings: '#4f5a33',
     });
     expect(zonesFor(typeNamed('tome'))).toEqual({
       cloth: '#8a4c96',
-      fittings: '#3c4658',
+      fittings: '#4f5a33',
       accent: '#3ab8b0',
     });
   });
@@ -110,6 +110,7 @@ describe('concept_weapons: zones and tint rules', () => {
     expect(rules.minShare).toEqual({ metal: 0.1, wood: 0, fittings: 0 });
     expect(rules.maxBaseDistance).toBe(TINT_RULES.maxBaseDistance);
     expect(rules.assign).toBe('hsv');
+    expect(rules.gateBaseDistance).toBe('floored');
     expect(tintRulesFor(typeNamed('longblade')).minShare.metal).toBe(0.35);
   });
   it('gives every chromatic zone that shares a type a hue of its own', () => {
@@ -155,10 +156,12 @@ describe('concept_weapons: prompts and jobs', () => {
     expect(p).toMatch(/no hand/);
     expect(weaponPrompt(t, t.shapes[0], style)).toContain('three quarters of the image height');
     expect(weaponPrompt(t, t.shapes[0], style)).toContain('no glow around the object');
+    expect(weaponPrompt(t, t.shapes[0], style)).not.toContain('plated');
   });
   it('poses face-on types square on and bows with a straight string', () => {
     const shield = typeNamed('round_shield');
     expect(weaponPrompt(shield, shield.shapes[0], style)).toContain('seen square on');
+    expect(weaponPrompt(shield, shield.shapes[0], style)).toContain('fully plated in metal');
     const bow = typeNamed('longbow');
     expect(weaponPrompt(bow, bow.shapes[0], style)).toContain('straight vertical line');
   });

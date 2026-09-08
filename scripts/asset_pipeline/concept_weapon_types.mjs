@@ -43,6 +43,11 @@ const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const QUALITY = 'high';
 const WEB = { width: 512, height: 512 };
 
+// Weapon plates clear the edge at 2 percent, not the shared 4 percent, as the race bodies do. A
+// positive margin already means nothing is clipped, which is all the reconstruction needs; the
+// second pilot lost every first attempt at 2 to 3 percent with nothing touching an edge.
+const WEAPON_FRAME_RULES = { ...FRAME_RULES, minMargin: 0.02 };
+
 function opt(name, fallback) {
   const i = process.argv.indexOf(`--${name}`);
   return i >= 0 && process.argv[i + 1] ? process.argv[i + 1] : fallback;
@@ -51,7 +56,7 @@ const flag = (name) => process.argv.includes(`--${name}`);
 
 async function gates(path, type) {
   const [framing, tint, aspect] = await Promise.all([
-    checkConceptFraming(path, FRAME_RULES),
+    checkConceptFraming(path, WEAPON_FRAME_RULES),
     checkConceptTint(path, zonesFor(type), tintRulesFor(type)),
     checkConceptAspect(path, type.aspect, type.name),
   ]);

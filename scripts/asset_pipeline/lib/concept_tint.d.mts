@@ -1,11 +1,14 @@
 export interface TintRules {
-  minShare: Record<'skin' | 'hair' | 'garment' | 'accent', number>;
+  // Generic, not pinned to the race zones: the gateBaseDistance tests in concept_tint.test.ts
+  // exercise checkConceptTint directly against weapon-shaped zones (metal, hide, ...).
+  minShare: Record<string, number>;
   maxBaseDistance: number;
   hueGap: number;
   satGap: number;
   valGap: number;
   minSatForHue: number;
   assign: 'rgb' | 'hsv';
+  gateBaseDistance: 'all' | 'floored';
 }
 export interface Rgb {
   r: number;

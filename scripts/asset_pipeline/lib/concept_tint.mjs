@@ -20,6 +20,9 @@ export const TINT_RULES = Object.freeze({
   minSatForHue: 0.15,
   assign: 'rgb', // which assignment measureTintZones uses; 'hsv' follows hue and saturation so
   // a zone's lit and shadow tones stay in the zone
+  gateBaseDistance: 'all', // which zones the distance-to-base check applies to; 'all' (the race
+  // gates) checks every declared zone that has pixels, 'floored' checks only zones with a
+  // positive share floor, for plates whose fixed zones are free to shade as the model paints them
 });
 
 export function hexToRgb(hex) {
@@ -55,10 +58,14 @@ export function hueDistance(a, b) {
 
 const CHROMA_PIXEL = 0.12; // a pixel with less saturation is achromatic (greys, outlines)
 const CHROMA_ZONE = 0.15; // a zone base with less saturation is an achromatic zone
+const SOFT_SAT = 0.35; // a pixel up to this saturation may still be a shaded grey: cel-shaded
+// metal picks up a cool tint in shadow
 
 /** Distance from a pixel to a zone base under the hsv rule: hue and saturation first, value
  *  last, so the two-tone shading of the locked style stays inside its zone. Chromatic pixels
- *  match chromatic zones, achromatic pixels match achromatic zones; crossing the line costs 2. */
+ *  match chromatic zones, achromatic pixels match achromatic zones; crossing the line costs 2,
+ *  except a lightly tinted pixel against an achromatic zone, which pays a soft cost instead so
+ *  a cool-shaded grey still reads as its own zone. */
 function hsvDistance(px, base) {
   const chroma = px.s >= CHROMA_PIXEL;
   const zoneChroma = base.s >= CHROMA_ZONE;
@@ -68,7 +75,11 @@ function hsvDistance(px, base) {
       Math.abs(px.s - base.s) * 1.5 +
       Math.abs(px.v - base.v) * 0.25
     );
-  if (!chroma && !zoneChroma) return Math.abs(px.v - base.v) * 0.25;
+  if (!zoneChroma) {
+    if (!chroma) return Math.abs(px.v - base.v) * 0.25;
+    if (px.s < SOFT_SAT) return Math.abs(px.v - base.v) * 0.25 + 2 * (px.s - CHROMA_PIXEL);
+    return 2 + Math.abs(px.v - base.v);
+  }
   return 2 + Math.abs(px.v - base.v);
 }
 
@@ -156,7 +167,11 @@ export function tintProblems(m, zones, rules = TINT_RULES) {
         `${name} zone covers ${(z.share * 100).toFixed(1)}% of the figure < ${need * 100}% ` +
           `(the ${name} was not painted in its base colour)`,
       );
-    } else if (z.centroid && z.distanceToBase > rules.maxBaseDistance) {
+    } else if (
+      z.centroid &&
+      (rules.gateBaseDistance !== 'floored' || need > 0) &&
+      z.distanceToBase > rules.maxBaseDistance
+    ) {
       out.push(
         `${name} zone sits ${z.distanceToBase.toFixed(0)} from its base ${zones[name]} > ` +
           `${rules.maxBaseDistance} (the plate did not use the declared colour)`,

@@ -30,6 +30,7 @@ export interface WeaponType {
   hands: '1H' | '2H' | 'OH';
   view: 'side' | 'face';
   poseNote: string;
+  materialNote: string;
   tierZone: WeaponZone;
   zones: readonly WeaponZone[];
   length: number;
@@ -47,9 +48,8 @@ export interface WeaponJob {
   background: 'transparent';
   prompt: string;
 }
-// concept_tint.d.mts's TintRules pins minShare to the race zones (skin/hair/garment/accent),
-// so a weapon's zones (metal/wood/hide/cloth/fittings/accent) cannot reuse that type here; this
-// is the same shape with a general minShare instead.
+// The same shape as concept_tint.d.mts's TintRules, named separately here for the weapon
+// module's own zones (metal/wood/hide/cloth/fittings/accent) rather than the race zones.
 export interface WeaponTintRules {
   minShare: Record<string, number>;
   maxBaseDistance: number;
@@ -58,6 +58,7 @@ export interface WeaponTintRules {
   valGap: number;
   minSatForHue: number;
   assign: 'rgb' | 'hsv';
+  gateBaseDistance: 'all' | 'floored';
 }
 export const BASE_COLOURS: Record<WeaponZone, string>;
 export const PILOT_TYPES: readonly WeaponTypeId[];

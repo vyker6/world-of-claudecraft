@@ -16,13 +16,14 @@ export { CHOSEN_STYLE_ID, styleNamed };
 
 // Wood and hide share a hue and therefore never share a type; every other chromatic zone has a
 // hue of its own so the hsv assignment keeps a zone's shading inside the zone; metal is the one
-// achromatic zone.
+// achromatic zone. Fittings sits at hue 77 (olive bronze), away from the cool hue (slate, around
+// 216 to 219) that cel-shaded metal shading drifts toward in shadow.
 export const BASE_COLOURS = Object.freeze({
   metal: '#8a8f96',
   wood: '#8a6a48',
   hide: '#b09a80',
   cloth: '#8a4c96',
-  fittings: '#3c4658',
+  fittings: '#4f5a33',
   accent: '#3ab8b0',
 });
 
@@ -44,8 +45,8 @@ const CASTER_ZONES = Object.freeze(['wood', 'fittings', 'accent']);
 const SHIELD_ZONES = Object.freeze(['metal', 'wood', 'fittings']); // the grip is on the back of
 // a face-on shield; hide is dropped so wood and hide never share a type
 
-const side = (t) => ({ view: 'side', poseNote: '', ...t });
-const face = (t) => ({ view: 'face', poseNote: '', ...t });
+const side = (t) => ({ view: 'side', poseNote: '', materialNote: '', ...t });
+const face = (t) => ({ view: 'face', poseNote: '', materialNote: '', ...t });
 
 export const WEAPON_TYPES = Object.freeze([
   side({
@@ -292,6 +293,8 @@ export const WEAPON_TYPES = Object.freeze([
     length: 0.4,
     aspect: [0.8, 1.25],
     tierShare: 0.35,
+    materialNote:
+      'its face fully plated in metal over a wooden core, the metal the largest surface',
     shapes: [
       { id: 'boss', brief: 'a plain circle with a central boss and radial bands' },
       { id: 'octagonal', brief: 'a flat-faced octagon with a rim' },
@@ -308,6 +311,8 @@ export const WEAPON_TYPES = Object.freeze([
     length: 0.75,
     aspect: [1.4, 2.6],
     tierShare: 0.35,
+    materialNote:
+      'its face fully plated in metal over a wooden core, the metal the largest surface',
     shapes: [
       { id: 'rectangular', brief: 'a tall flat rectangle with rounded corners' },
       { id: 'tapered', brief: 'a tall shield narrowing to a point at the bottom' },
@@ -382,12 +387,14 @@ export function zonesFor(type) {
   return Object.fromEntries(type.zones.map((z) => [z, BASE_COLOURS[z]]));
 }
 
-/** The tint rules for a type: the tier zone share-gated at the type floor, fixed zones at 0. */
+/** The tint rules for a type: the tier zone share-gated at the type floor, fixed zones at 0.
+ *  Fixed zones are also freed from the base-distance check (gateBaseDistance: 'floored'), since
+ *  a fixed zone's exact colour is never consumed downstream and only needs to stay separable. */
 export function tintRulesFor(type) {
   const minShare = Object.fromEntries(
     type.zones.map((z) => [z, z === type.tierZone ? type.tierShare : 0]),
   );
-  return { ...TINT_RULES, assign: 'hsv', minShare };
+  return { ...TINT_RULES, assign: 'hsv', gateBaseDistance: 'floored', minShare };
 }
 
 const SIDE_POSE =
@@ -417,9 +424,10 @@ export function weaponPrompt(type, shape, style, corrective = '') {
   const pose = [type.view === 'side' ? SIDE_POSE : FACE_POSE, type.poseNote]
     .filter(Boolean)
     .join(', ');
+  const materialClause = type.materialNote ? `, ${type.materialNote}` : '';
   return (
     `Art direction: ${style.fusion}. Render technique: ${style.technique}. ` +
-    `Object: one ${type.subject} for a fantasy game, ${shape.brief}; ${pose}; ` +
+    `Object: one ${type.subject} for a fantasy game, ${shape.brief}${materialClause}; ${pose}; ` +
     `${colourClause(type)}. ` +
     `Composition: ${OBJECT_LAYOUT}, ${OBJECT_SCALE}. Design language: ${style.design}. ` +
     `Mood: ${GRIMDARK_CORE}. Must not look like: ${style.avoid}.` +

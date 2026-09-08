@@ -9,8 +9,11 @@ import { ALPHA_SUBJECT, readRaw } from './concept_silhouette.mjs';
 
 export const ICON_SIZE = 128;
 export const SHAPE_RULES = Object.freeze({
-  /** Mean profile difference below which two shapes read the same at icon scale. */
-  minDistance: 0.06,
+  /** Mean profile difference below which two shapes read the same at icon scale. 0.07 (Ruling
+   *  13): the second pilot's three longblades measured 0.082, 0.091 and 0.139 apart and read as
+   *  three forms by eye; the three longbows 0.175, 0.231 and 0.300; 0.07 sits under the smallest
+   *  approved distance with headroom above the synthetic same-shape cases. */
+  minDistance: 0.07,
 });
 
 function silhouetteBounds({ data, width, height }) {
