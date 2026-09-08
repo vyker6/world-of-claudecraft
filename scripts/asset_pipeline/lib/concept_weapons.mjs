@@ -195,7 +195,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: HAFTED_ZONES,
     length: 0.72,
-    aspect: [2.5, 7],
+    aspect: [1.8, 7],
     tierShare: 0.25,
     shapes: [
       { id: 'sledge', brief: 'a heavy rectangular sledge head on a long haft' },
@@ -269,8 +269,8 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'wood',
     zones: CASTER_ZONES,
     length: 1.05,
-    aspect: [6, 20],
-    tierShare: 0.35,
+    aspect: [3.5, 20],
+    tierShare: 0.25,
     shapes: [
       { id: 'gnarled', brief: 'a twisted natural staff with a knot head' },
       { id: 'ringed', brief: 'a straight staff topped by a heavy ring headpiece' },
@@ -290,8 +290,8 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'wood',
     zones: CASTER_ZONES,
     length: 0.25,
-    aspect: [3, 10],
-    tierShare: 0.35,
+    aspect: [3, 18],
+    tierShare: 0.2,
     shapes: [
       { id: 'wand', brief: 'a slender tapered wand, plain' },
       { id: 'sceptre', brief: 'a short rod with a heavy orb head' },
@@ -306,7 +306,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: SHIELD_ZONES,
     length: 0.4,
-    aspect: [0.8, 1.25],
+    aspect: [0.8, 1.5],
     tierShare: 0.35,
     materialNote:
       'its face fully plated in metal over a wooden core, the metal the largest surface',
@@ -371,7 +371,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: Object.freeze(['metal', 'accent', 'hide']),
     length: 0.22,
-    aspect: [1.1, 2.6],
+    aspect: [1.0, 3.2],
     tierShare: 0.3,
     shapes: [
       { id: 'caged', brief: 'a square cage lantern with a ring handle' },
@@ -414,12 +414,20 @@ export function zonesFor(type) {
 
 /** The tint rules for a type: the tier zone share-gated at the type floor, fixed zones at 0.
  *  Fixed zones are also freed from the base-distance check (gateBaseDistance: 'floored'), since
- *  a fixed zone's exact colour is never consumed downstream and only needs to stay separable. */
+ *  a fixed zone's exact colour is never consumed downstream and only needs to stay separable.
+ *  The tier zone may sit up to 110 from its hex, because dark iron and pale ash are the same
+ *  zone by hue and the recolour carries the tier's lightness itself. */
 export function tintRulesFor(type) {
   const minShare = Object.fromEntries(
     type.zones.map((z) => [z, z === type.tierZone ? type.tierShare : 0]),
   );
-  return { ...TINT_RULES, assign: 'hsv', gateBaseDistance: 'floored', minShare };
+  return {
+    ...TINT_RULES,
+    assign: 'hsv',
+    gateBaseDistance: 'floored',
+    maxBaseDistance: 110,
+    minShare,
+  };
 }
 
 const SIDE_POSE =

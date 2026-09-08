@@ -3,7 +3,6 @@ import { styleNamed } from '../scripts/asset_pipeline/lib/concept_races.mjs';
 import {
   hexToHsv,
   hueDistance,
-  TINT_RULES,
   zonesSeparable,
 } from '../scripts/asset_pipeline/lib/concept_tint.mjs';
 import {
@@ -108,7 +107,7 @@ describe('concept_weapons: zones and tint rules', () => {
   it('share-gates only the tier zone, at the type floor', () => {
     const rules = tintRulesFor(typeNamed('spear'));
     expect(rules.minShare).toEqual({ metal: 0.1, wood: 0, fittings: 0 });
-    expect(rules.maxBaseDistance).toBe(TINT_RULES.maxBaseDistance);
+    expect(rules.maxBaseDistance).toBe(110);
     expect(rules.assign).toBe('hsv');
     expect(rules.gateBaseDistance).toBe('floored');
     expect(tintRulesFor(typeNamed('longblade')).minShare.metal).toBe(0.35);
@@ -193,6 +192,13 @@ describe('concept_weapons: prompts and jobs', () => {
     expect(typeNamed('spear').shapes.map((s) => s.id)).toEqual(['leaf', 'trident', 'hooked']);
     expect(typeNamed('stave').shapes.map((s) => s.id)).toEqual(['gnarled', 'ringed', 'crescent']);
     expect(typeNamed('tome').aspect).toEqual([0.6, 1.7]);
+    expect(typeNamed('rod').aspect).toEqual([3, 18]);
+    expect(typeNamed('stave').aspect).toEqual([3.5, 20]);
+    expect(typeNamed('maul').aspect).toEqual([1.8, 7]);
+    expect(typeNamed('lantern').aspect).toEqual([1.0, 3.2]);
+    expect(typeNamed('round_shield').aspect).toEqual([0.8, 1.5]);
+    expect(typeNamed('rod').tierShare).toBe(0.2);
+    expect(typeNamed('stave').tierShare).toBe(0.25);
   });
   it('builds 51 unique jobs the runner can filter, and a nine-job pilot', () => {
     const jobs = buildWeaponJobs();
