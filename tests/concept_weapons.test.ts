@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { styleNamed } from '../scripts/asset_pipeline/lib/concept_races.mjs';
-import { TINT_RULES, zonesSeparable } from '../scripts/asset_pipeline/lib/concept_tint.mjs';
+import {
+  hexToHsv,
+  hueDistance,
+  TINT_RULES,
+  zonesSeparable,
+} from '../scripts/asset_pipeline/lib/concept_tint.mjs';
 import {
   aspectCorrective,
   BASE_COLOURS,
@@ -92,19 +97,42 @@ describe('concept_weapons: zones and tint rules', () => {
     expect(zonesFor(typeNamed('spear'))).toEqual({
       metal: '#8a8f96',
       wood: '#8a6a48',
-      fittings: '#5a3a24',
+      fittings: '#3c4658',
     });
     expect(zonesFor(typeNamed('tome'))).toEqual({
-      cloth: '#5c6a8a',
-      fittings: '#5a3a24',
-      accent: '#e0a05a',
+      cloth: '#8a4c96',
+      fittings: '#3c4658',
+      accent: '#3ab8b0',
     });
   });
   it('share-gates only the tier zone, at the type floor', () => {
     const rules = tintRulesFor(typeNamed('spear'));
     expect(rules.minShare).toEqual({ metal: 0.1, wood: 0, fittings: 0 });
     expect(rules.maxBaseDistance).toBe(TINT_RULES.maxBaseDistance);
+    expect(rules.assign).toBe('hsv');
     expect(tintRulesFor(typeNamed('longblade')).minShare.metal).toBe(0.35);
+  });
+  it('gives every chromatic zone that shares a type a hue of its own', () => {
+    for (const t of WEAPON_TYPES) {
+      const zones = zonesFor(t);
+      const names = Object.keys(zones);
+      for (let i = 0; i < names.length; i++) {
+        for (let j = i + 1; j < names.length; j++) {
+          const a = hexToHsv(zones[names[i]]);
+          const b = hexToHsv(zones[names[j]]);
+          if (a.s < 0.15 || b.s < 0.15) continue;
+          expect(
+            hueDistance(a.h, b.h),
+            `${t.id}: ${names[i]} vs ${names[j]}`,
+          ).toBeGreaterThanOrEqual(40);
+        }
+      }
+    }
+  });
+  it('never puts wood and hide on one type', () => {
+    for (const t of WEAPON_TYPES) {
+      expect(t.zones.includes('wood') && t.zones.includes('hide'), t.id).toBe(false);
+    }
   });
 });
 
@@ -125,6 +153,8 @@ describe('concept_weapons: prompts and jobs', () => {
     expect(p).toContain('seen exactly from the side');
     expect(p).toContain('transparent background');
     expect(p).toMatch(/no hand/);
+    expect(weaponPrompt(t, t.shapes[0], style)).toContain('three quarters of the image height');
+    expect(weaponPrompt(t, t.shapes[0], style)).toContain('no glow around the object');
   });
   it('poses face-on types square on and bows with a straight string', () => {
     const shield = typeNamed('round_shield');
@@ -140,7 +170,7 @@ describe('concept_weapons: prompts and jobs', () => {
     );
     expect(CORRECTIVE.framing).toMatch(/image edge/);
     expect(CORRECTIVE.tint).toMatch(/flat fill/);
-    expect(aspectCorrective(t)).toMatch(/3 to 6 times taller than it is wide/);
+    expect(aspectCorrective(t)).toMatch(/2\.5 to 7 times taller than it is wide/);
     expect(distinctCorrective(t, t.shapes[1], t.shapes[0])).toContain(t.shapes[0].brief);
     expect(distinctCorrective(t, t.shapes[1], t.shapes[0])).toContain(t.shapes[1].brief);
   });

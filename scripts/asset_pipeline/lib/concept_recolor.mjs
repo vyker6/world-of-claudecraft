@@ -2,31 +2,19 @@
 // declared zone (the tint gate's own assignment), and each pixel of the chosen zone keeps its
 // CIELAB lightness offset from the zone's mean while taking the tier hex's chroma and mean
 // lightness. Shading survives, the tier's lightness carries through, no other pixel changes.
-// This is a preview of the engine's zone remap, not the engine's code.
+// This is a preview of the engine's zone remap, not the engine's code. The assignment is the
+// tint gate's hsv rule, so the strip recolours exactly the pixels the gate counted.
 import sharp from 'sharp';
 import { ALPHA_SUBJECT } from './concept_silhouette.mjs';
 import { hexToLab, labToRgb, rgbToLab, TIER_LADDER } from './concept_tiers.mjs';
-import { hexToRgb } from './concept_tint.mjs';
-
-function nearestZone(px, bases) {
-  let best = 0;
-  let bestD = Number.POSITIVE_INFINITY;
-  for (let z = 0; z < bases.length; z++) {
-    const d = Math.hypot(px.r - bases[z].r, px.g - bases[z].g, px.b - bases[z].b);
-    if (d < bestD) {
-      bestD = d;
-      best = z;
-    }
-  }
-  return best;
-}
+import { assignZone, zoneBases } from './concept_tint.mjs';
 
 /** The plate with one zone recoloured to a hex, as a PNG buffer. */
 export async function recolorZone({ path, zones, zone, hex }) {
   const names = Object.keys(zones);
   const zi = names.indexOf(zone);
   if (zi < 0) throw new Error(`zone ${zone} is not declared; zones are ${names.join(', ')}`);
-  const bases = names.map((n) => hexToRgb(zones[n]));
+  const bases = zoneBases(zones);
   const { data, info } = await sharp(path)
     .ensureAlpha()
     .raw()
@@ -38,7 +26,7 @@ export async function recolorZone({ path, zones, zone, hex }) {
   for (let i = 0; i < count; i++) {
     if (data[i * 4 + 3] < ALPHA_SUBJECT) continue;
     const px = { r: data[i * 4], g: data[i * 4 + 1], b: data[i * 4 + 2] };
-    if (nearestZone(px, bases) !== zi) continue;
+    if (assignZone(px, bases, 'hsv') !== zi) continue;
     member[i] = 1;
     sumL += rgbToLab(px).L;
     n++;

@@ -5,6 +5,7 @@ export interface TintRules {
   satGap: number;
   valGap: number;
   minSatForHue: number;
+  assign: 'rgb' | 'hsv';
 }
 export interface Rgb {
   r: number;
@@ -15,6 +16,10 @@ export interface Hsv {
   h: number;
   s: number;
   v: number;
+}
+export interface ZoneBase {
+  rgb: Rgb;
+  hsv: Hsv;
 }
 export interface TintMeasure {
   opaque: number;
@@ -28,8 +33,14 @@ export function hexToRgb(hex: string): Rgb;
 export function rgbToHsv(rgb: Rgb): Hsv;
 export function hexToHsv(hex: string): Hsv;
 export function hueDistance(a: number, b: number): number;
+export function assignZone(px: Rgb, bases: ZoneBase[], strategy?: 'rgb' | 'hsv'): number;
+export function zoneBases(zones: Record<string, string>): ZoneBase[];
 export function zonesSeparable(hexA: string, hexB: string, rules?: TintRules): boolean;
-export function measureTintZones(path: string, zones: Record<string, string>): Promise<TintMeasure>;
+export function measureTintZones(
+  path: string,
+  zones: Record<string, string>,
+  rules?: TintRules,
+): Promise<TintMeasure>;
 export function tintProblems(
   measure: TintMeasure,
   zones: Record<string, string>,

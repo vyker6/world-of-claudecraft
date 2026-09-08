@@ -57,6 +57,7 @@ export interface WeaponTintRules {
   satGap: number;
   valGap: number;
   minSatForHue: number;
+  assign: 'rgb' | 'hsv';
 }
 export const BASE_COLOURS: Record<WeaponZone, string>;
 export const PILOT_TYPES: readonly WeaponTypeId[];

@@ -14,13 +14,16 @@ import { TINT_RULES } from './concept_tint.mjs';
 
 export { CHOSEN_STYLE_ID, styleNamed };
 
+// Wood and hide share a hue and therefore never share a type; every other chromatic zone has a
+// hue of its own so the hsv assignment keeps a zone's shading inside the zone; metal is the one
+// achromatic zone.
 export const BASE_COLOURS = Object.freeze({
   metal: '#8a8f96',
   wood: '#8a6a48',
   hide: '#b09a80',
-  cloth: '#5c6a8a',
-  fittings: '#5a3a24',
-  accent: '#e0a05a',
+  cloth: '#8a4c96',
+  fittings: '#3c4658',
+  accent: '#3ab8b0',
 });
 
 const ZONE_WORDS = Object.freeze({
@@ -38,7 +41,8 @@ const BLADE_ZONES = Object.freeze(['metal', 'fittings', 'hide']);
 const HAFTED_ZONES = Object.freeze(['metal', 'wood', 'fittings']);
 const BOW_ZONES = Object.freeze(['wood', 'fittings', 'cloth']);
 const CASTER_ZONES = Object.freeze(['wood', 'fittings', 'accent']);
-const SHIELD_ZONES = Object.freeze(['metal', 'wood', 'hide']);
+const SHIELD_ZONES = Object.freeze(['metal', 'wood', 'fittings']); // the grip is on the back of
+// a face-on shield; hide is dropped so wood and hide never share a type
 
 const side = (t) => ({ view: 'side', poseNote: '', ...t });
 const face = (t) => ({ view: 'face', poseNote: '', ...t });
@@ -52,7 +56,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: BLADE_ZONES,
     length: 0.22,
-    aspect: [3, 7],
+    aspect: [2.5, 7],
     tierShare: 0.35,
     shapes: [
       {
@@ -80,7 +84,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: BLADE_ZONES,
     length: 0.52,
-    aspect: [5, 12],
+    aspect: [3, 9],
     tierShare: 0.35,
     shapes: [
       {
@@ -106,7 +110,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: BLADE_ZONES,
     length: 0.85,
-    aspect: [6, 14],
+    aspect: [3.5, 10],
     tierShare: 0.35,
     shapes: [
       {
@@ -134,7 +138,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: HAFTED_ZONES,
     length: 0.36,
-    aspect: [1.8, 3.5],
+    aspect: [1.5, 4],
     tierShare: 0.2,
     shapes: [
       { id: 'bearded', brief: 'a narrow head with a long drooping beard on a straight haft' },
@@ -153,7 +157,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: HAFTED_ZONES,
     length: 0.75,
-    aspect: [2.2, 5],
+    aspect: [1.8, 5],
     tierShare: 0.2,
     shapes: [
       { id: 'crescent', brief: 'one huge crescent blade on a long haft' },
@@ -169,7 +173,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: BLADE_ZONES,
     length: 0.38,
-    aspect: [3, 6],
+    aspect: [2.5, 7],
     tierShare: 0.35,
     shapes: [
       { id: 'flanged', brief: 'a cylindrical head of vertical flanges on a short haft' },
@@ -185,7 +189,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: HAFTED_ZONES,
     length: 0.72,
-    aspect: [3, 6],
+    aspect: [2.5, 7],
     tierShare: 0.25,
     shapes: [
       { id: 'sledge', brief: 'a heavy rectangular sledge head on a long haft' },
@@ -201,7 +205,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: HAFTED_ZONES,
     length: 1.15,
-    aspect: [8, 25],
+    aspect: [6, 25],
     tierShare: 0.1,
     shapes: [
       { id: 'leaf', brief: 'a broad leaf-shaped head on a plain shaft' },
@@ -221,7 +225,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'wood',
     zones: BOW_ZONES,
     length: 0.65,
-    aspect: [3, 6],
+    aspect: [2.5, 7],
     tierShare: 0.35,
     shapes: [
       { id: 'flat', brief: 'wide flat limbs in a single shallow D curve' },
@@ -238,7 +242,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'wood',
     zones: BOW_ZONES,
     length: 1.0,
-    aspect: [5, 12],
+    aspect: [4, 12],
     tierShare: 0.35,
     shapes: [
       { id: 'war', brief: 'a tall straight D-section stave with plain tips' },
@@ -254,7 +258,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'wood',
     zones: CASTER_ZONES,
     length: 1.05,
-    aspect: [8, 20],
+    aspect: [6, 20],
     tierShare: 0.35,
     shapes: [
       { id: 'gnarled', brief: 'a twisted natural staff with a knot head' },
@@ -270,7 +274,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'wood',
     zones: CASTER_ZONES,
     length: 0.25,
-    aspect: [4, 9],
+    aspect: [3, 10],
     tierShare: 0.35,
     shapes: [
       { id: 'wand', brief: 'a slender tapered wand, plain' },
@@ -286,7 +290,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: SHIELD_ZONES,
     length: 0.4,
-    aspect: [0.85, 1.2],
+    aspect: [0.8, 1.25],
     tierShare: 0.35,
     shapes: [
       { id: 'boss', brief: 'a plain circle with a central boss and radial bands' },
@@ -302,7 +306,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: SHIELD_ZONES,
     length: 0.75,
-    aspect: [1.5, 2.4],
+    aspect: [1.4, 2.6],
     tierShare: 0.35,
     shapes: [
       { id: 'rectangular', brief: 'a tall flat rectangle with rounded corners' },
@@ -321,7 +325,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'cloth',
     zones: Object.freeze(['cloth', 'fittings', 'accent']),
     length: 0.18,
-    aspect: [1.0, 1.6],
+    aspect: [0.9, 1.7],
     tierShare: 0.35,
     shapes: [
       { id: 'codex', brief: 'a tall thin book with a plain cover and a spine band' },
@@ -337,7 +341,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'metal',
     zones: Object.freeze(['metal', 'accent', 'hide']),
     length: 0.22,
-    aspect: [1.3, 2.4],
+    aspect: [1.1, 2.6],
     tierShare: 0.3,
     shapes: [
       { id: 'caged', brief: 'a square cage lantern with a ring handle' },
@@ -353,7 +357,7 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'wood',
     zones: Object.freeze(['wood', 'fittings', 'cloth']),
     length: 0.42,
-    aspect: [1.2, 3.2],
+    aspect: [1.0, 3.5],
     tierShare: 0.35,
     shapes: [
       { id: 'lute', brief: 'a round-backed lute with a bent-back pegbox' },
@@ -383,7 +387,7 @@ export function tintRulesFor(type) {
   const minShare = Object.fromEntries(
     type.zones.map((z) => [z, z === type.tierZone ? type.tierShare : 0]),
   );
-  return { ...TINT_RULES, minShare };
+  return { ...TINT_RULES, assign: 'hsv', minShare };
 }
 
 const SIDE_POSE =
@@ -392,11 +396,13 @@ const SIDE_POSE =
 const FACE_POSE = 'standing upright and seen square on, its face toward the camera';
 const OBJECT_LAYOUT =
   'a single object alone, centered, the whole object in frame, transparent background, even ' +
-  'diffuse studio lighting, crisp silhouette, no halos or fringing, no drop shadow, no hand, ' +
-  'no figure, no ground, no scabbard, no second object, no text, no watermark, no logo';
+  'diffuse studio lighting, crisp silhouette, no halos or fringing, no glow around the object, ' +
+  'no drop shadow, no hand, no figure, no ground, no scabbard, no second object, no text, ' +
+  'no watermark, no logo';
 const OBJECT_SCALE =
-  'the object fills about nine tenths of the image height with clear background beyond every ' +
-  'tip and edge';
+  'the camera pulled back so the object occupies about three quarters of the image height, ' +
+  'centered, with clear empty background of at least one tenth of the image height above its ' +
+  'top and below its bottom';
 
 function colourClause(type) {
   const parts = type.zones.map((z) => `${ZONE_WORDS[z]} exactly ${BASE_COLOURS[z]}`);

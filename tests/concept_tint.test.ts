@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   checkConceptTint,
   hexToHsv,
+  measureTintZones,
   TINT_RULES,
   zonesSeparable,
 } from '../scripts/asset_pipeline/lib/concept_tint.mjs';
@@ -50,5 +51,42 @@ describe('concept_tint: the gate over a plate', () => {
     const r = await checkConceptTint(path, Z);
     expect(r.ok).toBe(false);
     expect(r.problems.join(' ')).toMatch(/garment .* from its base/);
+  });
+});
+
+describe('concept_tint: the hsv assignment keeps shading inside its zone', () => {
+  // Wood at its base, its lit tone (x1.35) and its shadow tone (x0.62), beside fittings and hide.
+  const W = { wood: '#8a6a48', fittings: '#3c4658', hide: '#b09a80' };
+  const shaded = [
+    { x: 40, y: 20, w: 40, h: 200, fill: '#8a6a48' }, // wood base
+    { x: 80, y: 20, w: 40, h: 200, fill: '#bb8f61' }, // wood lit
+    { x: 120, y: 20, w: 40, h: 200, fill: '#56422d' }, // wood shadow
+    { x: 170, y: 20, w: 20, h: 200, fill: '#3c4658' }, // fittings
+  ];
+  it('assigns the lit and shadow tones of wood to wood, where rgb sends them to hide and fittings', async () => {
+    const path = await syntheticPlate('tint-shaded', 256, shaded);
+    const hsv = await measureTintZones(path, W, { ...TINT_RULES, assign: 'hsv' });
+    const rgb = await measureTintZones(path, W, { ...TINT_RULES, assign: 'rgb' });
+    expect(hsv.zones.wood.share).toBeCloseTo(120 / 140, 2);
+    expect(hsv.zones.fittings.share).toBeCloseTo(20 / 140, 2);
+    expect(hsv.zones.hide.share).toBe(0);
+    expect(rgb.zones.wood.share).toBeLessThan(0.5); // the defect the rule exists to remove
+    expect(rgb.zones.fittings.share + rgb.zones.hide.share).toBeGreaterThan(0.4);
+  });
+  it('keeps a grey shadow with the grey zone and never with a chromatic dark zone', async () => {
+    const M = { metal: '#8a8f96', fittings: '#3c4658' };
+    const rects = [
+      { x: 40, y: 20, w: 60, h: 200, fill: '#8a8f96' },
+      { x: 100, y: 20, w: 60, h: 200, fill: '#56595d' }, // metal shadow
+      { x: 170, y: 20, w: 20, h: 200, fill: '#3c4658' },
+    ];
+    const path = await syntheticPlate('tint-grey', 256, rects);
+    const hsv = await measureTintZones(path, M, { ...TINT_RULES, assign: 'hsv' });
+    expect(hsv.zones.metal.share).toBeCloseTo(120 / 140, 2);
+    const rgb = await measureTintZones(path, M, { ...TINT_RULES, assign: 'rgb' });
+    expect(rgb.zones.metal.share).toBeCloseTo(60 / 140, 2);
+  });
+  it('leaves the default rule as rgb so the race gates measure what they measured', () => {
+    expect(TINT_RULES.assign).toBe('rgb');
   });
 });
