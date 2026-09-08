@@ -153,6 +153,7 @@ describe('concept_weapons: prompts and jobs', () => {
     expect(p).toContain('seen exactly from the side');
     expect(p).toContain('transparent background');
     expect(p).toMatch(/no hand/);
+    expect(p).toContain('no skull, face, rune, emblem or sigil');
     expect(weaponPrompt(t, t.shapes[0], style)).toContain('three quarters of the image height');
     expect(weaponPrompt(t, t.shapes[0], style)).toContain('no glow around the object');
     expect(weaponPrompt(t, t.shapes[0], style)).not.toContain('plated');

@@ -69,7 +69,7 @@ async function shapeStrip(type, dir, dest, cell = 384) {
   const rows = await measuredShapes(type, dir);
   if (!rows.length) return null;
   const width = cell * 3;
-  const height = cell + 96;
+  const height = cell + 104;
   const composites = [];
   let svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">`;
   for (let i = 0; i < rows.length; i++) {
@@ -81,7 +81,8 @@ async function shapeStrip(type, dir, dest, cell = 384) {
       left: i * cell + Math.round((cell - meta.width) / 2),
       top: cell - meta.height,
     });
-    svg += `<text x="${i * cell + 8}" y="${cell + 28}" font-family="sans-serif" font-size="20" fill="${INK}">${type.id} ${r.id}  aspect ${r.measure.aspect.toFixed(2)}</text>`;
+    svg += `<text x="${i * cell + 8}" y="${cell + 24}" font-family="sans-serif" font-size="18" fill="${INK}">${type.id} ${r.id}</text>`;
+    svg += `<text x="${i * cell + 8}" y="${cell + 46}" font-family="sans-serif" font-size="18" fill="${INK}">aspect ${r.measure.aspect.toFixed(2)}</text>`;
   }
   const pairs = [];
   for (let i = 0; i < rows.length; i++)
@@ -89,7 +90,7 @@ async function shapeStrip(type, dir, dest, cell = 384) {
       pairs.push(
         `${rows[i].id} vs ${rows[j].id} ${shapeDistance(rows[i].measure, rows[j].measure).toFixed(3)}`,
       );
-  svg += `<text x="8" y="${cell + 64}" font-family="sans-serif" font-size="18" fill="${INK}">distance at icon scale: ${pairs.join('   ')}</text></svg>`;
+  svg += `<text x="8" y="${cell + 80}" font-family="sans-serif" font-size="18" fill="${INK}">distance at icon scale: ${pairs.join('   ')}</text></svg>`;
   return paintCanvas(width, height, composites, svg, dest);
 }
 

@@ -436,7 +436,9 @@ const SIDE_POSE =
 const FACE_POSE = 'standing upright and seen square on, its face toward the camera';
 const OBJECT_LAYOUT =
   'a single object alone, centered, the whole object in frame, transparent background, even ' +
-  'diffuse studio lighting, crisp silhouette, no halos or fringing, no glow around the object, ' +
+  'diffuse studio lighting, crisp silhouette, no halos or fringing, ' +
+  'no skull, face, rune, emblem or sigil anywhere on it, ' +
+  'no glow around the object, ' +
   'no drop shadow, no hand, no figure, no ground, no scabbard, no second object, no text, ' +
   'no watermark, no logo';
 const OBJECT_SCALE =
