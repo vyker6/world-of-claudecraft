@@ -179,7 +179,12 @@ export const WEAPON_TYPES = Object.freeze([
     shapes: [
       { id: 'flanged', brief: 'a cylindrical head of vertical flanges on a short haft' },
       { id: 'ball', brief: 'a round knobbed ball head on a short haft' },
-      { id: 'block', brief: 'a square block head with cornered studs on a short haft' },
+      {
+        id: 'beaked',
+        brief:
+          'a head with a long curved beak jutting out to one side and a short blunt ' +
+          'striking face opposite, on a short haft',
+      },
     ],
   }),
   side({
@@ -211,10 +216,15 @@ export const WEAPON_TYPES = Object.freeze([
     shapes: [
       { id: 'leaf', brief: 'a broad leaf-shaped head on a plain shaft' },
       {
-        id: 'pike',
-        brief: 'a long narrow needle head with a small cross-bar below it on a plain shaft',
+        id: 'trident',
+        brief: 'a three-pronged head with the outer prongs curving outward, on a plain shaft',
       },
-      { id: 'winged', brief: 'a wide head with two side lugs at its base on a plain shaft' },
+      {
+        id: 'hooked',
+        brief:
+          'a narrow head with one long hooked blade curling out to one side below the ' +
+          'point, on a plain shaft',
+      },
     ],
   }),
   side({
@@ -264,7 +274,12 @@ export const WEAPON_TYPES = Object.freeze([
     shapes: [
       { id: 'gnarled', brief: 'a twisted natural staff with a knot head' },
       { id: 'ringed', brief: 'a straight staff topped by a heavy ring headpiece' },
-      { id: 'crescent', brief: 'a staff topped by a forked crescent head holding a gem' },
+      {
+        id: 'crescent',
+        brief:
+          'a straight staff topped by a broad forked crescent head a fifth of the staff ' +
+          'in length, holding a gem',
+      },
     ],
   }),
   side({
@@ -297,8 +312,13 @@ export const WEAPON_TYPES = Object.freeze([
       'its face fully plated in metal over a wooden core, the metal the largest surface',
     shapes: [
       { id: 'boss', brief: 'a plain circle with a central boss and radial bands' },
-      { id: 'octagonal', brief: 'a flat-faced octagon with a rim' },
-      { id: 'scalloped', brief: 'a circle with a scalloped rim and a small boss' },
+      {
+        id: 'teardrop',
+        brief:
+          'a round shield drawn down to a blunt point at the bottom, a teardrop outline ' +
+          'with a central boss',
+      },
+      { id: 'square', brief: 'a rounded square shield with a central boss and a raised rim' },
     ],
   }),
   face({
@@ -317,8 +337,10 @@ export const WEAPON_TYPES = Object.freeze([
       { id: 'rectangular', brief: 'a tall flat rectangle with rounded corners' },
       { id: 'tapered', brief: 'a tall shield narrowing to a point at the bottom' },
       {
-        id: 'notched',
-        brief: 'a tall shield with a central vertical ridge and a notched top edge',
+        id: 'flared',
+        brief:
+          'a tall shield widest across the top and narrowing evenly to a flat base half ' +
+          'as wide',
       },
     ],
   }),
@@ -330,12 +352,15 @@ export const WEAPON_TYPES = Object.freeze([
     tierZone: 'cloth',
     zones: Object.freeze(['cloth', 'fittings', 'accent']),
     length: 0.18,
-    aspect: [0.9, 1.7],
+    aspect: [0.6, 1.7],
     tierShare: 0.35,
     shapes: [
       { id: 'codex', brief: 'a tall thin book with a plain cover and a spine band' },
-      { id: 'grimoire', brief: 'a thick near-square book with corner caps and two clasps' },
       { id: 'chained', brief: 'a thick book bound in a chain with a hanging lock' },
+      {
+        id: 'open',
+        brief: 'an open book seen square on, both pages spread flat, wider than it is tall',
+      },
     ],
   }),
   face({

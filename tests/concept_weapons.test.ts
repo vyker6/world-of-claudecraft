@@ -177,6 +177,23 @@ describe('concept_weapons: prompts and jobs', () => {
     expect(distinctCorrective(t, t.shapes[1], t.shapes[0])).toContain(t.shapes[0].brief);
     expect(distinctCorrective(t, t.shapes[1], t.shapes[0])).toContain(t.shapes[1].brief);
   });
+  it('gives the six redesigned types their whole-form shapes', () => {
+    expect(typeNamed('round_shield').shapes.map((s) => s.id)).toEqual([
+      'boss',
+      'teardrop',
+      'square',
+    ]);
+    expect(typeNamed('tower_shield').shapes.map((s) => s.id)).toEqual([
+      'rectangular',
+      'tapered',
+      'flared',
+    ]);
+    expect(typeNamed('tome').shapes.map((s) => s.id)).toEqual(['codex', 'chained', 'open']);
+    expect(typeNamed('mace').shapes.map((s) => s.id)).toEqual(['flanged', 'ball', 'beaked']);
+    expect(typeNamed('spear').shapes.map((s) => s.id)).toEqual(['leaf', 'trident', 'hooked']);
+    expect(typeNamed('stave').shapes.map((s) => s.id)).toEqual(['gnarled', 'ringed', 'crescent']);
+    expect(typeNamed('tome').aspect).toEqual([0.6, 1.7]);
+  });
   it('builds 51 unique jobs the runner can filter, and a nine-job pilot', () => {
     const jobs = buildWeaponJobs();
     expect(jobs).toHaveLength(51);
@@ -191,7 +208,7 @@ describe('concept_weapons: prompts and jobs', () => {
       background: 'transparent',
     });
     expect(weaponJobId(typeNamed('tome'), typeNamed('tome').shapes[2], style)).toBe(
-      'tome__chained__osrs_genshin',
+      'tome__open__osrs_genshin',
     );
     expect(buildWeaponJobs('osrs_genshin', { only: 'round_shield' })).toHaveLength(3);
     const pilot = buildWeaponJobs('osrs_genshin', { pilot: true });
