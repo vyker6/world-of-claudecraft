@@ -41,13 +41,32 @@ async function cropToBox(path, bbox, height) {
     .toBuffer();
 }
 
-async function shapeStrip(type, dir, dest, cell = 384) {
+// Shared by shapeStrip and scaleSheet: composites the cells and the label SVG onto a GROUND
+// canvas and writes dest.
+async function paintCanvas(width, height, composites, svg, dest) {
+  await sharp({ create: { width, height, channels: 4, background: GROUND } })
+    .composite([...composites, { input: Buffer.from(svg), top: 0, left: 0 }])
+    .png()
+    .toFile(dest);
+  return dest;
+}
+
+// The type's shape plates that exist and measure to a real silhouette, gathered out of
+// shapeStrip to keep its own cyclomatic complexity under the project limit.
+async function measuredShapes(type, dir) {
   const rows = [];
   for (const shape of type.shapes) {
     const path = platePath(dir, type, shape);
     if (!existsSync(path)) continue;
-    rows.push({ id: shape.id, path, measure: await measureShape(path) });
+    const measure = await measureShape(path);
+    if (!measure.bbox) continue;
+    rows.push({ id: shape.id, path, measure });
   }
+  return rows;
+}
+
+async function shapeStrip(type, dir, dest, cell = 384) {
+  const rows = await measuredShapes(type, dir);
   if (!rows.length) return null;
   const width = cell * 3;
   const height = cell + 96;
@@ -71,11 +90,7 @@ async function shapeStrip(type, dir, dest, cell = 384) {
         `${rows[i].id} vs ${rows[j].id} ${shapeDistance(rows[i].measure, rows[j].measure).toFixed(3)}`,
       );
   svg += `<text x="8" y="${cell + 64}" font-family="sans-serif" font-size="18" fill="${INK}">distance at icon scale: ${pairs.join('   ')}</text></svg>`;
-  await sharp({ create: { width, height, channels: 4, background: GROUND } })
-    .composite([...composites, { input: Buffer.from(svg), top: 0, left: 0 }])
-    .png()
-    .toFile(dest);
-  return dest;
+  return paintCanvas(width, height, composites, svg, dest);
 }
 
 async function scaleSheet(types, dir, figurePath, dest, figureH = 900) {
@@ -107,11 +122,7 @@ async function scaleSheet(types, dir, figurePath, dest, figureH = 900) {
     x += metas[i].width + gap;
   });
   svg += '</svg>';
-  await sharp({ create: { width, height, channels: 4, background: GROUND } })
-    .composite([...composites, { input: Buffer.from(svg), top: 0, left: 0 }])
-    .png()
-    .toFile(dest);
-  return dest;
+  return paintCanvas(width, height, composites, svg, dest);
 }
 
 // Split out of main() to keep its cyclomatic complexity under the project limit: the
@@ -126,7 +137,9 @@ function parseArgs() {
     throw new Error('--plates <run dir>, --out <dir> and --figure <race body plate> are required');
   }
   const only = opt('only', '');
-  return { plates, out, figure, only };
+  const types = WEAPON_TYPES.filter((t) => !only || t.id.includes(only));
+  if (only && !types.length) throw new Error(`--only ${only} matched no weapon type`);
+  return { plates, out, figure, only, types };
 }
 
 // One type's shape strip and, when a first-shape plate exists, its tier strip.
@@ -146,11 +159,10 @@ async function buildTypeSheets(type, dir, outDir) {
 }
 
 async function main() {
-  const { plates, out, figure, only } = parseArgs();
+  const { plates, out, figure, only, types } = parseArgs();
   const dir = resolve(REPO_ROOT, plates);
   const outDir = resolve(REPO_ROOT, out);
   for (const d of ['shapes', 'tiers']) mkdirSync(join(outDir, d), { recursive: true });
-  const types = WEAPON_TYPES.filter((t) => !only || t.id.includes(only));
   for (const type of types) await buildTypeSheets(type, dir, outDir);
   if (!only) {
     await scaleSheet(
