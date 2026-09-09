@@ -18,6 +18,11 @@ export const TINT_RULES = Object.freeze({
   satGap: 0.12,
   valGap: 0.12,
   minSatForHue: 0.15,
+  assign: 'rgb', // which assignment measureTintZones uses; 'hsv' follows hue and saturation so
+  // a zone's lit and shadow tones stay in the zone
+  gateBaseDistance: 'all', // which zones the distance-to-base check applies to; 'all' (the race
+  // gates) checks every declared zone that has pixels, 'floored' checks only zones with a
+  // positive share floor, for plates whose fixed zones are free to shade as the model paints them
 });
 
 export function hexToRgb(hex) {
@@ -46,9 +51,56 @@ export function hexToHsv(hex) {
   return rgbToHsv(hexToRgb(hex));
 }
 
-function hueDistance(a, b) {
+export function hueDistance(a, b) {
   const d = Math.abs(a - b) % 360;
   return d > 180 ? 360 - d : d;
+}
+
+const CHROMA_PIXEL = 0.12; // a pixel with less saturation is achromatic (greys, outlines)
+const CHROMA_ZONE = 0.15; // a zone base with less saturation is an achromatic zone
+const SOFT_SAT = 0.35; // a pixel up to this saturation may still be a shaded grey: cel-shaded
+// metal picks up a cool tint in shadow
+
+/** Distance from a pixel to a zone base under the hsv rule: hue and saturation first, value
+ *  last, so the two-tone shading of the locked style stays inside its zone. Chromatic pixels
+ *  match chromatic zones, achromatic pixels match achromatic zones; crossing the line costs 2,
+ *  except a lightly tinted pixel against an achromatic zone, which pays a soft cost instead so
+ *  a cool-shaded grey still reads as its own zone. */
+function hsvDistance(px, base) {
+  const chroma = px.s >= CHROMA_PIXEL;
+  const zoneChroma = base.s >= CHROMA_ZONE;
+  if (chroma && zoneChroma)
+    return (
+      hueDistance(px.h, base.h) / 90 +
+      Math.abs(px.s - base.s) * 1.5 +
+      Math.abs(px.v - base.v) * 0.25
+    );
+  if (!zoneChroma) {
+    if (!chroma) return Math.abs(px.v - base.v) * 0.25;
+    if (px.s < SOFT_SAT) return Math.abs(px.v - base.v) * 0.25 + 2 * (px.s - CHROMA_PIXEL);
+    return 2 + Math.abs(px.v - base.v);
+  }
+  return 2 + Math.abs(px.v - base.v);
+}
+
+/** Index of the zone a pixel belongs to. `bases` are `{ rgb, hsv }` per zone (see zoneBases). */
+export function assignZone(px, bases, strategy = 'rgb') {
+  const hsv = strategy === 'hsv' ? rgbToHsv(px) : null;
+  let best = 0;
+  let bestD = Number.POSITIVE_INFINITY;
+  for (let z = 0; z < bases.length; z++) {
+    const d = hsv ? hsvDistance(hsv, bases[z].hsv) : rgbDistance(px, bases[z].rgb);
+    if (d < bestD) {
+      bestD = d;
+      best = z;
+    }
+  }
+  return best;
+}
+
+/** The declared zones as `{ rgb, hsv }` bases, in declaration order. */
+export function zoneBases(zones) {
+  return Object.values(zones).map((hex) => ({ rgb: hexToRgb(hex), hsv: hexToHsv(hex) }));
 }
 
 /** Two colours are separable when a dye rule can select one without the other. */
@@ -67,9 +119,9 @@ function rgbDistance(a, b) {
 }
 
 /** Assign every opaque pixel to the nearest declared zone and summarise each zone. */
-export async function measureTintZones(path, zones) {
+export async function measureTintZones(path, zones, rules = TINT_RULES) {
   const names = Object.keys(zones);
-  const bases = names.map((n) => hexToRgb(zones[n]));
+  const bases = zoneBases(zones);
   const { data, info } = await sharp(path)
     .ensureAlpha()
     .raw()
@@ -80,15 +132,7 @@ export async function measureTintZones(path, zones) {
     if (data[i * 4 + 3] < ALPHA_SUBJECT) continue;
     opaque++;
     const px = { r: data[i * 4], g: data[i * 4 + 1], b: data[i * 4 + 2] };
-    let best = 0;
-    let bestD = Number.POSITIVE_INFINITY;
-    for (let z = 0; z < bases.length; z++) {
-      const d = rgbDistance(px, bases[z]);
-      if (d < bestD) {
-        bestD = d;
-        best = z;
-      }
-    }
+    const best = assignZone(px, bases, rules.assign);
     const s = sums[best];
     s.n++;
     s.r += px.r;
@@ -103,7 +147,7 @@ export async function measureTintZones(path, zones) {
       share: opaque ? s.n / opaque : 0,
       centroid,
       hsv: centroid ? rgbToHsv(centroid) : null,
-      distanceToBase: centroid ? rgbDistance(centroid, bases[z]) : Number.POSITIVE_INFINITY,
+      distanceToBase: centroid ? rgbDistance(centroid, bases[z].rgb) : Number.POSITIVE_INFINITY,
     };
   });
   return { opaque, zones: out };
@@ -123,7 +167,11 @@ export function tintProblems(m, zones, rules = TINT_RULES) {
         `${name} zone covers ${(z.share * 100).toFixed(1)}% of the figure < ${need * 100}% ` +
           `(the ${name} was not painted in its base colour)`,
       );
-    } else if (z.centroid && z.distanceToBase > rules.maxBaseDistance) {
+    } else if (
+      z.centroid &&
+      (rules.gateBaseDistance !== 'floored' || need > 0) &&
+      z.distanceToBase > rules.maxBaseDistance
+    ) {
       out.push(
         `${name} zone sits ${z.distanceToBase.toFixed(0)} from its base ${zones[name]} > ` +
           `${rules.maxBaseDistance} (the plate did not use the declared colour)`,
@@ -158,7 +206,7 @@ export function rgbToHex({ r, g, b }) {
 }
 
 export async function checkConceptTint(path, zones, rules = TINT_RULES) {
-  const measure = await measureTintZones(path, zones);
+  const measure = await measureTintZones(path, zones, rules);
   const problems = tintProblems(measure, zones, rules);
   return { ok: problems.length === 0, problems, measure };
 }

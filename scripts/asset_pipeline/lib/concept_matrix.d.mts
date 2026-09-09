@@ -35,6 +35,8 @@ export const CHARACTER_SIZE: '1024x1536';
 export const SCENE_SIZE: '1536x1024';
 export const GRIMDARK_CORE: string;
 export const STYLES: readonly ConceptStyle[];
+export function styleNamed(styleId: string): ConceptStyle;
+export const CHOSEN_STYLE_ID: 'osrs_genshin';
 export const SUBJECTS: readonly ConceptSubject[];
 export function conceptMatrixPrompt(
   subject: ConceptSubject,

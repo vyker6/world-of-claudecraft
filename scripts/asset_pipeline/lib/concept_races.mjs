@@ -10,10 +10,16 @@
 // every body prompt pins standard proportions and puts the race in the head and skin.
 import { MARGIN_RULE } from '../concept_character.mjs';
 import { KEEP_FIGURE } from '../concept_dress.mjs';
-import { CHARACTER_SIZE, GRIMDARK_CORE, SCENE_SIZE, STYLES } from './concept_matrix.mjs';
+import {
+  CHARACTER_SIZE,
+  CHOSEN_STYLE_ID,
+  GRIMDARK_CORE,
+  SCENE_SIZE,
+  styleNamed,
+} from './concept_matrix.mjs';
 import { LAYOUT_CHARACTER } from './prompts.mjs';
 
-export const CHOSEN_STYLE_ID = 'osrs_genshin';
+export { CHOSEN_STYLE_ID, styleNamed };
 export const GENDERS = Object.freeze(['male', 'female']);
 export const GARMENT_HEX = '#404044';
 
@@ -189,13 +195,6 @@ export const LOOKS = Object.freeze([
       'and covering the hair, the visor raised so the face stays visible',
   },
 ]);
-
-export function styleNamed(styleId) {
-  const style = STYLES.find((s) => s.id === styleId);
-  if (!style)
-    throw new Error(`unknown style ${styleId}; one of ${STYLES.map((s) => s.id).join(', ')}`);
-  return style;
-}
 
 export function zonesFor(race) {
   return {
